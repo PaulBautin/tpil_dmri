@@ -27,10 +27,10 @@ DATASET_ROOT_FOLDER=$1
 echo "DATASET ROOT FOLDER: ${DATASET_ROOT_FOLDER}"
 
 # copy and paste dataset in new repository
-cd ${DATASET_ROOT_FOLDER}
+cd "${DATASET_ROOT_FOLDER}"
 cd ../
 mkdir -p "${DATASET_ROOT_FOLDER}_lowercase"
 cp -a "${DATASET_ROOT_FOLDER}/." "${DATASET_ROOT_FOLDER}_lowercase/"
 
 # find all files in new directory and lowercase all files
-find ${DATASET_ROOT_FOLDER}_lowercase -type f -exec rename 's/(.*)\/([^\/]*)/$1\/\L$2/' {} \;
+find "${DATASET_ROOT_FOLDER}_lowercase" -type f -exec rename 's/(.*)\/([^\/]*)/$1\/\L$2/' {} \;
