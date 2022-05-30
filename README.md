@@ -7,6 +7,8 @@ Raw DWI images are acquired with the same protocol to offer a homogeneous datase
 # Pipelines and scripts
 Before running the pipelines and scripts it is required to install [Nextflow](https://www.nextflow.io/), [Singularity](https://sylabs.io/docs/), [Scilpy](https://scil-documentation.readthedocs.io/en/latest/our_tools/scilpy.html), and [Ants](https://scil-documentation.readthedocs.io/en/latest/tools/ants.html). A general installation procedure can be found [here](https://tractoflow-documentation.readthedocs.io/en/latest/installation/requirements.html) and more specific instructions, for each pipeline, can be found in their respective sections.  
 
+If the pipelines are ran on Linux, it is recommended to use Singularity. Pre-built singularity images and container related files for SCILUS flows can be found on the github repository [containers-scilus](https://github.com/scilus/containers-scilus) or on the [SCIL website](http://scil.usherbrooke.ca/en/containers_list/).
+
 ## dMRI QC
 Using the *dmri_qc* nextflow pipeline it is possible to check DWIs and the processed DWIs. A more in depth description and installation intruction  can be found [here](https://scil-documentation.readthedocs.io/en/latest/our_tools/other_pipelines.html).
 <details><summary><b>Resources</b></summary>
