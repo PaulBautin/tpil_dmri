@@ -16,9 +16,11 @@ Using the *dmri_qc* nextflow pipeline it is possible to check DWIs and the proce
 
 
 
-**Example command:**
+<details open>
+<summary><b>Example command:</b></summary>
 
 `nextflow run dmriqc-flow-0.1.2/main.nf -profile input_qc --root input/ -with-singularity singularity_dmriqc_0.1.2.img -resume --raw_dwi_nb_threads 10`
+</details>
 
 ## TractoFlow
 Using the *TractFlow* nextflow pipeline it is possible to compute necessary derivatives: DTI metrics, fODF metrics. The script used to run is `run_tractoflow`
