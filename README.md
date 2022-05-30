@@ -5,8 +5,10 @@ The starting point and aim of this project is to use diffusion MRI to improve ou
 Raw DWI images are acquired with the same protocol to offer a homogeneous dataset:  b-values of 300, 1000 and 2000 with a resolution of $2\times 2\times 2 mm^3$.
 
 # Pipelines and scripts
+Before running the pipelines and scripts it is required to install [Nextflow](https://www.nextflow.io/), [Singularity](https://sylabs.io/docs/), [Scilpy](https://scil-documentation.readthedocs.io/en/latest/our_tools/scilpy.html), and [Ants](https://scil-documentation.readthedocs.io/en/latest/tools/ants.html). A general installation procedure can be found [here](https://tractoflow-documentation.readthedocs.io/en/latest/installation/requirements.html) and more specific instructions, for each pipeline, can be found in their respective sections.  
+
 ## dMRI QC
-Using the *dmri_qc* nextflow pipeline it is possible to check DWIs and the processed DWIs.
+Using the *dmri_qc* nextflow pipeline it is possible to check DWIs and the processed DWIs. A more in depth description and installation intruction  can be found [here](https://scil-documentation.readthedocs.io/en/latest/our_tools/other_pipelines.html).
 <details><summary><b>Resources</b></summary>
   
   * [Github repository for python](https://github.com/scilus/dmriqcpy)
@@ -44,7 +46,7 @@ Using the *TractFlow* nextflow pipeline it is possible to compute necessary deri
 </details>
 
 ## RecobundleX
-Using the *rbx_flow* nextflow pipeline it is possible to extract white matter fiber bundles of interest. The script used to run is `run_rbxflow`
+Using the *rbx_flow* nextflow pipeline it is possible to extract white matter fiber bundles of interest. The script used to run is `run_rbxflow`. 
 
 <details><summary><b>Resources</b></summary>
 
