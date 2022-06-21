@@ -23,12 +23,15 @@
 #SBATCH --mail-type=ALL
 
 
-my_singularity_img='/home/pabaua/scratch/scil_dev/containers/scilus_1.3.0.sif' # or .sif
+module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
+
+
+my_singularity_img='/home/pabaua/scratch/scil_dev/containers/scilus_1.3.0.sif' # or .img
 my_main_nf='/home/pabaua/scratch/scil_dev/tractoflow/main.nf'
-my_input='/home/pabaua/scratch/tpil_dev/data/dataset_sansan_bids'
+my_input='/home/pabaua/scratch/tpil_dev/data/Data_dMRI_lowercase_CON'
 
 
-nextflow run $my_main_nf --bids $my_input \
+nextflow run $my_main_nf --input $my_input \
     -with-singularity $my_singularity_img -resume -with-report report.html \
     --dti_shells "0 300 1000" --fodf_shells "0 2000 3000" -profile bundling
 
