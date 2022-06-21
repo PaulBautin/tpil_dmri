@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This would run RecobundleX with the following parameters:
-#   - Population average atlas for RecobundlesX DOI: 10.5281/zenodo.5165374
+#   - Population average atlas for RecobundlesX. DOI: 10.5281/zenodo.5165374
 
 
 #SBATCH --nodes=1              # --> Generally depends on your nb of subjects.
