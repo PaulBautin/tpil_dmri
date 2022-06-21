@@ -1,0 +1,46 @@
+
+################# RECOBUNDLEX ######################
+# FLAGS
+-r <rbx_flow results folder>
+-t <tractoflow results folder>
+-n <noddi_flow results folder>
+-f <freewater_flow results folder>
+-o <Output folder>
+
+
+# COMMAND
+bash /home/pabaua/scil_dev/combine_flows/tree_for_rbx_flow.sh \
+-t /home/pabaua/tpil_dev/results/sub-sansan/22-06-19_tractoflow/results \
+-o /home/pabaua/tpil_dev/data/dataset_sansan_rbx
+
+
+
+
+
+################# TRACTOMETRY ######################
+# FLAGS
+-r <rbx_flow results folder>
+-t <tractoflow results folder>
+-n <noddi_flow results folder>
+-f <freewater_flow results folder>
+-o <Output folder>
+
+
+# COMMAND
+bash /home/pabaua/scil_dev/combine_flows/tree_for_tractometry.sh \
+-r /home/pabaua/tpil_dev/results/sub-sansan/22-06-19_rbx/results_rbx \
+-t /home/pabaua/tpil_dev/results/sub-sansan/22-06-19_tractoflow/results \
+-o /home/pabaua/tpil_dev/data/dataset_sansan_tractometry
+
+
+################# BUNDLE MOSAIC ###################
+# positional arguments:
+  in_volume             Volume used as background (e.g. T1, FA, b0).
+  in_bundles            List of tractography files supported by nibabel or binary mask files.
+  out_image             Name of the output image mosaic (e.g. mosaic.jpg, mosaic.png).
+
+# COMMAND
+scil_visualize_bundles_mosaic.py \
+/home/pabaua/tpil_dev/data/dataset_sansan_rbx/sub-sansan/sub-sansan__fa.nii.gz \
+/home/pabaua/tpil_dev/results/sub-sansan/22-06-19_rbx/results_rbx/sub-sansan/Recognize_Bundles/*.trk \
+/home/pabaua/tpil_dev/results/sub-sansan/22-06-19_mosaic_rbx/22-06-19_mosaic_fa.png

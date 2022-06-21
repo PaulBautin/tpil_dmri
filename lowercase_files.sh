@@ -2,7 +2,8 @@
 #
 # Copies all files and directories into new folder "<DATASET_ROOT_FOLDER>_lowercase"
 # and converts all filenames to lowercase in new folder.
-# This script should be run beside the dataset root folder.
+# This script should be run beside the dataset root folder. If rename command is not found run:
+# 'sudo apt install rename'
 #
 # Usage:
 #   ./lowercase_files <DATASET_ROOT_FOLDER>
