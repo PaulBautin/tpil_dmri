@@ -41,6 +41,7 @@ bash /home/pabaua/scil_dev/combine_flows/tree_for_tractometry.sh \
 
 # COMMAND
 scil_visualize_bundles_mosaic.py \
-/home/pabaua/tpil_dev/data/dataset_sansan_rbx/sub-sansan/sub-sansan__fa.nii.gz \
-/home/pabaua/tpil_dev/results/sub-sansan/22-06-19_rbx/results_rbx/sub-sansan/Recognize_Bundles/*.trk \
-/home/pabaua/tpil_dev/results/sub-sansan/22-06-19_mosaic_rbx/22-06-19_mosaic_fa.png
+/home/pabaua/tpil_dev/results/DCL_PT_PL007_V1/Register_Anat/DCL_PT_PL007_V1__native_anat.nii.gz \
+/home/pabaua/tpil_dev/results/DCL_PT_PL007_V1/Clean_Bundles/DCL_PT_PL007_V1__OR_ML_R_cleaned.trk \
+/home/pabaua/tpil_dev/results/22-07-14_mosaic/22-07-14_mosaic_fa_OR_ML.png \
+--resolution_of_thumbnails 500 --light_screenshot -f

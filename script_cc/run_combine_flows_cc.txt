@@ -25,9 +25,9 @@ bash /home/pabaua/scratch/scil_dev/combine_flows/tree_for_rbx_flow.sh \
 
 # COMMAND
 bash /home/pabaua/scratch/scil_dev/combine_flows/tree_for_tractometry.sh \
--r /home/pabaua/scratch/tpil_dev/data/dataset_CON_rbx \
--t /home/pabaua/scratch/tpil_dev/results/sub-CON/22-06-21_tractoflow/results \
--o /home/pabaua/scratch/tpil_dev/data/dataset_CON_tractometry
+-r /home/pabaua/scratch/tpil_dev/results/sub-CON/22-07-12_rbx/results_rbx \
+-t /home/pabaua/scratch/tpil_dev/results/sub-CON/22-07-10_tractoflow/results \
+-o /home/pabaua/scratch/tpil_dev/data/Data_dMRI_lowercase_CON_tractometry
 
 
 ################# BUNDLE MOSAIC ###################
