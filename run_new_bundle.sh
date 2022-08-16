@@ -13,7 +13,7 @@
                                # https://docs.computecanada.ca/wiki/B%C3%A9luga/en#Node_Characteristics
 #SBATCH --mem=0                # --> 0 means you take all the memory of the node. If you think you will need
                                # all the node, you can keep 0.
-#SBATCH --time=48:00:00
+#SBATCH --time=2:00:00
 
 #SBATCH --mail-user=paul.bautin@polymtl.ca
 #SBATCH --mail-type=BEGIN
@@ -27,11 +27,10 @@ module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
 
 
 my_singularity_img='/home/pabaua/scratch/scil_dev/containers/scilus_1.3.0.sif' # or .img
-my_main_nf='/home/pabaua/scratch/scil_dev/tractoflow/main.nf'
-my_input='/home/pabaua/scratch/tpil_dev/data/Data_dMRI_lowercase_CON'
+my_main_nf='/home/pabaua/scratch/tpil_dev/github/tpil_dmri/bundle_for_tractometry/main.nf'
+my_input='/home/pabaua/scratch/tpil_dev/data/data_new_bundle_CON/'
+my_atlas='/home/pabaua/scratch/tpil_dev/data/data_new_bundle_CON/BN_Atlas_246_1mm.nii.gz'
 
-
-nextflow run $my_main_nf --input $my_input \
-    -with-singularity $my_singularity_img -resume -with-report report.html \
-    --dti_shells "0 300 1000" --fodf_shells "0 2000 3000" -profile bundling
+nextflow run $my_main_nf --input $my_input --atlas $my_atlas \
+    -with-singularity $my_singularity_img -resume
 
