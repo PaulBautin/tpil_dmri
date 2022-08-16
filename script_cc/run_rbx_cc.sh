@@ -27,7 +27,7 @@ module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
 
 my_singularity_img='/home/pabaua/scratch/scil_dev/containers/scilus_1.3.0.sif' # or .img
 my_main_nf='/home/pabaua/scratch/scil_dev/rbx_flow/main.nf'
-my_input='/home/pabaua/scratch/tpil_dev/data/dataset_CON_rbx'
+my_input='/home/pabaua/scratch/tpil_dev/data/Data_dMRI_lowercase_CON_rbx'
 my_atlas_config='/home/pabaua/scratch/scil_dev/atlas/config.json'
 my_atlas_anat='/home/pabaua/scratch/scil_dev/atlas/mni_masked.nii.gz'
 my_atlas_dir='/home/pabaua/scratch/scil_dev/atlas/atlas'
