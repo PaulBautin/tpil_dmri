@@ -1,8 +1,11 @@
 #!/bin/bash
 
 # This would run Tractoflow with the following parameters:
-#   - Dti_shells 0, 300 and 1000, Fodf_shells 0, 2000, 3000.
-#   - profile bundling => WM seeding
+#   - bids: clinical data from TPIL lab (27 CLBP and 25 control subjects), if not in BIDS format use flag --input
+#   - with-singularity: container image scilus v1.3.0 (runs: dmriqc_flow, tractoflow, recobundleX, tractometry)
+#   - with-report: outputs a processing report when pipeline is finished running
+#   - Dti_shells 0 and 300 (usually <700), Fodf_shells 0 and 2000 (usually >1200).
+#   - profile: bundling, bundling profile will set the seeding strategy to WM as opposed to interface seeding that is usually used for connectomics
 
 
 #SBATCH --nodes=1              # --> Generally depends on your nb of subjects.
@@ -28,10 +31,10 @@ module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
 
 my_singularity_img='/home/pabaua/scratch/scil_dev/containers/scilus_1.3.0.sif' # or .img
 my_main_nf='/home/pabaua/scratch/scil_dev/tractoflow/main.nf'
-my_input='/home/pabaua/scratch/tpil_dev/data/Data_dMRI_lowercase_CON'
+my_input='/home/pabaua/scratch/tpil_dev/data/22-08-19_dMRI_CLBP_BIDS'
 
 
-nextflow run $my_main_nf --input $my_input \
+nextflow run $my_main_nf --bids $my_input \
     -with-singularity $my_singularity_img -resume -with-report report.html \
-    --dti_shells "0 300 1000" --fodf_shells "0 2000 3000" -profile bundling
+    --dti_shells "0 300 1000" --fodf_shells "0 1000 2000 3000" -profile bundling
 
