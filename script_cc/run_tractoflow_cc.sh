@@ -36,5 +36,5 @@ my_input='/home/pabaua/scratch/tpil_dev/data/22-08-19_dMRI_CLBP_BIDS'
 
 nextflow run $my_main_nf --bids $my_input \
     -with-singularity $my_singularity_img -resume -with-report report.html \
-    --dti_shells "0 300 1000" --fodf_shells "0 1000 2000 3000" -profile bundling
+    --dti_shells "0 1000" --fodf_shells "0 2000" -profile bundling
 
