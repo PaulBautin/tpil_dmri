@@ -4,7 +4,7 @@
 #   - bids: clinical data from TPIL lab (27 CLBP and 25 control subjects), if not in BIDS format use flag --input
 #   - with-singularity: container image scilus v1.3.0 (runs: dmriqc_flow, tractoflow, recobundleX, tractometry)
 #   - with-report: outputs a processing report when pipeline is finished running
-#   - Dti_shells 0 and 300 (usually <700), Fodf_shells 0 and 2000 (usually >1200).
+#   - Dti_shells 0 and 1000 (usually <1200), Fodf_shells 0 1000 and 2000 (usually >700, multishell CSD-ms).
 #   - profile: bundling, bundling profile will set the seeding strategy to WM as opposed to interface seeding that is usually used for connectomics
 
 
