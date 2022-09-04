@@ -31,7 +31,7 @@ module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
 
 my_singularity_img='/home/pabaua/scratch/scil_dev/containers/scilus_1.3.0.sif' # or .img
 my_main_nf='/home/pabaua/scratch/scil_dev/tractoflow/main.nf'
-my_input='/home/pabaua/scratch/tpil_dev/data/22-08-19_dMRI_CLBP_BIDS'
+my_input='/home/pabaua/scratch/tpil_dev/data/22-08-19_dMRI_CLBP_BIDS/'
 
 
 nextflow run $my_main_nf --bids $my_input \
