@@ -77,11 +77,7 @@ process Register_Atlas_to_Ref {
 
     script:
     """
-    echo ${sid}
-    echo ${native_anat}
-    echo ${atlas}
     antsRegistrationSyNQuick.sh -d 3 -f ${native_anat} -m ${atlas} -t s -o ${sid}__output
-    # cp ${native_anat} ${sid}__native_anat.nii.gz
     """
 }
 
@@ -133,14 +129,14 @@ process Filter_tractogram {
     tuple val(sid), file(tractogram), file(mask_mPFC), file(mask_NAC)
 
     output:
-    tuple val(sid), file("${sid}_trk_cleaned.trk")
+    tuple val(sid), file("${sid}__NAC_mPFC_L_cleaned.trk")
 
     script:
     """
     scil_filter_tractogram.py ${tractogram} ${sid}_trk_filtered.trk \
     --drawn_roi ${mask_mPFC} either_end include \
     --drawn_roi ${mask_NAC} either_end include
-    scil_outlier_rejection.py ${sid}_trk_filtered.trk ${sid}_trk_cleaned.trk --alpha 0.5
+    scil_outlier_rejection.py ${sid}_trk_filtered.trk ${sid}__NAC_mPFC_L_cleaned.trk --alpha 0.5
     """
 }
 
@@ -151,11 +147,11 @@ process Compute_Centroid {
     tuple val(sid), file(bundle)
 
     output:
-    tuple val(sid), file("${sid}_centroid.trk")
+    tuple val(sid), file("${sid}__NAC_mPFC_L_centroid.trk")
 
     script:
     """
-    scil_compute_centroid.py ${bundle} ${sid}_centroid.trk --nb_points 50
+    scil_compute_centroid.py ${bundle} ${sid}__NAC_mPFC_L_centroid.trk --nb_points 50
     """
 }
 
@@ -172,13 +168,11 @@ workflow {
     Register_Atlas_to_Ref(data_registration)
 
     data_registration.join(Register_Atlas_to_Ref.out, by:0).set{data_for_transfo}
-    data_for_transfo.view()
     Apply_transform(data_for_transfo)
 
     Create_mask(Apply_transform.out)
 
     tractogram_for_filtering.combine(Create_mask.out, by:0).set{data_for_filtering}
-    data_for_filtering.view()
     Filter_tractogram(data_for_filtering)
 
     Compute_Centroid(Filter_tractogram.out)
