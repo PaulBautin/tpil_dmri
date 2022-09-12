@@ -32,6 +32,8 @@ do
     echo $i
     mkdir -p $o/$i/bundles
     mkdir -p $o/$i/metrics
+    mkdir -p $o/$i/centroids
+    ln -s $b/$i/Compute_Centroid/*centroid.trk $o/$i/centroids/
 
     # if centroids are there, create dir
     if [ -d "$r/$i/Transform_Centroids/" ]
@@ -75,7 +77,7 @@ do
     # if new bundle add
     if [ -d "$b/$i/" ]
     then
-	    ln -s $b/$i/Compute_Centroid/*.trk $o/$i/centroids/
+	    ln -s $b/$i/Compute_Centroid/*centroid.trk $o/$i/centroids/
 	    ln -s $b/$i/Filter_tractogram/*cleaned.trk $o/$i/bundles/
     fi
 done
