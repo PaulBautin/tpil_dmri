@@ -1,18 +1,17 @@
-Pipeline for New Bundle
+Pipeline for bundle segmentation
 ======================================
 
 USAGE
 
 nextflow run main.nf --input ... [OPTIONAL_ARGUMENTS]
-To call with a container add:
-    -with-singularity scilus/scilus:1.2.0_rbxflow-1.1.0
-    -with-docker scilus/scilus:1.2.0_rbxflow-1.1.0
 
-The recommanded atlas is available at https://atlas.brainnetome.org/download.html
+Ressources:
+Prebuild Singularity images are available at: https://scil.usherbrooke.ca/pages/containers/
+Brainnetome atlas is available at: https://atlas.brainnetome.org/download.html
 
 DESCRIPTION
 
-    --input=/path/to/[root]              Root folder containing multiple subjects
+    --input=/path/to/[root]             Root folder containing multiple subjects
 
                                         [root]
                                         ├── atlas.nii.gz
@@ -25,6 +24,11 @@ DESCRIPTION
                                             └── *
 
     --atlas                 		Path to atlas
+    
+Files should come out of the Tractoflow pipeline, with the following source:
+- dwi.nii.gz: from Resample_DWI
+- brain_mask.nii.gz: from Resample_B0
+- bval/bvec: from Eddy_Topup
 
     OPTIONAL ARGUMENTS (current value)
 

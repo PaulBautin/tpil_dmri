@@ -8,7 +8,7 @@
 #   - profile: bundling, bundling profile will set the seeding strategy to WM as opposed to interface seeding that is usually used for connectomics
 
 
-#SBATCH --nodes=1              # --> Generally depends on your nb of subjects.
+#SBATCH --nodes=3              # --> Generally depends on your nb of subjects.
                                # See the comment for the cpus-per-task. One general rule could be
                                # that if you have more subjects than cores/cpus (ex, if you process 38
                                # subjects on 32 cpus-per-task), you could ask for one more node.
@@ -29,8 +29,8 @@
 module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
 
 
-my_singularity_img='/home/pabaua/scratch/scil_dev/containers/scilus_1.3.0.sif' # or .img
-my_main_nf='/home/pabaua/scratch/scil_dev/tractoflow/main.nf'
+my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.3.0.sif' # or .img
+my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/tractoflow/main.nf'
 my_input='/home/pabaua/scratch/tpil_dev/data/22-08-19_dMRI_CLBP_BIDS/'
 
 
