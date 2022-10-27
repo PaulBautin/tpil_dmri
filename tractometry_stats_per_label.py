@@ -69,11 +69,6 @@ def get_parser():
         action='store_true'
     )
     optional.add_argument(
-        '-l',
-        help='Vertebrae levels on which to compute the statistics. \nExample: -l 2 3 4 5',
-        nargs="*",
-    )
-    optional.add_argument(
         '-o',
         help='Path where figures will be saved. By default, they will be saved in the current directory.',
         default="."
