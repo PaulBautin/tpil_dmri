@@ -101,7 +101,9 @@ def main():
     path_results_con = os.path.abspath(os.path.expanduser(arguments.con))
     path_output = os.path.abspath(arguments.o)
 
-
+    ### Form main Dataframes df_metrics_con for control subjects and df_metric_clbp for CLBP
+    ## CLBP subjects
+    df_mean_std_clbp = load_data(os.path.join(path_results_con, r'mean_std_per_label.xlsx'))
 
 
 if __name__ == "__main__":
