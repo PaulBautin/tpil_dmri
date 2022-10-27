@@ -31,6 +31,8 @@ from math import ceil
 from scipy import stats
 import seaborn as sns
 
+from functions.load_data import load_data_xlsx, df_gather_metrics
+
 
 
 # Parser
@@ -76,34 +78,26 @@ def get_parser():
     return parser
 
 
-def load_data(file):
-    """
-    Creates a dataframe based on information present on TractometryFlow output xlsx files
-    :param file: xlsx file containing information for statistics. Ex: 'mean_std.xlsx'
-    :return sheet_to_df_map: 3D dataframe containing information present in each sheet of xlsx file
-    """
-    xls = pd.ExcelFile(file)
-    sheet_to_df_map = {}
-    for sheet_name in xls.sheet_names:
-        sheet_to_df_map[sheet_name] = xls.parse(sheet_name)
-        sheet_to_df_map[sheet_name].columns = ['ID']+[str(col) for col in sheet_to_df_map[sheet_name].columns[1:]]
-    return sheet_to_df_map
+
 
 
 def main():
     """
     main function, gather stats and call plots
     """
+    pd.options.display.width = 0
     ### Get parser elements
-    parser = get_parser()
-    arguments = parser.parse_args()
-    path_results_clbp = os.path.abspath(os.path.expanduser(arguments.clbp))
-    path_results_con = os.path.abspath(os.path.expanduser(arguments.con))
-    path_output = os.path.abspath(arguments.o)
+    #parser = get_parser()
+    #arguments = parser.parse_args()
+    #path_results_clbp = os.path.abspath(os.path.expanduser(arguments.clbp))
+    # path_results_con = os.path.abspath(os.path.expanduser(arguments.con))
+    #path_output = os.path.abspath(arguments.o)
 
     ### Form main Dataframes df_metrics_con for control subjects and df_metric_clbp for CLBP
     ## CLBP subjects
-    df_mean_std_clbp = load_data(os.path.join(path_results_con, r'mean_std_per_label.xlsx'))
+    df_mean_std_clbp = load_data_xlsx('/home/pabaua/Desktop/Statistics/mean_std_per_point_per_subject.xlsx')
+    df_metrics_clbp = df_gather_metrics(df_mean_std_clbp, group_name="control", axis_name=["subject", "tract"])
+    print(df_metrics_clbp)
 
 
 if __name__ == "__main__":
