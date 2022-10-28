@@ -31,7 +31,9 @@ from math import ceil
 from scipy import stats
 import seaborn as sns
 
-from functions.load_data import load_data_xlsx, df_gather_metrics
+from functions.load_data import load_data_xlsx
+from functions.plots import boxplot_intersubject_per_ses
+from functions.stat_tests import t_test_longitudinal
 
 
 
@@ -95,9 +97,13 @@ def main():
 
     ### Form main Dataframes df_metrics_con for control subjects and df_metric_clbp for CLBP
     ## CLBP subjects
-    df_mean_std_clbp = load_data_xlsx('/home/pabaua/Desktop/Statistics/mean_std_per_point_per_subject.xlsx')
-    df_metrics_clbp = df_gather_metrics(df_mean_std_clbp, group_name="control", axis_name=["subject", "tract"])
-    print(df_metrics_clbp)
+    df_metrics_clbp = load_data_xlsx('/home/pabaua/Desktop/Statistics/mean_std_per_point_per_subject.xlsx')
+
+    #boxplot_intersubject_per_ses(df_metrics_clbp)
+
+    t_test_longitudinal(df_metrics_clbp)
+
+
 
 
 if __name__ == "__main__":
