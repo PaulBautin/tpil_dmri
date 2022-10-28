@@ -1,0 +1,93 @@
+Scilpy dMRI tractometry pipeline
+================================
+
+Compute tractometry on each bundles/metrics
+
+USAGE
+
+nextflow run main.nf [OPTIONAL_ARGUMENTS] (--input)
+
+DESCRIPTION
+
+--input=/path/to/[root]     Input folder containg multiple subjects
+
+                            [root]
+                            ├── S1
+                            │   ├── *lesion_mask.nii.gz (optional)
+                            │   ├── *fodf.nii.gz (optional to generate fixel AFD)
+                            │   ├── metrics
+                            │   │   └── *.nii.gz
+                            │   └── bundles
+                            │       └── *.trk
+                            └── S2
+                                ├── *lesion_mask.nii.gz (optional)
+                                ├── *fodf.nii.gz (optional to generate fixel AFD)
+                                ├── metrics
+                                │   └── *.nii.gz
+                                └── bundles
+                                    └── *.trk
+
+                            Bundle centroid will be computed on-the-fly if no
+                            pre-computed centroids have been provided.
+
+                            You can provide pre-computed centroids such as
+                            (and use --use_provided_centroids true)
+
+                            [root]
+                            ├── S1
+                            │   ├── metrics
+                            │   │   └── *.nii.gz
+                            │   ├── centroids
+                            │   │   └── [Bundle_Name]_centroid.trk
+                            │   └── bundles
+                            │       └── [Bundle_Name].trk
+                            └── S2
+                                ├── metrics
+                                │   └── *.nii.gz
+                                ├── centroids
+                                │   └── [Bundle_Name]_centroid.trk
+                                └── bundles
+                                    └── [Bundle_Name].trk
+
+                            Bundle and centroid file names must match the
+                            format described above.
+
+                            All subjects in the [root] folder must contain
+                            pre-computed centroids if pre-computed centroids
+                            are provided. In other words, you can't mix
+                            subjects with and without pre-computed centroids
+
+
+Metrics should be compressed Nifti files (.nii.gz) and centroids and fiber bundles should be
+in Trackvis format (.trk)
+
+OPTIONAL ARGUMENTS (current value)
+
+--nb_points                                 Split the fiber bundle in --nb_point sections ($nb_points)
+--min_lesion_vol                            To be consider 'a lesion' for the pipeline, a lesion must be at least ($min_lesion_vol) mm3.
+--use_provided_centroids                    Use the provided pre-computed centroids rather than using automatic computation ($use_provided_centroids)
+--bundle_suffix_to_remove                   Use to remove the suffix from RBx-Flow ($bundle_suffix_to_remove)
+
+--min_streamline_count                      Minimum streamline count threshold from trimming of 'edges' in the voxel labels map
+--min_voxel_count                           Minimum voxel count threshold from trimming of 'edges' in the voxel labels map
+
+--mean_std_density_weighting                Weight the mean/std by the local tract density ($mean_std_density_weighting)
+--mean_std_per_point_density_weighting      Weight the mean/std per point by the local tract density ($mean_std_per_point_density_weighting)
+--endpoints_metric_stats_normalize_weights  Normalize the weights to the [0, 1] range ($endpoints_metric_stats_normalize_weights)
+--skip_projection_endpoints_metrics         Skip the (slow) process that projects metrics onto the endpoints of streamlines  ($skip_projection_endpoints_metrics)
+
+--processes                                 The number of parallel processes to launch ($cpu_count).
+                                            Only affects the local scheduler.
+--output_dir                                Directory where to write the final results.
+                                            By default, will be in "./results_tractometry"
+
+NOTES
+
+The `scilpy/scripts` folder should be in your PATH environment variable
+
+The intermediate working directory is, by default, set to "./work".
+To change it, use the '-w WORK_DIR' argument.
+
+Use `-C config_file.config` to specify a non-default configuration file.
+
+If running this on OSX, use `-profile osx` to get the correct shell.
