@@ -34,6 +34,7 @@ import seaborn as sns
 from functions.load_data import load_data_xlsx
 from functions.plots import boxplot_intersubject_per_ses
 from functions.stat_tests import t_test_longitudinal
+from functions.pca import fit_pca, apply_pca
 
 
 
@@ -101,7 +102,10 @@ def main():
 
     #boxplot_intersubject_per_ses(df_metrics_clbp)
 
-    t_test_longitudinal(df_metrics_clbp)
+    #t_test_longitudinal(df_metrics_clbp)
+
+    pca, df_x_norm = fit_pca(df_metrics_clbp)
+    df_pca = apply_pca(pca, df_x_norm)
 
 
 
