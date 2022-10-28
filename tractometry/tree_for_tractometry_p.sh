@@ -26,7 +26,7 @@ echo "new bundle results folder: ${n}"
 echo "Output folder: ${o}"
 
 echo "Building tree for the following folders:"
-cd ${r}
+cd ${t}
 for i in *;
 do
     echo $i
@@ -36,18 +36,18 @@ do
     ln -s $b/$i/Compute_Centroid/*centroid.trk $o/$i/centroids/
 
     # if centroids are there, create dir
-    if [ -d "$r/$i/Transform_Centroids/" ]
-    then
-	    mkdir -p $o/$i/centroids
-	    ln -s $r/$i/Transform_Centroids/*.trk $o/$i/centroids/
-    fi
+    #if [ -d "$r/$i/Transform_Centroids/" ]
+    #then
+	  #  mkdir -p $o/$i/centroids
+	  #  ln -s $r/$i/Transform_Centroids/*.trk $o/$i/centroids/
+    #fi
 
     # RBX results
-    for file in $r/$i/Clean_Bundles/*cleaned.trk;
-    do
-	    name=${file/*Clean_Bundles\//}
-	    ln -s $file $o/$i/bundles/${name/_m_cleaned.trk/.trk}
-    done
+    #for file in $r/$i/Clean_Bundles/*cleaned.trk;
+    #do
+	  #  name=${file/*Clean_Bundles\//}
+	  #  ln -s $file $o/$i/bundles/${name/_m_cleaned.trk/.trk}
+    #done
 
     # tractoflow metrics
     ln -s $t/$i/DTI_Metrics/*fa.nii.gz $o/$i/metrics/fa.nii.gz
