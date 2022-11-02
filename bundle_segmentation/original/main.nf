@@ -46,7 +46,7 @@ process Register_Template_to_Ref {
 
     script:
     """
-    antsRegistrationSyN.sh -d 3 -f ${native_anat} -m ${template} -t s -o ${sid}__output
+    antsRegistrationSyNQuick.sh -d 3 -f ${native_anat} -m ${template} -t s -o ${sid}__output
     """
 }
 
@@ -68,7 +68,7 @@ process Create_mask {
     tuple val(sid), path(atlas)
 
     output:
-    tuple val(sid), file("${sid}__mask_mPFC.nii.gz"), file("${sid}__mask_NAC.nii.gz")
+    tuple val(sid), file("${sid}__mask_mPFC27.nii.gz"), file("${sid}__mask_mPFC45.nii.gz"), file("${sid}__mask_mPFC47.nii.gz"), file("${sid}__mask_NAC.nii.gz")
 
     script:
     """
@@ -78,12 +78,22 @@ process Create_mask {
     data_atlas = atlas.get_fdata()
 
     # Create mask mPFC
-    mask_mPFC = (data_atlas == 27) | (data_atlas == 45) | (data_atlas == 47)
-    mPFC = nib.Nifti1Image(mask_mPFC.astype(int), atlas.affine)
-    nib.save(mPFC, '${sid}__mask_mPFC.nii.gz')
+    mask_mPFC27 = (data_atlas == 27)
+    mPFC_27 = nib.Nifti1Image(mask_mPFC27.astype(int), atlas.affine)
+    nib.save(mPFC_27, '${sid}__mask_mPFC27.nii.gz')
+
+    # Create mask mPFC
+    mask_mPFC45 = (data_atlas == 45)
+    mPFC_45 = nib.Nifti1Image(mask_mPFC45.astype(int), atlas.affine)
+    nib.save(mPFC_45, '${sid}__mask_mPFC45.nii.gz')
+
+    # Create mask mPFC
+    mask_mPFC47 = (data_atlas == 47)
+    mPFC_47 = nib.Nifti1Image(mask_mPFC47.astype(int), atlas.affine)
+    nib.save(mPFC_47, '${sid}__mask_mPFC47.nii.gz')
 
     # Create mask NAC
-    mask_NAC = (data_atlas == 219) | (data_atlas == 223)
+    mask_NAC = (data_atlas == 223)
     NAC = nib.Nifti1Image(mask_NAC.astype(int), atlas.affine)
     nib.save(NAC, '${sid}__mask_NAC.nii.gz')
     """
@@ -91,17 +101,27 @@ process Create_mask {
 
 process Filter_tractogram {
     input:
-    tuple val(sid), file(tractogram), file(mask_mPFC), file(mask_NAC)
+    tuple val(sid), file(tractogram), file(mask_mPFC27), file(mask_mPFC45), file(mask_mPFC47), file(mask_NAC)
 
     output:
-    tuple val(sid), file("${sid}__NAC_mPFC_L_cleaned.trk")
+    tuple val(sid), file("${sid}__NAC_mPFC_L_cleaned_27.trk"), file("${sid}__NAC_mPFC_L_cleaned_45.trk"), file("${sid}__NAC_mPFC_L_cleaned_47.trk")
 
     script:
     """
-    scil_filter_tractogram.py ${tractogram} ${sid}_trk_filtered.trk \
-    --drawn_roi ${mask_mPFC} either_end include \
+    scil_filter_tractogram.py ${tractogram} ${sid}_trk_filtered_27.trk \
+    --drawn_roi ${mask_mPFC27} either_end include \
     --drawn_roi ${mask_NAC} either_end include
-    scil_outlier_rejection.py ${sid}_trk_filtered.trk ${sid}__NAC_mPFC_L_cleaned.trk --alpha 0.6
+    scil_outlier_rejection.py ${sid}_trk_filtered_27.trk ${sid}__NAC_mPFC_L_cleaned_27.trk --alpha 0.6
+
+    scil_filter_tractogram.py ${tractogram} ${sid}_trk_filtered_45.trk \
+    --drawn_roi ${mask_mPFC45} either_end include \
+    --drawn_roi ${mask_NAC} either_end include
+    scil_outlier_rejection.py ${sid}_trk_filtered_45.trk ${sid}__NAC_mPFC_L_cleaned_45.trk --alpha 0.6
+
+    scil_filter_tractogram.py ${tractogram} ${sid}_trk_filtered_47.trk \
+    --drawn_roi ${mask_mPFC47} either_end include \
+    --drawn_roi ${mask_NAC} either_end include
+    scil_outlier_rejection.py ${sid}_trk_filtered_47.trk ${sid}__NAC_mPFC_L_cleaned_47.trk --alpha 0.6
     """
 }
 

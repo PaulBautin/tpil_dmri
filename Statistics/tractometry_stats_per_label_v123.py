@@ -114,8 +114,8 @@ def main():
     ### Stats
     ## Stats per point
     # t_test between Control and DCL
-    df_t_test_cs = t_test_cs_mean(df_metric)
-    print(df_t_test_cs[df_t_test_cs < 0.1].dropna(how='all').dropna(axis=1, how='all'))
+    df_t_test_cs = t_test_cs_per_session_per_point(df_metric)
+    print(df_t_test_cs[df_t_test_cs < 0.05].dropna(how='all').dropna(axis=1, how='all'))
     #df_t_test_longitudinal = t_test_longitudinal(df_metric)
     #print(df_t_test_longitudinal[df_t_test_longitudinal < 0.05].dropna(how='all').dropna(axis=1, how='all'))
 

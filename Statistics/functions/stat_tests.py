@@ -15,7 +15,7 @@ def t_test_longitudinal(df):
 
 def t_test_cs_per_session_per_point(df):
     # filtering dataframe
-    df_cs = df.set_index(['group_name', 'session', 'subject', 'tract', 'point']).unstack(level='group_name')
+    df_cs = df.groupby(['group_name', 'session', 'subject', 'tract', 'point']).mean().unstack(level='group_name')
     metrics = df_cs.keys().get_level_values(0).unique().tolist()
     df_cs = df_cs.groupby(['session', 'tract', 'point'])
     t_test = lambda x, m: ttest_ind(x[m]['con'], x[m]['clbp'], equal_var=True, nan_policy='omit')[1]
@@ -24,7 +24,7 @@ def t_test_cs_per_session_per_point(df):
 
 def t_test_cs_per_session(df):
     # filtering dataframe
-    df_cs = df.set_index(['group_name', 'session', 'subject', 'tract', 'point']).unstack(level='group_name')
+    df_cs = df.groupby(['group_name', 'session', 'subject', 'tract']).mean().unstack(level='group_name')
     metrics = df_cs.keys().get_level_values(0).unique().tolist()
     df_cs = df_cs.groupby(['session', 'tract'])
     t_test = lambda x, m: ttest_ind(x[m]['con'], x[m]['clbp'], equal_var=True, nan_policy='omit')[1]
