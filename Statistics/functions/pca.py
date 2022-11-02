@@ -5,7 +5,7 @@ from sklearn.decomposition import PCA
 from sklearn_pandas import DataFrameMapper
 
 
-def fit_pca(df):
+def fit_pca(df, index):
     """
     Compute PCA metrics
     :param df_con: Control group dataframe
@@ -19,7 +19,7 @@ def fit_pca(df):
     :return x_norm: dataframe of the normalized initial metrics
     """
     # Isolate and standardize metrics (remove mean and scale to unit variance)
-    df = df.set_index(['subject', 'session', 'tract', 'point']).dropna()
+    df = df.set_index(index).dropna()
     x_norm = StandardScaler().fit_transform(df.values)
     df_x_norm = pd.DataFrame(x_norm, index=df.index, columns=df.columns)
     pca = PCA(n_components=2)
@@ -40,6 +40,5 @@ def apply_pca(pca, df, output_metrics=['PCA_1', 'PCA_2']):
     :return pca: output of sklearn.decomposition.PCA
     :return x_norm: dataframe of the normalized initial metrics
     """
-    df_pca = pd.DataFrame(data=pca.transform(df.values),
-                          index=df.index, columns=output_metrics)
-    print(df_pca)
+    df_pca = pd.DataFrame(data=pca.transform(df.values), index=df.index, columns=output_metrics)
+    return df_pca.reset_index()
