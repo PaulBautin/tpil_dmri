@@ -29,7 +29,7 @@
 module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
 
 
-my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scil_freesurfer.img' # or .img
+my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/freesurfer_flow/scil_freesurfer_cc.img' # or .img
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/freesurfer_flow/main.nf'
 my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/22-09-21_t1_clbp_freesurfer_output/'
 atlas_utils='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/freesurfer_flow/FS_BN_GL_SF_utils'
