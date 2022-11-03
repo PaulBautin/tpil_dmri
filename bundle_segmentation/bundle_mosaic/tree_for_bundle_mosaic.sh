@@ -27,7 +27,6 @@ cd ${b}
 for i in *;
 do
     echo $i
-    mkdir -p $o/$i/
     mkdir $o/results/$i
 
     # Tractogram
