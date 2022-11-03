@@ -2,9 +2,9 @@
 
 usage() { echo "$(basename $0) [-t tractoflow/results] [-b new_bundle/results_bundle] [-o output]" 1>&2; exit 1; }
 
-#module load singularity/3.8
+module load singularity/3.8
 
-#my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.3.0.sif' # or .img
+my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.3.0.sif' # or .img
 
 while getopts "t:b:o:" args; do
     case "${args}" in
@@ -27,7 +27,7 @@ cd ${b}
 for i in *;
 do
     echo $i
-    mkdir $o/results/$i
+    mkdir -p $o/results/$i
 
     # Tractogram
     tractogram=$b/$i/Filter_tractogram/${i}*cleaned.trk
@@ -36,7 +36,7 @@ do
     # Output
     output=$o/results/$i/$i.png
 
-    scil_visualize_bundles_mosaic.py $ref_image $ref_image $output
+    singularity run -B /home -B /project -B /scratch -B /localscratch:/temp $my_singularity_img scil_visualize_bundles_mosaic.py $ref_image $ref_image $output
 done
 echo "Done"
 
