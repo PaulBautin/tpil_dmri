@@ -36,7 +36,7 @@ do
     # Output
     output=$o/results/$i/$i.png
 
-    singularity exec -B /home -B /project -B /scratch -B /localscratch $my_singularity_img scil_visualize_bundles_mosaic.py $ref_image $ref_image $output
+    singularity instance.start $my_singularity_img scil_visualize_bundles_mosaic.py $ref_image $ref_image $output
 done
 echo "Done"
 
