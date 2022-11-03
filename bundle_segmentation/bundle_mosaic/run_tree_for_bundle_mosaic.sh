@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-module singularity/3.8
+module load singularity/3.8
 
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.3.0.sif' # or .img
 
