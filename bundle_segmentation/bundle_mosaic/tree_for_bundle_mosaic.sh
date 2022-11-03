@@ -27,20 +27,16 @@ do
     mkdir $o/results/$i
 
     # Tractogram
-    ln -s $b/$i/Filter_tractogram/${i}*27.trk $o/$i/${i}__tractogram27.trk
-    ln -s $b/$i/Filter_tractogram/${i}*45.trk $o/$i/${i}__tractogram45.trk
-    ln -s $b/$i/Filter_tractogram/${i}*47.trk $o/$i/${i}__tractogram47.trk
-
+    tractogram=$b/$i/Filter_tractogram/${i}*cleaned.trk
     # Ref image
-    ln -s $t/$i/DTI_Metrics/${i}*__fa.nii.gz $o/$i/${i}__ref_image.nii.gz
-    scil_visualize_bundles_mosaic.py $o/$i/${i}__ref_image.nii.gz $o/$i/${i}__tractogram27.trk $o/results/$i/$i.png -f
+    ref_image=$t/$i/DTI_Metrics/${i}*__fa.nii.gz
+    # Output
+    output=$o/results/$i/$i.png
+
+    scil_visualize_bundles_mosaic.py $ref_image $ref_image $output
 done
 echo "Done"
 
-for d in $o/*/ ; do
-    echo "$d"
-
-done
 
 
 
