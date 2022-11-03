@@ -10,7 +10,7 @@ output='/home/pabaua/scratch/tpil_dev/results/clbp/22-11-03_bundle_qc/'
 
 run='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/tpil_dmri/bundle_segmentation/bundle_mosaic/tree_for_bundle_mosaic.sh'
 
-singularity exec $my_singularity_img bash $run -b $bundles -t $tracto -o $output
+bash $run -b $bundles -t $tracto -o $output
 
 
 

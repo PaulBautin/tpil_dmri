@@ -33,7 +33,7 @@ do
     # Output
     output=$o/results/$i/$i.png
 
-    scil_visualize_bundles_mosaic.py $ref_image $ref_image $output
+    singularity exec $my_singularity_img scil_visualize_bundles_mosaic.py $ref_image $ref_image $output
 done
 echo "Done"
 
