@@ -27,16 +27,18 @@ cd ${b}
 for i in *;
 do
     echo $i
-    mkdir -p $o/results/$i
+    mkdir -p $o/results_multi/$i
 
     # Tractogram
-    tractogram=$b/$i/Filter_tractogram/${i}*cleaned.trk
+    tractogram27=$b/$i/Filter_tractogram/${i}*cleaned_27.trk
+    tractogram45=$b/$i/Filter_tractogram/${i}*cleaned_45.trk
+    tractogram47=$b/$i/Filter_tractogram/${i}*cleaned_47.trk
     # Ref image
     ref_image=$t/$i/DTI_Metrics/${i}*__fa.nii.gz
     # Output
     output=$o/results/$i/$i.png
 
-    singularity run -B /home -B /project -B /scratch -B /localscratch:/temp $my_singularity_img scil_visualize_bundles_mosaic.py $ref_image $tractogram $output
+    singularity run -B /home -B /project -B /scratch -B /localscratch:/temp $my_singularity_img scil_visualize_bundles_mosaic.py $ref_image $tractogram27 $tractogram45 $tractogram47 $output
 done
 echo "Done"
 
