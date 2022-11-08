@@ -78,7 +78,7 @@ do
     if [ -d "$b/$i/" ]
     then
 	  #  ln -s $b/$i/Compute_Centroid/*centroid.trk $o/$i/centroids/
-	    ln -s $b/$i/Filter_tractogram/*cleaned.trk $o/$i/bundles/
+	    ln -s $b/$i/Filter_tractogram/*cleaned_27.trk $o/$i/bundles/
     fi
 done
 echo "Done"
