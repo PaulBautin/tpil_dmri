@@ -77,7 +77,7 @@ do
     # if new bundle add
     if [ -d "$b/$i/" ]
     then
-	    ln -s $b/$i/Compute_Centroid/*centroid.trk $o/$i/centroids/
+	  #  ln -s $b/$i/Compute_Centroid/*centroid.trk $o/$i/centroids/
 	    ln -s $b/$i/Filter_tractogram/*cleaned.trk $o/$i/bundles/
     fi
 done
