@@ -139,6 +139,19 @@ process Compute_Centroid {
     """
 }
 
+process bundle_QC {
+    input:
+    tuple val(sid), file(ref_image), file(bundle27), file(bundle45), file(bundle47)
+
+    output:
+    tuple val(sid), file("${sid}_mosaic.png")
+
+    script:
+    """
+    scil_visualize_bundles_mosaic.py $ref_image $bundle27 $bundle45 $bundle47 ${sid}_mosaic.png
+    """
+}
+
 
 workflow {
     /* Input files to fetch */
@@ -162,9 +175,14 @@ workflow {
     Create_mask(Apply_transform.out)
 
     /* Filter tractogram based on ROI masks  */
-    tractogram_for_filtering.combine(Create_mask.out, by:0).set{data_for_filtering}
+    tractogram_for_filtering.join(Create_mask.out, by:0).set{data_for_filtering}
     Filter_tractogram(data_for_filtering)
 
     /* Compute segmented bundle centroid  */
     Compute_Centroid(Filter_tractogram.out)
+
+    /* Quality control of bundles  */
+    ref_images.join(Filter_tractogram.out, by:0).set{bundles_for_qc}
+    bundles_for_qc.view()
+    bundle_QC(bundles_for_qc)
 }
