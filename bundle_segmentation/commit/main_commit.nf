@@ -4,8 +4,13 @@ if(params.help) {
     usage = file("$baseDir/USAGE")
     cpu_count = Runtime.runtime.availableProcessors()
 
-    bindings = ["outlier_alpha":"$params.outlier_threshold",
-                "cpu_count":"$cpu_count"]
+    bindings = ["outlier_alpha":"$params.outlier_alpha",
+                "cpu_count":"$cpu_count",
+                "b_thr":"$params.b_thr",
+                "b_thr":"$params.b_thr",
+                "para_diff":"$params.para_diff",
+                "perp_diff":"$params.perp_diff",
+                "iso_diff":"$params.iso_diff"]
 
     engine = new groovy.text.SimpleTemplateEngine()
     template = engine.createTemplate(usage.text).make(bindings)
@@ -22,9 +27,10 @@ log.info "[Input info]"
 log.info "Input Folder: $params.input"
 log.info "Atlas: $params.atlas"
 log.info "Template: $params.template"
+log.info "Label list: $params.label_list"
 log.info ""
 log.info "[Filtering options]"
-log.info "Outlier Removal Alpha: $params.outlier_threshold"
+log.info "Outlier Removal Alpha: $params.outlier_alpha"
 log.info ""
 
 if (!(params.atlas) | !(params.template)) {
@@ -60,48 +66,6 @@ process Apply_transform {
     script:
     """
     antsApplyTransforms -d 3 -i ${atlas} -t ${warp} -t ${affine} -r ${native_anat} -o ${sid}__atlas_transformed.nii.gz -n genericLabel -u int
-    """
-}
-
-process Create_mask {
-    input:
-    tuple val(sid), path(atlas)
-
-    output:
-    tuple val(sid), file("${sid}__mask_mPFC.nii.gz"), file("${sid}__mask_NAC.nii.gz")
-
-    script:
-    """
-    #!/usr/bin/env python3
-    import nibabel as nib
-    atlas = nib.load("$atlas")
-    data_atlas = atlas.get_fdata()
-
-    # Create mask mPFC
-    mask_mPFC = (data_atlas == 27) | (data_atlas == 45) | (data_atlas == 47)
-    mPFC = nib.Nifti1Image(mask_mPFC.astype(int), atlas.affine)
-    nib.save(mPFC, '${sid}__mask_mPFC.nii.gz')
-
-    # Create mask NAC
-    mask_NAC = (data_atlas == 219) | (data_atlas == 223)
-    NAC = nib.Nifti1Image(mask_NAC.astype(int), atlas.affine)
-    nib.save(NAC, '${sid}__mask_NAC.nii.gz')
-    """
-}
-
-process Filter_tractogram {
-    input:
-    tuple val(sid), file(tractogram), file(mask_mPFC), file(mask_NAC)
-
-    output:
-    tuple val(sid), file("${sid}__NAC_mPFC_L_cleaned.trk")
-
-    script:
-    """
-    scil_filter_tractogram.py ${tractogram} ${sid}_trk_filtered.trk \
-    --drawn_roi ${mask_mPFC} either_end include \
-    --drawn_roi ${mask_NAC} either_end include
-    scil_outlier_rejection.py ${sid}_trk_filtered.trk ${sid}__NAC_mPFC_L_cleaned.trk --alpha 0.6
     """
 }
 
@@ -144,20 +108,82 @@ process Decompose_Connectivity {
 }
 
 
-
-process Compute_Centroid {
+process Run_COMMIT {
     input:
-    tuple val(sid), file(bundle)
+    tuple val(sid), file(bval), file(bvec), file(dwi), file(peaks), file(h5)
 
     output:
-    tuple val(sid), file("${sid}__NAC_mPFC_L_centroid.trk")
+    tuple val(sid), file("${sid}__decompose_commit.h5")
 
     script:
     """
-    scil_compute_centroid.py ${bundle} ${sid}__NAC_mPFC_L_centroid.trk --nb_points 50
+    echo $bval
+    scil_run_commit.py $h5 $dwi $bval $bvec "${sid}__results_bzs/" --commit2 --processes 1
+    mv "${sid}__results_bzs/commit_2/decompose_commit.h5" ./"${sid}__decompose_commit.h5"
     """
 }
 
+
+process Compute_Connectivity_without_similiarity {
+    input:
+    tuple val(sid), file(h5), file(labels), file(labels_list)
+
+    output:
+    tuple val(sid), file("*.npy")
+
+    script:
+    """
+    scil_save_connections_from_hdf5.py $h5 ./bundles --node_keys 223
+    scil_compute_connectivity.py $h5 $labels --force_labels_list $labels_list \
+        --volume vol.npy --streamline_count sc.npy \
+        --length len.npy --density_weighting
+    scil_normalize_connectivity.py sc.npy sc_parcel_vol_normalized.npy \
+        --parcel_volume $labels $labels_list
+    scil_normalize_connectivity.py sc.npy sc_bundle_vol_normalized.npy \
+        --bundle_volume vol.npy
+    """
+}
+
+process Visualize_Connectivity {
+    input:
+    tuple val(sid), file(matrices), file(labels_list)
+
+    output:
+    tuple val(sid), file("*.png")
+
+    script:
+    String matrices_list = matrices.join(", ").replace(',', '')
+    """
+    for matrix in $matrices_list; do
+        scil_visualize_connectivity.py \$matrix \${matrix/.npy/_matrix.png} --labels_list $labels_list --name_axis \
+            --display_legend --histogram \${matrix/.npy/_hist.png} --nb_bins 50 --exclude_zeros --axis_text_size 5 5
+    done
+    """
+}
+
+process Connectivity_in_csv {
+    input:
+    tuple val(sid), file(matrices)
+
+    output:
+    tuple val(sid), file("*csv")
+
+    script:
+    String matrices_list = matrices.join("\",\"")
+    """
+    #!/usr/bin/env python3
+    import numpy as np
+    import os, sys
+
+    for data in ["$matrices_list"]:
+      fmt='%1.8f'
+      if data == 'sc.npy':
+        fmt='%i'
+
+      curr_data = np.load(data)
+      np.savetxt(data.replace(".npy", ".csv"), curr_data, delimiter=",", fmt=fmt)
+    """
+}
 
 workflow {
     /* Input files to fetch */
@@ -166,26 +192,51 @@ workflow {
     template = Channel.fromPath("$params.template")
     tractogram = Channel.fromPath("$root/*/*__tractogram.trk").map{[it.parent.name, it]}
     ref_images = Channel.fromPath("$root/*/*__ref_image.nii.gz").map{[it.parent.name, it]}
+    dwi_data = Channel.fromFilePairs("$root/*/sub*__{dwi.bval,dwi.bvec,dwi.nii.gz,peaks.nii.gz}", size: 4, flat: true)
+    label_list = Channel.fromPath("$params.label_list")
 
     main:
     /* Register template (same space as the atlas and same contrast as the reference image) to reference image  */
-    data_registration = ref_images.combine(template)
+    ref_images.combine(template).set{data_registration}
     Register_Template_to_Ref(data_registration)
 
     /* Appy registration transformation to atlas  */
-    data_transfo = ref_images.combine(atlas).join(Register_Template_to_Ref.out, by:0)
-    data_transfo.view()
+    ref_images.combine(atlas).join(Register_Template_to_Ref.out, by:0).set{data_transfo}
     Apply_transform(data_transfo)
 
     /* Create connectivity based on atlas and tractogram  */
-    data_connectivity = tractogram.combine(Apply_transform.out, by:0)
-    data_connectivity.view()
+    tractogram.combine(Apply_transform.out, by:0).set{data_connectivity}
     Decompose_Connectivity(data_connectivity)
 
-    /* Filter tractogram based on ROI masks
-    tractogram_for_filtering.combine(Create_mask.out, by:0).set{data_for_filtering}
-    Filter_tractogram(data_for_filtering) */
+    /* Create connectivity based on atlas and tractogram  */
+    dwi_data.combine(Decompose_Connectivity.out, by:0).set{data_commit}
+    data_commit.view()
+    Run_COMMIT(data_commit)
 
-    /* Compute segmented bundle centroid
-    Compute_Centroid(Filter_tractogram.out) */
+    Run_COMMIT.out.combine(Apply_transform.out, by:0).combine(label_list).set{data_conn}
+    data_conn.view()
+    Compute_Connectivity_without_similiarity(data_conn)
+
+    Compute_Connectivity_without_similiarity.out.combine(label_list).set{data_view}
+    data_view.view()
+    Visualize_Connectivity(data_view)
+
+    Connectivity_in_csv(Compute_Connectivity_without_similiarity.out)
+
+    /* Create ROI masks (based on atlas) for filtering tractogram
+    Create_mask(Apply_transform.out)
+
+
+
+    Filter tractogram based on ROI masks
+    tractogram.join(Apply_transform.out, by:0).set{data_for_filtering}
+    Filter_tractogram(data_for_filtering)
+
+    Compute segmented bundle centroid
+    Compute_Centroid(Filter_tractogram.out)
+
+    Quality control of bundles
+    ref_images.join(Filter_tractogram.out, by:0).set{bundles_for_qc}
+    bundles_for_qc.view()
+    bundle_QC(bundles_for_qc) */
 }

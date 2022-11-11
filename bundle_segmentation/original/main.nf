@@ -46,7 +46,7 @@ process Register_Template_to_Ref {
 
     script:
     """
-    antsRegistrationSyN.sh -d 3 -f ${native_anat} -m ${template} -t s -o ${sid}__output
+    antsRegistrationSyNQuick.sh -d 3 -f ${native_anat} -m ${template} -t s -o ${sid}__output
     """
 }
 
@@ -93,7 +93,7 @@ process Create_mask {
     nib.save(mPFC_47, '${sid}__mask_mPFC47.nii.gz')
 
     # Create mask NAC
-    mask_NAC = (data_atlas == 223)
+    mask_NAC = (data_atlas == 219) | (data_atlas == 223)
     NAC = nib.Nifti1Image(mask_NAC.astype(int), atlas.affine)
     nib.save(NAC, '${sid}__mask_NAC.nii.gz')
     """
