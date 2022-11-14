@@ -34,7 +34,7 @@ do
     ln -s ${t}/${i}/PFT_Tracking/${i}__pft_tracking_prob_wm_seed_0.trk $o/$i/${i}__pft_tracking_prob_wm_seed_0.trk
     ln -s ${t}/${i}/FODF_Metrics/${i}__fodf.nii.gz $o/$i/${i}__fodf.nii.gz
     ln -s ${t}/${i}/FODF_Metrics/${i}__peaks.nii.gz $o/$i/${i}__peaks.nii.gz
-    ln -s ${t}/${i}/Register_T1/${i}__t1_warped.nii.gz $o/$i/metrics/${i}__t1.nii.gz
+    #ln -s ${t}/${i}/DTI_Metrics/${i}__fa.nii.gz $o/$i/metrics/${i}__fa.nii.gz
 
 done
 echo "Done"
