@@ -52,7 +52,7 @@ process Register_Template_to_Ref {
 
     script:
     """
-    antsRegistrationSyNQuick.sh -d 3 -f ${native_anat} -m ${template} -t s -o ${sid}__output
+    antsRegistrationSyN.sh -d 3 -f ${native_anat} -m ${template} -t s -o ${sid}__output
     """
 }
 
