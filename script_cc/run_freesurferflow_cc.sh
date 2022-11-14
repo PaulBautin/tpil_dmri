@@ -16,7 +16,7 @@
                                # https://docs.computecanada.ca/wiki/B%C3%A9luga/en#Node_Characteristics
 #SBATCH --mem=0                # --> 0 means you take all the memory of the node. If you think you will need
                                # all the node, you can keep 0.
-#SBATCH --time=24:00:00
+#SBATCH --time=12:00:00
 
 #SBATCH --mail-user=paul.bautin@polymtl.ca
 #SBATCH --mail-type=BEGIN
@@ -35,7 +35,7 @@ my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/22-09-21_t1_
 atlas_utils='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/freesurfer_flow/FS_BN_GL_SF_utils'
 
 
-NXF_DEFAULT_DSL=1 nextflow run -B /home -B /project -B /scratch -B /localscratch $my_main_nf --root_fs_output $my_input --atlas_utils_folder $atlas_utils \
+NXF_DEFAULT_DSL=1 nextflow $my_main_nf --root_fs_output $my_input --atlas_utils_folder $atlas_utils \
     -with-singularity $my_singularity_img -resume -with-report report.html \
     --compute_lausanne_multiscale false
 
