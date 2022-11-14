@@ -28,10 +28,10 @@ module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
 
 
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.3.0.sif' # or .sif
-my_main_nf='/home/pabaua/dev_tpil/tpil_dmri/preparation_connectflow/registration/main.nf'
-my_input='/home/pabaua/dev_tpil/data/data_new_bundle'
-my_atlas='/home/pabaua/dev_tpil/data/data_new_bundle/BNA-maxprob-thr0-1mm.nii.gz'
-my_template='/home/pabaua/dev_tpil/data/data_new_bundle/FSL_HCP1065_FA_1mm.nii.gz'
+my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/tpil_dmri/preparation_connectflow/registration/main.nf'
+my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/22-11-14_connectflow_prep_clbp/'
+my_atlas='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/22-11-14_connectflow_prep_clbp/BNA-maxprob-thr0-1mm.nii.gz'
+my_template='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/22-11-14_connectflow_prep_clbp/FSL_HCP1065_FA_1mm.nii.gz'
 
 
 nextflow run $my_main_nf --input $my_input --atlas $my_atlas \
