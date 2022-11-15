@@ -78,7 +78,7 @@ process Copy_sup_files {
 
     script:
     """
-    echo $sup_files_1
+    echo $sup_files_1 $sup_files_2
     """
 }
 
