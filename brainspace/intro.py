@@ -38,7 +38,7 @@ print(np.unique(label))
 #plot_hemispheres(surf_lh, surf_rh, label, size=(800, 200))
 #plt.show()
 
-connectivity = np.load("/home/pabaua/dev_tpil/results/results_connectflow/22-10-05_connectflow/results_conn/sub-pl007_ses-v1/Compute_Connectivity/sc_parcel_vol_normalized.npy")
+connectivity = np.load("/home/pabaua/dev_tpil/results/results_connectflow/test/pval.npy")
 #labels_c = np.loadtxt("/home/pabaua/dev_scil/freesurfer_flow/FS_BN_GL_SF_utils/freesurfer_utils/atlas_brainnetome_v4_labels_list.txt")
 values = map_to_labels(connectivity[223], label, fill=np.nan)
 plot_hemispheres(surf_lh, surf_rh, values, size=(800, 200), cmap='viridis_r', color_bar=True)
@@ -52,5 +52,8 @@ plt.show()
 
 
 gm = GradientMaps(n_components=2, random_state=0)
-gm.fit(connectivity)
+d = gm.fit(c)
+
+corr_plot = plotting.plot_matrix(d, figure=(15, 15))
+plt.show()
 
