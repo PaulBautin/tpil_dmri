@@ -10,5 +10,5 @@ template='/home/pabaua/Downloads/fsl-6.0.5.2-sources/fsl/data/standard/MNI152_T1
 
 
 NXF_DEFAULT_DSL=1 nextflow run $my_main_nf --input $my_input --labels_list $label_list --template $template \
-    -with-singularity $my_singularity_img -resume --nbr_subjects_for_avg_connections 2
+    -with-singularity $my_singularity_img -resume
 

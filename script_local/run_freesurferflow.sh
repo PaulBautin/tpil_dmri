@@ -4,7 +4,7 @@
 
 my_singularity_img='/home/pabaua/dev_scil/freesurfer_flow/scil_freesurfer.img' # or .img
 my_main_nf='/home/pabaua/dev_scil/freesurfer_flow/main.nf'
-my_input='/home/pabaua/dev_tpil/data/22-09-21_t1_clbp_freesurfer_output'
+my_input='/home/pabaua/dev_tpil/data/clbp_t1_freesurfer_input/sub-pl007_ses-v1_regi'
 atlas_utils='/home/pabaua/dev_scil/freesurfer_flow/FS_BN_GL_SF_utils'
 
 
