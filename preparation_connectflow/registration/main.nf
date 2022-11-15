@@ -71,10 +71,10 @@ process Apply_transform {
 
 process Copy_sup_files {
     input:
-    tuple val(sid), file(sup_files_1),file(sup_files_2),file(sup_files_3),file(sup_files_4),file(sup_files_5)
+    tuple val(sid), file(sup_files_1),file(sup_files_2),file(sup_files_3),file(sup_files_4),file(sup_files_5),file(sup_files_6)
 
     output:
-    tuple val(sid), file("$sup_files_1"),file("$sup_files_2"),file("$sup_files_3"),file("$sup_files_4"),file("$sup_files_5")
+    tuple val(sid), file("$sup_files_1"),file("$sup_files_2"),file("$sup_files_3"),file("$sup_files_4"),file("$sup_files_5"),file("$sup_files_6")
 
     script:
     """
@@ -89,7 +89,7 @@ workflow {
     atlas = Channel.fromPath("$params.atlas")
     template = Channel.fromPath("$params.template")
     ref_images = Channel.fromPath("$root/*/*__ref_image.nii.gz").map{[it.parent.name, it]}
-    info = Channel.fromFilePairs("$root/*/sub*__{dwi.bval,dwi.bvec,dwi.nii.gz,peaks.nii.gz,pft_tracking_prob_wm_seed_0.trk}", size: 5, flat: true)
+    info = Channel.fromFilePairs("$root/*/sub*__{dwi.bval,dwi.bvec,dwi.nii.gz,peaks.nii.gz,pft_tracking_prob_wm_seed_0.trk,t1.nii.gz}", size: 6, flat: true)
 
     main:
     /* Register template (same space as the atlas and same contrast as the reference image) to reference image  */
