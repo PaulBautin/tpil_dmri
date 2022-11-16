@@ -37,5 +37,5 @@ my_labels_list='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/freesurfer_
 
 
 NXF_DEFAULT_DSL=1 nextflow run $my_main_nf --input $my_input --labels_list $my_labels_list --template $my_template \
-    -with-singularity $my_singularity_img -resume --apply_t1_labels_transfo false --processes_afd_rd false
+    -with-singularity $my_singularity_img -resume --apply_t1_labels_transfo false --run_afd_rd false
 
