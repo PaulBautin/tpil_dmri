@@ -37,7 +37,7 @@ def lineplot_per_point(df, metric='nufo'):
     df_v1 = df.loc[df['session'] == 'v1']
     df_v2 = df.loc[df['session'] == 'v2']
     df_v3 = df.loc[df['session'] == 'v3']
-    fig, axs = plt.subplots(nrows=3, sharex=True)
+    fig, axs = plt.subplots(nrows=3, sharex=True, sharey=True)
     sns.lineplot(data=df_v1, x='point', y=metric, hue='group_name', ax=axs[0])
     axs[0].set_title(metric + " for dcl and control subjects along the bundle\n v1")
     sns.lineplot(data=df_v2, x='point', y=metric, hue='group_name', ax=axs[1])

@@ -121,9 +121,10 @@ def main():
 
 
     ### Figures
-    #lineplot_per_point(df_metric, metric='noddi_icvf_metric_mean')
+    lineplot_per_point(df_metric, metric='afd_total_metric_mean')
     #lineplot_per_point_diff(df_diff_metric, metric='PCA_1')
-    boxplot_intersubject(df_metric, metric='noddi_icvf_metric_mean')
+    #boxplot_intersubject(df_metric, metric='noddi_icvf_metric_mean')
+    boxplot_intersubject_per_ses(df_metric, metric='afd_total_metric_mean')
 
     #t_test_longitudinal(df_metrics_clbp)
 
