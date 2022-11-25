@@ -31,4 +31,4 @@ my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/22-11-25_tra
 
 
 nextflow run $my_main_nf --input $my_input --nb_points 50 \
-    -with-singularity $my_singularity_img -resume
+    -with-singularity $my_singularity_img -resume --use_provided_centroids false
