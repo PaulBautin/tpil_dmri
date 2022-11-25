@@ -78,6 +78,7 @@ do
     if [ -d "$b/$i/" ]
     then
 	  #  ln -s $b/$i/Compute_Centroid/*centroid.trk $o/$i/centroids/
+	    ln -s $b/$i/Clean_Bundles/*cleaned_45.trk $o/$i/bundles/
 	    ln -s $b/$i/Clean_Bundles/*cleaned_47.trk $o/$i/bundles/
 	    ln -s $b/$i/Clean_Bundles/*cleaned_27.trk $o/$i/bundles/
 	    ln -s $b/$i/Clean_Bundles/*cleaned_45.trk $o/$i/bundles/
