@@ -29,7 +29,7 @@ module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
 
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.3.0.sif' # or .sif
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/tpil_dmri/bundle_segmentation/original/main.nf'
-my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/22-10-26_bundle_seg_control/'
+my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/22-10-26_bundle_segmentation/'
 my_atlas='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas/BNA-maxprob-thr0-1mm.nii.gz'
 my_template='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas/FSL_HCP1065_FA_1mm.nii.gz'
 
