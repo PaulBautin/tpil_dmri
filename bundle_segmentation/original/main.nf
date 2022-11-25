@@ -37,16 +37,17 @@ workflow.onComplete {
     log.info "Execution duration: $workflow.duration"
 }
 
-process Register_Template_to_Ref {
+process Register_Anat {
     input:
     tuple val(sid), file(native_anat), file(template)
 
     output:
-    tuple val(sid), file("${sid}__output0GenericAffine.mat"), file("${sid}__output1Warp.nii.gz")
+    tuple val(sid), file("${sid}__output0GenericAffine.mat"), file("${sid}__output1Warp.nii.gz"), file("${sid}__native_anat.nii.gz")
 
     script:
     """
     antsRegistrationSyNQuick.sh -d 3 -f ${native_anat} -m ${template} -t s -o ${sid}__output
+    cp ${native_anat} ${sid}__native_anat.nii.gz
     """
 }
 
@@ -93,13 +94,13 @@ process Create_mask {
     nib.save(mPFC_47, '${sid}__mask_mPFC47.nii.gz')
 
     # Create mask NAC
-    mask_NAC = (data_atlas == 219) | (data_atlas == 223)
+    mask_NAC = (data_atlas == 223)
     NAC = nib.Nifti1Image(mask_NAC.astype(int), atlas.affine)
     nib.save(NAC, '${sid}__mask_NAC.nii.gz')
     """
 }
 
-process Filter_tractogram {
+process Clean_Bundles {
     input:
     tuple val(sid), file(tractogram), file(mask_mPFC27), file(mask_mPFC45), file(mask_mPFC47), file(mask_NAC)
 
@@ -164,10 +165,10 @@ workflow {
     main:
     /* Register template (same space as the atlas and same contrast as the reference image) to reference image  */
     ref_images.combine(template).set{data_registration}
-    Register_Template_to_Ref(data_registration)
+    Register_Anat(data_registration)
 
     /* Appy registration transformation to atlas  */
-    ref_images.combine(atlas).join(Register_Template_to_Ref.out, by:0).set{data_transfo}
+    ref_images.combine(atlas).join(Register_Anat.out, by:0).set{data_transfo}
     data_transfo.view()
     Apply_transform(data_transfo)
 
@@ -176,13 +177,13 @@ workflow {
 
     /* Filter tractogram based on ROI masks  */
     tractogram_for_filtering.join(Create_mask.out, by:0).set{data_for_filtering}
-    Filter_tractogram(data_for_filtering)
+    Clean_Bundles(data_for_filtering)
 
     /* Compute segmented bundle centroid  */
-    Compute_Centroid(Filter_tractogram.out)
+    Compute_Centroid(Clean_Bundles.out)
 
     /* Quality control of bundles  */
-    ref_images.join(Filter_tractogram.out, by:0).set{bundles_for_qc}
+    ref_images.join(Clean_Bundles.out, by:0).set{bundles_for_qc}
     bundles_for_qc.view()
     bundle_QC(bundles_for_qc)
 }

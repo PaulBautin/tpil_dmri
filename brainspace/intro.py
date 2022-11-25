@@ -10,50 +10,143 @@ from nilearn import plotting
 from nilearn import datasets
 import matplotlib.pyplot as plt
 import nibabel as nib
+import pandas as pd
+import glob
+import scipy
+import brainspace
+from nilearn.connectome import ConnectivityMeasure
+
+from neuromaps import datasets
 
 
-### Load surfaces
-# fsaverage midthikness
-#surf_lh = mesh_io.read_surface("/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.L.midthickness.32k_fs_LR.surf.gii", itype='gii')
-#surf_rh = mesh_io.read_surface("/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.R.midthickness.32k_fs_LR.surf.gii", itype='gii')
-# Load pial
-surf_lh = mesh_io.read_surface('/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/sub-pl007_ses-v1/surf/lh.pial', itype='fs')
-surf_rh = mesh_io.read_surface('/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/sub-pl007_ses-v1/surf/rh.pial', itype='fs')
+def load_surface():
+    surf_lh = mesh_io.read_surface('/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/fsaverage/surf/lh.pial',
+                                   itype='fs')
+    surf_rh = mesh_io.read_surface('/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/fsaverage/surf/rh.pial',
+                                   itype='fs')
+    return surf_lh, surf_rh
+def load_annot():
+    # Brainnetome Atlas has 210 cortical and 36 subcortical subregions
+    # vertices with no id have an id set to -1 (Example: subcortical regions)
+    annot_lh = "/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/fsaverage/label/lh.BN_Atlas.annot"
+    annot_rh = "/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/fsaverage/label/rh.BN_Atlas.annot"
+    atlas = np.concatenate((nib.freesurfer.read_annot(annot_lh)[0], nib.freesurfer.read_annot(annot_rh)[0]),
+                           axis=0).astype(float)
+    atlas[atlas <= 0] = np.nan
+    return atlas
+def load_matrices():
+    ### Load connectivity matrices
+    filter = np.load("/home/pabaua/dev_tpil/results/results_connectflow/test/out_mask_1.npy")
+    list_g1 = glob.glob('/home/pabaua/dev_tpil/data/22-11-16_connectflow/clbp/**/Compute_Connectivity/sc.npy')
+    list_g2 = glob.glob('/home/pabaua/dev_tpil/data/22-11-16_connectflow/control/**/Compute_Connectivity/sc.npy')
+    # matrices_g1 = np.dstack(np.array([np.load(path) * filter for path in list_g1]))[:-3,:-3,:]
+    # matrices_g2 = np.dstack(np.array([np.load(path) * filter for path in list_g2]))[:-3,:-3,:]
+    matrices_g1 = np.dstack(np.array([np.load(path) for path in list_g1]))[:-3, :-3, :]
+    matrices_g2 = np.dstack(np.array([np.load(path) for path in list_g2]))[:-3, :-3, :]
+    return matrices_g1, matrices_g2
 
 
-# Load label file
-annot_lh = "/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/sub-pl007_ses-v1/label/lh.BN_Atlas.annot"
-annot_rh = "/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/sub-pl007_ses-v1/label/rh.BN_Atlas.annot"
-label = np.concatenate((nib.freesurfer.read_annot(annot_lh)[0], nib.freesurfer.read_annot(annot_rh)[0]), axis=0)
-print(np.unique(label))
-#label = np.concatenate((nib.load.read_annot(annot_lh)[0], nib.freesurfer.read_annot(annot_rh)[0]), axis=0)
-
-# Create a vector of zeros
-#Val = np.repeat(0, annot_lh.n_points + annot_rh.n_points, axis=0)
-# Surface color
-#grey = plt.colors.ListedColormap(np.full((256, 4), [0.65, 0.65, 0.65, 1]))
+def matrix_pvalue(matrices_g1, matrices_g2):
+    pval = scipy.stats.ttest_ind(matrices_g1, matrices_g2, axis=2, nan_policy='propagate')[1]
+    return pval
 
 
-
-#plot_hemispheres(surf_lh, surf_rh, label, size=(800, 200))
-#plt.show()
-
-connectivity = np.load("/home/pabaua/dev_tpil/results/results_connectflow/test/pval.npy")
-#labels_c = np.loadtxt("/home/pabaua/dev_scil/freesurfer_flow/FS_BN_GL_SF_utils/freesurfer_utils/atlas_brainnetome_v4_labels_list.txt")
-values = map_to_labels(connectivity[223], label, fill=np.nan)
-plot_hemispheres(surf_lh, surf_rh, values, size=(800, 200), cmap='viridis_r', color_bar=True)
-
-# Reduce matrix size, only for visualization purposes
-mat_mask = np.where(np.mean(connectivity, axis=1) > 0.01)[0]
-c = connectivity[mat_mask][:, mat_mask]
-
-corr_plot = plotting.plot_matrix(c, figure=(15, 15))
-plt.show()
+def matrix_mean(matrix):
+    mat = np.mean(matrix, axis=2)
+    return mat
 
 
-gm = GradientMaps(n_components=2, random_state=0)
-d = gm.fit(c)
+def degree_count(matrix):
+    matrix[matrix > 0] = 1
+    mat = np.nansum(matrix, axis=1)
+    return mat
 
-corr_plot = plotting.plot_matrix(d, figure=(15, 15))
-plt.show()
 
+def plot_matrix(matrices_g1, matrices_g2):
+    pval = matrix_pvalue(matrices_g1, matrices_g2)
+    pval[pval > 0.005] = 'nan'
+    labels = np.where(~np.isnan(pval).all(axis=0))[0]
+    pval = pval[labels, :]
+    pval = pval[:, labels]
+    label_nb = labels + 1
+    df = pd.read_csv("/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/BN_Atlas_246_LUT.txt", sep=" ")
+    labels = [str(a) + ' : ' + b for a, b in zip(label_nb, df.iloc[labels]['Unknown'].values)]
+    plotting.plot_matrix(pval, labels=labels, figure=(9, 7), colorbar=True, cmap='viridis', tri='full')
+    plt.show()
+
+def plot_conn_to_surf(matrices_g1, matrices_g2, atlas):
+    pval = matrix_pvalue(matrices_g1, matrices_g2)
+    mean_g1 = matrix_mean(matrices_g1)
+    mean_g2 = matrix_mean(matrices_g2)
+    pval[pval > 0.1] = 'nan'
+    pval[pval <= 0.1] = 1
+    print(np.where(pval[222, :] == 1))
+    maps = [atlas] + [map_to_labels(g[222, :], atlas, mask=atlas > 0, fill=np.nan) for g in [mean_g1, mean_g2, pval]]
+    plot_hemispheres(surf_lh=surf_lh, surf_rh=surf_rh, array_name=maps, size=(1200, 700), cmap='viridis_r',
+                     color_bar=True,
+                     nan_color=(0.5, 0.5, 0.5, 0.8),
+                     label_text=['Atlas', 'CLBP', 'Control', 'p-value < 0.05'],
+                     zoom=1.5)
+
+def plot_deg_to_surf(matrices_g1, matrices_g2, atlas):
+    pval = matrix_pvalue(matrices_g1, matrices_g2)
+    mean_g1 = matrix_mean(matrices_g1)
+    mean_g2 = matrix_mean(matrices_g2)
+    pval[pval > 0.005] = 'nan'
+    pval[pval <= 0.005] = 1
+    dg_count = degree_count(mean_g1)
+    dg_count_pval = degree_count(pval)
+    print(np.where(dg_count_pval >= 4))
+    dg_count[dg_count == 0] = 'nan'
+    dg_count_pval[dg_count_pval == 0] = 'nan'
+    dg_count_norm = dg_count_pval / dg_count
+    print(np.where(dg_count_norm >= 0.5))
+    maps = [atlas] + [map_to_labels(g, atlas, mask=atlas > 0, fill=np.nan) for g in [dg_count, dg_count_pval, dg_count_norm]]
+    plot_hemispheres(surf_lh=surf_lh, surf_rh=surf_rh, array_name=maps, size=(1200, 700), cmap='viridis_r',
+                     color_bar=True,
+                     nan_color=(0.5, 0.5, 0.5, 0.8),
+                     label_text=['Atlas', 'dg_count', 'dg_count_pval', 'dg_count_norm'],
+                     zoom=1.5)
+
+def plot_gradient_to_surf(matrices_g1, atlas):
+    ### compute stats from connectivity matrices
+    gm = GradientMaps(n_components=6)
+    mean_g1 = matrix_mean(matrices_g1)
+    gm.fit(mean_g1)
+    # Map gradients to original parcels
+    mask = atlas >= 0
+    grad = np.sum(gm.gradients_, axis=1)
+    print(grad.shape)
+    grad = [map_to_labels(gm.gradients_[:,i], atlas, mask=mask, fill=np.nan) for i in np.arange(6)]
+    plot_hemispheres(surf_lh, surf_rh, array_name=grad, size=(1200, 1200), cmap='viridis_r',
+                     color_bar=True, label_text=['Grad1', 'Grad2', 'Grad3', 'Grad4', 'Grad5', 'Grad6'], zoom=1.5,
+                     nan_color=(0.5, 0.5, 0.5, 0.8))
+
+def plot_gradient_to_surf_2(matrices_g1, matrices_g2, atlas):
+    ### compute stats from connectivity matrices
+    gm = GradientMaps(n_components=6, alignment='procrustes')
+    mean_g1 = matrix_mean(matrices_g1)
+    mean_g2 = matrix_mean(matrices_g2)
+    gm.fit([mean_g1, mean_g2])
+    # Map gradients to original parcels
+    mask = atlas >= 0
+    grad = [map_to_labels(g[:, 0], atlas, mask=mask, fill=np.nan) for g in gm.aligned_]
+    grad += [map_to_labels(g[:, 1], atlas, mask=mask, fill=np.nan) for g in gm.aligned_]
+    grad += [map_to_labels(g[:, 2], atlas, mask=mask, fill=np.nan) for g in gm.aligned_]
+    plot_hemispheres(surf_lh, surf_rh, array_name=grad, size=(1200, 1200), cmap='viridis_r',
+                     color_bar=True, label_text=['Grad1', 'Grad2', 'Grad3'], zoom=1.5)
+
+
+# To load
+surf_lh, surf_rh = load_surface()
+atlas = load_annot()
+matrices_g1, matrices_g2 = load_matrices()
+
+
+plot_conn_to_surf(matrices_g1, matrices_g2, atlas)
+plot_deg_to_surf(matrices_g1, matrices_g2, atlas)
+
+### plot clonnectivity
+plot_matrix(matrices_g1, matrices_g2)
+
+# plot_gradient_to_surf(matrices_g1, atlas)
