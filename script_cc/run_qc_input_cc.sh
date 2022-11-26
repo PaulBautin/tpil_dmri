@@ -31,7 +31,7 @@ module load StdEnv/2020 java/14.0.2 nextflow/21.10.3 singularity/3.8
 
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.3.0.sif' # or .img
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/dmriqc_flow/main.nf'
-my_input='/home/pabaua/scratch/tpil_dev/results/control/22-11-25_bundle_seg/results_bundle/'
+my_input='/home/pabaua/scratch/tpil_dev/results/clbp/22-11-25_bundle_seg/results_bundle/'
 
 
 nextflow run $my_main_nf -profile rbx_qc --input $my_input \
