@@ -26,7 +26,7 @@
 #SBATCH --mail-type=ALL
 
 
-module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
+module load StdEnv/2020 java/14.0.2 nextflow/21.10.6 singularity/3.8
 
 
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.3.0.sif' # or .img
@@ -34,5 +34,5 @@ my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/dmriqc_flow/mai
 my_input='/home/pabaua/scratch/tpil_dev/results/control/22-11-25_bundle_seg/results_bundle/'
 
 
-NXF_VER=21.10.6 nextflow run $my_main_nf -profile rbx_qc --input $my_input \
+nextflow run $my_main_nf -profile rbx_qc --input $my_input \
     -with-singularity $my_singularity_img -resume

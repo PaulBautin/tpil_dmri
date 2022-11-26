@@ -115,16 +115,16 @@ def main():
     ## Stats per point
     # t_test between Control and DCL
     df_t_test_cs = t_test_cs_per_session_per_point(df_metric)
-    print(df_t_test_cs[df_t_test_cs < 0.05].dropna(how='all').dropna(axis=1, how='all'))
+    print(df_t_test_cs[df_t_test_cs < 0.002].dropna(how='all').dropna(axis=1, how='all'))
     #df_t_test_longitudinal = t_test_longitudinal(df_metric)
     #print(df_t_test_longitudinal[df_t_test_longitudinal < 0.05].dropna(how='all').dropna(axis=1, how='all'))
 
 
     ### Figures
-    lineplot_per_point(df_metric, metric='nufo_metric_mean')
+    lineplot_per_point(df_metric, metric='afd_total_metric_mean', bundle="NAC_mPFC_L_27")
     #lineplot_per_point_diff(df_diff_metric, metric='PCA_1')
     #boxplot_intersubject(df_metric, metric='noddi_icvf_metric_mean')
-    boxplot_intersubject_per_ses(df_metric, metric='nufo_metric_mean')
+    boxplot_intersubject_per_ses(df_metric, metric='afd_total_metric_mean')
 
     #t_test_longitudinal(df_metrics_clbp)
 

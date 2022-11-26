@@ -33,7 +33,8 @@ def lineplot_t_test(df, metric='nufo'):
     plt.show()
 
 
-def lineplot_per_point(df, metric='nufo'):
+def lineplot_per_point(df, metric='nufo', bundle="NAC_mPFC_L_27"):
+    df = df.loc[df['tract'] == bundle]
     df_v1 = df.loc[df['session'] == 'v1']
     df_v2 = df.loc[df['session'] == 'v2']
     df_v3 = df.loc[df['session'] == 'v3']
