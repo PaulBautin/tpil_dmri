@@ -31,7 +31,7 @@ from math import ceil
 from scipy import stats
 import seaborn as sns
 
-from functions.load_data import load_data_xlsx, diff_metrics
+from functions.load_data import load_data_xlsx, diff_metrics, load_data_xlsx_add
 from functions.plots import boxplot_intersubject_per_ses, lineplot_t_test, lineplot_per_point, lineplot_per_point_diff, boxplot_intersubject
 from functions.stat_tests import t_test_longitudinal, t_test_cs, t_test_cs_per_session, t_test_cs_per_session_per_point, t_test_cs_mean
 from functions.pca import fit_pca, apply_pca
@@ -92,8 +92,17 @@ def main():
     ### Form main Dataframes df_metrics_con for control subjects and df_metric_clbp for CLBP
     ## CON subjects
     df_metric_con = load_data_xlsx(os.path.join(path_results_con, r'mean_std_per_point_per_subject.xlsx'), group_name='con')
+    df_metric_con = load_data_xlsx_add(os.path.join(path_results_con, r'streamline_count.xlsx'), df_metric_con)
+    df_metric_con = load_data_xlsx_add(os.path.join(path_results_con, r'volumes.xlsx'), df_metric_con)
+    df_metric_con = load_data_xlsx_add(os.path.join(path_results_con, r'length_stats.xlsx'), df_metric_con)
+    df_metric_con = df_metric_con[(df_metric_con["streamline_count"] > 30) & (df_metric_con["mean_length"] > 30)]
+
     ## CLBP subjects
     df_metric_clbp = load_data_xlsx(os.path.join(path_results_clbp, r'mean_std_per_point_per_subject.xlsx'), group_name='clbp')
+    df_metric_clbp = load_data_xlsx_add(os.path.join(path_results_clbp, r'streamline_count.xlsx'), df_metric_clbp)
+    df_metric_clbp = load_data_xlsx_add(os.path.join(path_results_clbp, r'volumes.xlsx'), df_metric_clbp)
+    df_metric_clbp = load_data_xlsx_add(os.path.join(path_results_clbp, r'length_stats.xlsx'), df_metric_clbp)
+    df_metric_clbp = df_metric_clbp[(df_metric_clbp["streamline_count"] > 30) & (df_metric_clbp["mean_length"] > 30)]
     ## Concatenate CON and CLBP subjects
     df_metric = pd.concat([df_metric_con, df_metric_clbp])
     ## Difference metrics between CON and CLBP
@@ -114,17 +123,20 @@ def main():
     ### Stats
     ## Stats per point
     # t_test between Control and DCL
-    df_t_test_cs = t_test_cs_per_session_per_point(df_metric)
-    print(df_t_test_cs[df_t_test_cs < 0.002].dropna(how='all').dropna(axis=1, how='all'))
+    df_t_test_cs = t_test_cs_per_session_per_point(df_metric).reset_index()
+    print(df_t_test_cs.groupby(["session", "tract"]).apply(lambda x: x[x < 0.05].count()))
+    #print(df_t_test_cs[df_t_test_cs < 0.05].dropna(how='all').dropna(axis=1, how='all'))
+
     #df_t_test_longitudinal = t_test_longitudinal(df_metric)
     #print(df_t_test_longitudinal[df_t_test_longitudinal < 0.05].dropna(how='all').dropna(axis=1, how='all'))
+    #lineplot_t_test(df_t_test_cs.reset_index(), metric='nufo_metric_mean', bundle="NAC_mPFC_L_27")
 
 
     ### Figures
-    lineplot_per_point(df_metric, metric='afd_total_metric_mean', bundle="NAC_mPFC_L_27")
-    #lineplot_per_point_diff(df_diff_metric, metric='PCA_1')
+    lineplot_per_point(df_metric, metric='rd_metric_mean', bundle="NAC_mPFC_L_27")
+    # lineplot_per_point_diff(df_diff_metric, metric='nufo_metric_mean', bundle="NAC_mPFC_L_27")
     #boxplot_intersubject(df_metric, metric='noddi_icvf_metric_mean')
-    boxplot_intersubject_per_ses(df_metric, metric='afd_total_metric_mean')
+    boxplot_intersubject_per_ses(df_metric, metric='rd_metric_mean', bundle="NAC_mPFC_L_27")
 
     #t_test_longitudinal(df_metrics_clbp)
 

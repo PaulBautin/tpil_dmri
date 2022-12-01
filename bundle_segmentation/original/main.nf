@@ -1,4 +1,5 @@
 #!/usr/bin/env nextflow
+nextflow.enable.dsl=2
 
 if(params.help) {
     usage = file("$baseDir/USAGE")
@@ -42,7 +43,8 @@ process Register_Anat {
     tuple val(sid), file(native_anat), file(template)
 
     output:
-    tuple val(sid), file("${sid}__output0GenericAffine.mat"), file("${sid}__output1Warp.nii.gz"), file("${sid}__native_anat.nii.gz")
+    tuple val(sid), file("${sid}__output0GenericAffine.mat"), file("${sid}__output1Warp.nii.gz"), emit: transformations
+    tuple val(sid), file("${sid}__native_anat.nii.gz"), emit: native_anat
 
     script:
     """
@@ -53,10 +55,10 @@ process Register_Anat {
 
 process Apply_transform {
     input:
-    tuple val(sid), file(native_anat), file(atlas), file(affine), file(warp)
+    tuple val(sid), file(affine), file(warp), file(native_anat), file(atlas)
 
     output:
-    tuple val(sid), file("${sid}__atlas_transformed.nii.gz")
+    tuple val(sid), file("${sid}__atlas_transformed.nii.gz"), emit: atlas_transformed
 
     script:
     """
@@ -69,7 +71,8 @@ process Create_mask {
     tuple val(sid), path(atlas)
 
     output:
-    tuple val(sid), file("${sid}__mask_mPFC27.nii.gz"), file("${sid}__mask_mPFC45.nii.gz"), file("${sid}__mask_mPFC47.nii.gz"), file("${sid}__mask_NAC.nii.gz")
+    tuple val(sid), file("${sid}__mask_source_*.nii.gz"), emit: masks_source
+    tuple val(sid), file("${sid}__mask_target_*.nii.gz"), emit: masks_target
 
     script:
     """
@@ -78,51 +81,79 @@ process Create_mask {
     atlas = nib.load("$atlas")
     data_atlas = atlas.get_fdata()
 
-    # Create mask mPFC
-    mask_mPFC27 = (data_atlas == 27)
-    mPFC_27 = nib.Nifti1Image(mask_mPFC27.astype(int), atlas.affine)
-    nib.save(mPFC_27, '${sid}__mask_mPFC27.nii.gz')
+    # Create masks target
+    for s in [223]:
+        mask = (data_atlas == s)
+        mask_img = nib.Nifti1Image(mask.astype(int), atlas.affine)
+        nib.save(mask_img, '${sid}__mask_target_'+str(s)+'.nii.gz')
 
-    # Create mask mPFC
-    mask_mPFC45 = (data_atlas == 45)
-    mPFC_45 = nib.Nifti1Image(mask_mPFC45.astype(int), atlas.affine)
-    nib.save(mPFC_45, '${sid}__mask_mPFC45.nii.gz')
-
-    # Create mask mPFC
-    mask_mPFC47 = (data_atlas == 47)
-    mPFC_47 = nib.Nifti1Image(mask_mPFC47.astype(int), atlas.affine)
-    nib.save(mPFC_47, '${sid}__mask_mPFC47.nii.gz')
-
-    # Create mask NAC
-    mask_NAC = (data_atlas == 223)
-    NAC = nib.Nifti1Image(mask_NAC.astype(int), atlas.affine)
-    nib.save(NAC, '${sid}__mask_NAC.nii.gz')
+    # Create masks target
+    for t in [27, 45, 47]:
+        mask = (data_atlas == t)
+        mask_img = nib.Nifti1Image(mask.astype(int), atlas.affine)
+        nib.save(mask_img, '${sid}__mask_source_'+str(t)+'.nii.gz')
     """
 }
 
 process Clean_Bundles {
+    memory_limit='6 GB'
+
     input:
-    tuple val(sid), file(tractogram), file(mask_mPFC27), file(mask_mPFC45), file(mask_mPFC47), file(mask_NAC)
+    tuple val(sid), file(tractogram), file(mask_source), file(mask_target)
 
     output:
-    tuple val(sid), file("${sid}__NAC_mPFC_L_cleaned_27.trk"), file("${sid}__NAC_mPFC_L_cleaned_45.trk"), file("${sid}__NAC_mPFC_L_cleaned_47.trk")
+    tuple val(sid), file("${sid}__${source_nb}_${target_nb}_L_cleaned.trk"), emit: cleaned_bundle
+    tuple val(sid), file("${sid}__${source_nb}_${target_nb}_L_filtered.trk"), emit: filtered_bundle
+
+    script:
+    source_nb = mask_source.name.split('_source_')[1].split('.nii')[0]
+    target_nb = mask_target.name.split('_target_')[1].split('.nii')[0]
+    """
+    scil_filter_tractogram.py ${tractogram} ${sid}__${source_nb}_${target_nb}_L_filtered.trk --drawn_roi ${mask_target} either_end include --drawn_roi ${mask_source} either_end include
+    scil_outlier_rejection.py ${sid}__${source_nb}_${target_nb}_L_filtered.trk ${sid}__${source_nb}_${target_nb}_L_cleaned.trk --alpha 0.6
+    """
+}
+
+
+process Register_Bundle {
+    input:
+    tuple val(sid), file(bundle), file(affine), file(warp), file(template)
+
+    output:
+    tuple val(sid), file("${bname}_mni.trk")
+
+    script:
+    bname = bundle.name.split('.trk')[0]
+    """
+    scil_apply_transform_to_tractogram.py $bundle $template $affine ${bname}_mni.trk --in_deformation $warp --reverse_operation
+    """
+}
+
+process Bundle_Pairwise_Comparaison_Inter_Subject {
+    publishDir = {"./results_bundle/$task.process/$b_name"}
+    input:
+    tuple val(b_name), file(bundles)
+
+    output:
+    tuple val(b_name), file("${b_name}.json")
 
     script:
     """
-    scil_filter_tractogram.py ${tractogram} ${sid}_trk_filtered_27.trk \
-    --drawn_roi ${mask_mPFC27} either_end include \
-    --drawn_roi ${mask_NAC} either_end include
-    scil_outlier_rejection.py ${sid}_trk_filtered_27.trk ${sid}__NAC_mPFC_L_cleaned_27.trk --alpha 0.6
+    scil_evaluate_bundles_pairwise_agreement_measures.py $bundles ${b_name}.json
+    """
+}
 
-    scil_filter_tractogram.py ${tractogram} ${sid}_trk_filtered_45.trk \
-    --drawn_roi ${mask_mPFC45} either_end include \
-    --drawn_roi ${mask_NAC} either_end include
-    scil_outlier_rejection.py ${sid}_trk_filtered_45.trk ${sid}__NAC_mPFC_L_cleaned_45.trk --alpha 0.6
+process Bundle_Pairwise_Comparaison_Intra_Subject {
+    publishDir = {"./results_bundle/$task.process/$sid"}
+    input:
+    tuple val(sid), val(b_names), file(bundles)
 
-    scil_filter_tractogram.py ${tractogram} ${sid}_trk_filtered_47.trk \
-    --drawn_roi ${mask_mPFC47} either_end include \
-    --drawn_roi ${mask_NAC} either_end include
-    scil_outlier_rejection.py ${sid}_trk_filtered_47.trk ${sid}__NAC_mPFC_L_cleaned_47.trk --alpha 0.6
+    output:
+    tuple val(sid), file("${b_names}_Pairwise_Comparaison.json")
+
+    script:
+    """
+    scil_evaluate_bundles_pairwise_agreement_measures.py $bundles ${b_names}_Pairwise_Comparaison.json
     """
 }
 
@@ -140,16 +171,17 @@ process Compute_Centroid {
     """
 }
 
-process bundle_QC {
+process bundle_QC_screenshot {
     input:
-    tuple val(sid), file(ref_image), file(bundle27), file(bundle45), file(bundle47)
+    tuple val(sid), file(bundle), file(ref_image)
 
     output:
-    tuple val(sid), file("${sid}_mosaic.png")
+    tuple val(sid), file("${sid}__${bname}.png")
 
     script:
+    bname = bundle.name.split("__")[1].split('_L_')[0]
     """
-    scil_visualize_bundles_mosaic.py $ref_image $bundle27 $bundle45 $bundle47 ${sid}_mosaic.png
+    scil_visualize_bundles_mosaic.py $ref_image $bundle ${sid}__${bname}.png -f --light_screenshot --no_information
     """
 }
 
@@ -168,22 +200,27 @@ workflow {
     Register_Anat(data_registration)
 
     /* Appy registration transformation to atlas  */
-    ref_images.combine(atlas).join(Register_Anat.out, by:0).set{data_transfo}
-    data_transfo.view()
+    Register_Anat.out.transformations.join(ref_images, by:0).combine(atlas).set{data_transfo}
     Apply_transform(data_transfo)
 
     /* Create ROI masks (based on atlas) for filtering tractogram  */
-    Create_mask(Apply_transform.out)
+    Create_mask(Apply_transform.out.atlas_transformed)
 
     /* Filter tractogram based on ROI masks  */
-    tractogram_for_filtering.join(Create_mask.out, by:0).set{data_for_filtering}
+    masks_target = Create_mask.out.masks_target.transpose()
+    masks_source = Create_mask.out.masks_source.transpose()
+    tractogram_for_filtering.combine(masks_source.combine(masks_target, by:0), by:0).set{data_for_filtering}
     Clean_Bundles(data_for_filtering)
 
-    /* Compute segmented bundle centroid  */
-    Compute_Centroid(Clean_Bundles.out)
+    Clean_Bundles.out.cleaned_bundle.combine(Register_Anat.out.transformations, by:0).combine(template).set{bundle_registration}
+    Register_Bundle(bundle_registration)
 
-    /* Quality control of bundles  */
-    ref_images.join(Clean_Bundles.out, by:0).set{bundles_for_qc}
-    bundles_for_qc.view()
-    bundle_QC(bundles_for_qc)
+    Register_Bundle.out.map{[it[1].name.split('_ses-')[1].split('_L')[0], it[1]]}.groupTuple(by:0).set{bundle_comparaison_inter}
+    Bundle_Pairwise_Comparaison_Inter_Subject(bundle_comparaison_inter)
+
+    Register_Bundle.out.map{[it[0].split('_ses')[0], it[1].name.split('__')[1].split('_L_')[0], it[1]]}.groupTuple(by:[0,1]).set{bundle_comparaison_intra}
+    Bundle_Pairwise_Comparaison_Intra_Subject(bundle_comparaison_intra)
+
+    Clean_Bundles.out.cleaned_bundle.combine(ref_images, by:0).set{bundles_for_screenshot}
+    bundle_QC_screenshot(bundles_for_screenshot)
 }

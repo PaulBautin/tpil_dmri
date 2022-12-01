@@ -39,10 +39,10 @@ def load_matrices():
     filter = np.load("/home/pabaua/dev_tpil/results/results_connectflow/test/out_mask_1.npy")
     list_g1 = glob.glob('/home/pabaua/dev_tpil/data/22-11-16_connectflow/clbp/**/Compute_Connectivity/sc.npy')
     list_g2 = glob.glob('/home/pabaua/dev_tpil/data/22-11-16_connectflow/control/**/Compute_Connectivity/sc.npy')
-    # matrices_g1 = np.dstack(np.array([np.load(path) * filter for path in list_g1]))[:-3,:-3,:]
-    # matrices_g2 = np.dstack(np.array([np.load(path) * filter for path in list_g2]))[:-3,:-3,:]
-    matrices_g1 = np.dstack(np.array([np.load(path) for path in list_g1]))[:-3, :-3, :]
-    matrices_g2 = np.dstack(np.array([np.load(path) for path in list_g2]))[:-3, :-3, :]
+    matrices_g1 = np.dstack(np.array([np.load(path) * filter for path in list_g1]))[:-3,:-3,:]
+    matrices_g2 = np.dstack(np.array([np.load(path) * filter for path in list_g2]))[:-3,:-3,:]
+    # matrices_g1 = np.dstack(np.array([np.load(path) for path in list_g1]))[:-3, :-3, :]
+    # matrices_g2 = np.dstack(np.array([np.load(path) for path in list_g2]))[:-3, :-3, :]
     return matrices_g1, matrices_g2
 
 
@@ -78,8 +78,8 @@ def plot_conn_to_surf(matrices_g1, matrices_g2, atlas):
     pval = matrix_pvalue(matrices_g1, matrices_g2)
     mean_g1 = matrix_mean(matrices_g1)
     mean_g2 = matrix_mean(matrices_g2)
-    pval[pval > 0.1] = 'nan'
-    pval[pval <= 0.1] = 1
+    pval[pval > 0.05] = 'nan'
+    pval[pval <= 0.05] = 1
     print(np.where(pval[222, :] == 1))
     maps = [atlas] + [map_to_labels(g[222, :], atlas, mask=atlas > 0, fill=np.nan) for g in [mean_g1, mean_g2, pval]]
     plot_hemispheres(surf_lh=surf_lh, surf_rh=surf_rh, array_name=maps, size=(1200, 700), cmap='viridis_r',
@@ -92,8 +92,8 @@ def plot_deg_to_surf(matrices_g1, matrices_g2, atlas):
     pval = matrix_pvalue(matrices_g1, matrices_g2)
     mean_g1 = matrix_mean(matrices_g1)
     mean_g2 = matrix_mean(matrices_g2)
-    pval[pval > 0.005] = 'nan'
-    pval[pval <= 0.005] = 1
+    pval[pval > 0.05] = 'nan'
+    pval[pval <= 0.05] = 1
     dg_count = degree_count(mean_g1)
     dg_count_pval = degree_count(pval)
     print(np.where(dg_count_pval >= 4))

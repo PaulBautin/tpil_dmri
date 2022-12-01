@@ -20,6 +20,22 @@ def load_data_xlsx(file, group_name):
     return df
 
 
+def load_data_xlsx_add(file, df_m, names=["subject", "tract", "session"]):
+    """
+    Creates a dataframe based on information present on TractometryFlow output xlsx files
+    :param file: xlsx file containing information for statistics. Ex: 'mean_std.xlsx'
+    :return sheet_to_df_map: 3D dataframe containing information present in each sheet of xlsx file
+    """
+    # reads all sheets and stores dataframes in a dictionary
+    df_dict = pd.read_excel(file, sheet_name=None, index_col=0)
+    df = pd.concat(df_dict, axis=1).stack().rename_axis(['subject', 'tract']).reset_index()
+    df[['subject', 'session']] = df['subject'].str.rsplit('_ses-', 1, expand=True)
+    df = df.set_index(names)
+    df_m = df_m.set_index(names)
+    df_m = df_m.combine_first(df)
+    return df_m.reset_index()
+
+
 def diff_metrics(df_con, df_clbp):
     # prepare dataframe for PCA computation
     df_con_mean = df_con.groupby(["session", "tract", "point"]).mean()
