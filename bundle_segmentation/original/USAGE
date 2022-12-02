@@ -36,6 +36,8 @@ Files should come out of the Tractoflow pipeline, with the following source:
 OPTIONAL ARGUMENTS (current value)
 
     --outlier_alpha                         Remove spurious streamlines based on shape ($outlier_alpha)
+    --source_roi                            sub-cortical ROI. Example: [223] ($source_roi)
+    --target_roi                            cortical ROI ($target_roi). Example: [27, 45, 47] ($target_roi)
     
     --processes                             The number of parallel processes to launch ($cpu_count).
                                             Only affects the local scheduler.

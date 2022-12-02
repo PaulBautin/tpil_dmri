@@ -26,6 +26,8 @@ log.info "Template: $params.template"
 log.info ""
 log.info "[Filtering options]"
 log.info "Outlier Removal Alpha: $params.outlier_alpha"
+log.info "Source ROI: $params.source_roi"
+log.info "Target ROI: $params.target_roi"
 log.info ""
 
 if (!(params.atlas) | !(params.template)) {
@@ -82,13 +84,13 @@ process Create_mask {
     data_atlas = atlas.get_fdata()
 
     # Create masks target
-    for s in [223]:
+    for s in $params.source_roi:
         mask = (data_atlas == s)
         mask_img = nib.Nifti1Image(mask.astype(int), atlas.affine)
         nib.save(mask_img, '${sid}__mask_target_'+str(s)+'.nii.gz')
 
     # Create masks target
-    for t in [27, 45, 47]:
+    for t in $params.target_roi:
         mask = (data_atlas == t)
         mask_img = nib.Nifti1Image(mask.astype(int), atlas.affine)
         nib.save(mask_img, '${sid}__mask_source_'+str(t)+'.nii.gz')
