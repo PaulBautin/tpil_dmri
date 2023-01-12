@@ -1,28 +1,16 @@
-import neuromaps.plotting
-from brainspace.datasets import load_conte69
-from brainspace.plotting import plot_hemispheres, plot_surf
+from brainspace.plotting import plot_hemispheres
 from brainspace.mesh import mesh_io
-from brainspace.datasets import load_group_fc, load_parcellation
-from brainspace.gradient import GradientMaps
 import numpy as np
 from brainspace.utils.parcellation import map_to_labels
-from nilearn import plotting
-from nilearn import datasets
-import matplotlib.pyplot as plt
 import nibabel as nib
-import pandas as pd
 import glob
-import scipy
-import brainspace
-from nilearn.connectome import ConnectivityMeasure
 
 from neuromaps import datasets, transforms
-from neuromaps.datasets import available_annotations
-from neuromaps import resampling
 from neuromaps import stats
-from neuromaps import images, nulls
+from neuromaps import nulls
 from neuromaps.parcellate import Parcellater
-from neuromaps.stats import compare_images
+
+import bct
 
 def annot_to_gifti(atlas):
     labels, ctab, names = nib.freesurfer.read_annot(atlas, orig_ids=False)
@@ -59,12 +47,16 @@ def load_matrices():
     matrices_g2 = np.dstack(np.array([np.load(path) for path in list_g2]))[:-3,:-3,:]
     return matrices_g1, matrices_g2
 
-print(available_annotations(source='dukart2018', desc=None, space=None, den=None, res=None))
 
-# dict_keys(['midthickness', 'inflated', 'veryinflated', 'sphere', 'medial', 'sulc', 'vaavg'])
 fs = datasets.fetch_atlas(atlas='fsaverage', density='164k')
 fs_lh = mesh_io.read_surface(fs['pial'].L, itype='gii')
 fs_rh = mesh_io.read_surface(fs['pial'].R, itype='gii')
+print(fs_lh)
+plot_hemispheres(surf_lh=fs_lh, surf_rh=fs_rh, size=(1200, 400), cmap='viridis_r',
+                 color_bar=True,
+                 nan_color=(0.5, 0.5, 0.5, 0.8),
+                 zoom=1.5)
+
 
 nsynth = datasets.fetch_annotation(source='margulies2016', desc='fcgradient05')
 fslr_neuro_lh, fslr_neuro_rh = transforms.fslr_to_fsaverage(nsynth, '164k')

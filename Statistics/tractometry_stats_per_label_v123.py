@@ -119,12 +119,13 @@ def main():
     df_diff_pca = apply_pca(pca_diff, df_x_norm, output_metrics=['PCA_1_diff', 'PCA_2_diff'])
     df_metric = df_metric.merge(df_diff_pca, how="left", on=['group_name', 'subject', 'session', 'tract', 'point'])
     df_diff_metric = df_diff_metric.merge(df_d_pca, how="left", on=['session', 'tract', 'point'])
+    print(df_metric.groupby('tract').mean()['mean_length'])
 
     ### Stats
     ## Stats per point
     # t_test between Control and DCL
     df_t_test_cs = t_test_cs_per_session_per_point(df_metric).reset_index()
-    print(df_t_test_cs.groupby(["session", "tract"]).apply(lambda x: x[x < 0.05].count()))
+    #print(df_t_test_cs.groupby(["session", "tract"]).apply(lambda x: x[x < 0.05].count()))
     #print(df_t_test_cs[df_t_test_cs < 0.05].dropna(how='all').dropna(axis=1, how='all'))
 
     #df_t_test_longitudinal = t_test_longitudinal(df_metric)
@@ -133,10 +134,10 @@ def main():
 
 
     ### Figures
-    lineplot_per_point(df_metric, metric='rd_metric_mean', bundle="NAC_mPFC_L_27")
+    lineplot_per_point(df_metric, metric='nufo_metric_mean', bundle="NAC_mPFC_L_27")
     # lineplot_per_point_diff(df_diff_metric, metric='nufo_metric_mean', bundle="NAC_mPFC_L_27")
     #boxplot_intersubject(df_metric, metric='noddi_icvf_metric_mean')
-    boxplot_intersubject_per_ses(df_metric, metric='rd_metric_mean', bundle="NAC_mPFC_L_27")
+    #boxplot_intersubject_per_ses(df_metric, metric='nufo_metric_mean', bundle="NAC_mPFC_L_27")
 
     #t_test_longitudinal(df_metrics_clbp)
 
