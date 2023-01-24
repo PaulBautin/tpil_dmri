@@ -59,7 +59,7 @@ plot_hemispheres(surf_lh=fs_lh, surf_rh=fs_rh, size=(1200, 400), cmap='viridis_r
 
 
 nsynth = datasets.fetch_annotation(source='margulies2016', desc='fcgradient05')
-fslr_neuro_lh, fslr_neuro_rh = transforms.fslr_to_fsaverage(nsynth, '164k')
+fslr_neuro_lh, fslr_neuro_rh = transforms.fslr_to_fslr(nsynth, '164k')
 neuro = np.concatenate((fslr_neuro_lh.agg_data(), fslr_neuro_rh.agg_data()), axis=0)
 neuro[neuro == 0] = np.nan
 

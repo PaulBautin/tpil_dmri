@@ -71,6 +71,17 @@ def load_matrices(matrices, filter):
     matrices = np.dstack(np.array([np.load(path) for path in list]))[:-3,:-3,:]
     return matrices
 
+def plot_matrices():
+    matrices_clbp = load_matrices(matrices="/home/pabaua/dev_tpil/data/22-11-16_connectflow/clbp/**/Compute_Connectivity/commit2_weights.npy",
+                                               filter="/home/pabaua/dev_tpil/results/results_connectflow/test/out_mask_1.npy")
+    matrix = np.mean(matrices_clbp, axis=2)
+    coordinates = plotting.find_parcellation_cut_coords(labels_img=nib.load("/home/pabaua/dev_tpil/data/BN/BN_Atlas_for_FSL/Brainnetome/BNA-maxprob-thr0-2mm.nii.gz"))
+    plotting.plot_connectome(matrix, coordinates,
+                             edge_threshold="80%",
+                             title='Yeo Atlas 17 thick (func)')
+    plt.show()
+    plotting.plot_matrix(matrix)
+    plt.show()
 
 # plot_matrices()
 
@@ -98,6 +109,7 @@ centroids = get_centroids(fs, atlas[1:])
 
 
 eu_distance = squareform(pdist(centroids, metric="euclidean"))
+print(eu_distance)
 dist_parc_lh, dist_parc_rh = parc.fit().inverse_transform(np.mean(eu_distance, axis=0))
 dist = np.concatenate((dist_parc_lh.agg_data(), dist_parc_rh.agg_data())).astype("float")
 

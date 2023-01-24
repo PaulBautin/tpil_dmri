@@ -79,14 +79,11 @@ def main():
     # Get all data files and read json files into a dataframe
     intersubject_json_files = glob(path_inter_clbp + "/*/*27_223.json")
     intersubject_data = pd.read_json(intersubject_json_files[0])
-    print(intersubject_data.mean())
+    print("\n\n########### intersubject results: ###########\n{}".format(intersubject_data.mean()))
 
     intrasubject_json_files = glob(path_intra_clbp + "/*/27_223_Pairwise_Comparaison.json")
     intrasubject_data = pd.concat([pd.read_json(intrasubject_json_files[i]).mean() for i in range(len(intrasubject_json_files))])
-    print("dice score: {}".format(intrasubject_data['dice_voxels'].mean()))
-    print("bundle_adjacency_voxels: {}".format(intrasubject_data['bundle_adjacency_voxels'].mean()))
-
-
+    print("\n\n########### intrasubject results: ###########\n{}".format(intrasubject_data.groupby(intrasubject_data.index).mean()))
 
 if __name__ == "__main__":
     main()

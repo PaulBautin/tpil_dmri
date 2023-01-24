@@ -62,17 +62,7 @@ def degree_count(matrix):
     return mat
 
 
-def plot_matrix(matrices_g1, matrices_g2):
-    pval = matrix_pvalue(matrices_g1, matrices_g2)
-    pval[pval > 0.005] = 'nan'
-    labels = np.where(~np.isnan(pval).all(axis=0))[0]
-    pval = pval[labels, :]
-    pval = pval[:, labels]
-    label_nb = labels + 1
-    df = pd.read_csv("/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/BN_Atlas_246_LUT.txt", sep=" ")
-    labels = [str(a) + ' : ' + b for a, b in zip(label_nb, df.iloc[labels]['Unknown'].values)]
-    plotting.plot_matrix(pval, labels=labels, figure=(9, 7), colorbar=True, cmap='viridis', tri='full')
-    plt.show()
+
 
 def plot_conn_to_surf(matrices_g1, matrices_g2, atlas):
     pval = matrix_pvalue(matrices_g1, matrices_g2)

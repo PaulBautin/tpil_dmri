@@ -50,7 +50,7 @@ process Register_Anat {
 
     script:
     """
-    antsRegistrationSyNQuick.sh -d 3 -f ${native_anat} -m ${template} -t s -o ${sid}__output
+    antsRegistrationSyN.sh -d 3 -f ${native_anat} -m ${template} -t s -o ${sid}__output
     cp ${native_anat} ${sid}__native_anat.nii.gz
     """
 }
