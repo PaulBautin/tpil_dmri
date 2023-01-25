@@ -32,7 +32,7 @@ git -C /home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/tractoflow checkout 
 
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.4.1.sif' # or .img
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/tractoflow/main.nf'
-my_input='/home/pabaua/scratch/tpil_dev/data/22-08-19_dMRI_control_BIDS/'
+my_input='/home/pabaua/scratch/tpil_dev/data/22-08-19_dMRI_CLBP_BIDS/'
 
 nextflow run $my_main_nf --bids $my_input \
     -with-singularity $my_singularity_img -resume -with-report report.html \
