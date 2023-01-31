@@ -49,7 +49,7 @@ workflow.onComplete {
 Channel
     .fromFilePairs("$params.input/**/bundles/*.trk",
                    size: -1) { it.parent.parent.name }
-    .into{bundles_for_rm_invalid; bundles_for_fixel_afd}
+    .into{bundles_for_rm_invalid; in_bundles_check; bundles_for_fixel_afd}
 
 Channel
     .fromFilePairs("$params.input/**/metrics/*.nii.gz",
@@ -73,6 +73,18 @@ Channel
 
 in_metrics
     .set{metrics_for_rename}
+
+
+in_bundles_check.map{it[1]}.flatten().count().set{number_bundles_for_compare}
+in_centroids_check.map{it[1]}.flatten().count().set{number_centroids_for_compare}
+
+if (params.use_provided_centroids){
+number_centroids_for_compare
+    .concat(number_bundles_for_compare)
+    .toList()
+    .subscribe{a, b -> if (a < b)
+    error "Error ~ You ask the pipeline to use provided centroids but there are less centroids than bundles.\nPlease provide at least a centroid per bundle."}
+}
 
 process Rename_Metrics {
     input:
@@ -223,7 +235,7 @@ process Bundle_Label_And_Distance_Maps {
         bundles_centroids_for_label_and_distance_map
 
     output:
-    set sid, "${sid}__*_labels.npz", "${sid}__*_distances.npz" into\
+    set sid, "${sid}__*_labels.nii.gz", "${sid}__*_distances.nii.gz" into\
         label_distance_maps_for_mean_std_per_point
     set sid, "${sid}__*_labels.trk" into bundles_for_uniformize
     file "${sid}__*_distances.trk"
@@ -242,17 +254,19 @@ process Bundle_Label_And_Distance_Maps {
             bname=\$(basename \$bundle .trk)
         fi
         bname=\${bname/_ic/}
- 
+
         centroid=${sid}__\${bname}_centroid_${params.nb_points}.trk
-        scil_compute_bundle_voxel_label_map.py \$bundle \${centroid} \
-            ${sid}__\${bname}_labels.nii.gz \
-            --out_labels_npz ${sid}__\${bname}_labels.npz \
-            --out_distances_npz ${sid}__\${bname}_distances.npz \
-            --labels_color_dpp ${sid}__\${bname}_labels.trk \
-            --distances_color_dpp ${sid}__\${bname}_distances.trk \
+        scil_compute_bundle_voxel_label_map.py \$bundle \${centroid} tmp_out\
             --min_streamline_count ${params.min_streamline_count} \
-            --min_voxel_count ${params.min_voxel_count}
-        done
+            --min_voxel_count ${params.min_voxel_count} -f
+            
+        mv tmp_out/labels_map.nii.gz ${sid}__\${bname}_labels.nii.gz
+        mv tmp_out/distance_map.nii.gz ${sid}__\${bname}_distances.nii.gz
+
+        mv tmp_out/labels.trk ${sid}__\${bname}_labels.trk
+        mv tmp_out/distance.trk ${sid}__\${bname}_distances.trk
+
+    done
     """
 }
 
@@ -339,11 +353,11 @@ process Lesion_Load {
     cd streamlines_stats
     scil_merge_json.py *.json ../${sid}__lesion_streamlines_stats.json \
         --add_parent_key ${sid}
-    
+
     cd ../lesion_load
     scil_merge_json.py *.json ../${sid}__lesion_load.json \
         --add_parent_key ${sid}
-    
+
     cd ../lesion_load_per_point
     scil_merge_json.py *.json ../${sid}__lesion_load_per_point.json \
         --add_parent_key ${sid}
@@ -362,7 +376,7 @@ process Color_Bundle {
     String bundles_list = bundles.join(", ").replace(',', '')
     """
     echo '$json_str' >> colors.json
-    scil_assign_color_to_tractogram.py $bundles_list --dict_colors colors.json
+    scil_assign_uniform_color_to_tractograms.py $bundles_list --dict_colors colors.json
     """
 }
 
@@ -695,8 +709,8 @@ process Bundle_Mean_Std_Per_Point {
         fi
         bname=\${bname/_uniformized/}
         mv \$bundle \$bname.trk
-        label_map=${sid}__\${bname}_labels.npz
-        distance_map=${sid}__\${bname}_distances.npz
+        label_map=${sid}__\${bname}_labels.nii.gz
+        distance_map=${sid}__\${bname}_distances.nii.gz
 
         if [ -f "\${bname}_afd_metric.nii.gz" ]; then
             b_metrics="!(*afd*).nii.gz \${bname}_afd_metric.nii.gz"
@@ -704,7 +718,7 @@ process Bundle_Mean_Std_Per_Point {
             b_metrics="$metrics"
         fi
 
-        scil_compute_bundle_mean_std_per_point.py \$bname.trk \$label_map \$distance_map \
+        scil_compute_bundle_mean_std_per_point.py \$bname.trk \$label_map \
             \${b_metrics} --sort_keys $density_weighting > \$bname.json
         done
         scil_merge_json.py *.json ${sid}__mean_std_per_point.json --no_list \
@@ -726,7 +740,7 @@ process Plot_Mean_Std_Per_Point {
     """
     echo '$json_str' >> colors.json
     scil_plot_mean_std_per_point.py $mean_std_per_point tmp_dir/ --dict_colors \
-        colors.json
+        colors.json --nb_pts $params.nb_points
     mv tmp_dir/* ./
     """
 }
@@ -744,7 +758,7 @@ process Plot_Lesions_Per_Point {
     echo '$json_str' >> colors.json
     scil_merge_json.py $lesion_per_point tmp.json --recursive --average_last_layer
     scil_plot_mean_std_per_point.py tmp.json tmp_dir/ --dict_colors \
-        colors.json
+        colors.json --nb_pts $params.nb_points
     mv tmp_dir/* ./
     """
 }
@@ -1022,7 +1036,7 @@ process Plot_Population_Mean_Std_Per_Point {
     """
     echo '$json_str' >> colors.json
     scil_plot_mean_std_per_point.py $json_a tmp_dir/ --dict_colors colors.json \
-        --stats_over_population
+        --stats_over_population --nb_pts $params.nb_points
     mv tmp_dir/* ./
     """
 }

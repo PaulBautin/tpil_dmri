@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-usage() { echo "$(basename $0) [-r RBX] [-t tractoflow/results] [-n noddi/results] [-f freewater_flow/results] [b new_bundle] [-o output]" 1>&2; exit 1; }
+usage() { echo "$(basename $0) [-r RBX] [-t tractoflow/results] [-n noddi/results] [-f freewater_flow/results] [-b new_bundle] [-o output]" 1>&2; exit 1; }
 
 while getopts "r:t:n:f:b:o:" args; do
     case "${args}" in
@@ -26,14 +26,14 @@ echo "new bundle results folder: ${n}"
 echo "Output folder: ${o}"
 
 echo "Building tree for the following folders:"
-cd ${t}
+cd ${r}
 for i in *;
 do
     echo $i
     mkdir -p $o/$i/bundles
     mkdir -p $o/$i/metrics
     mkdir -p $o/$i/centroids
-    #ln -s $b/$i/Compute_Centroid/*centroid.trk $o/$i/centroids/
+    ln -s $b/$i/Compute_Centroid/*centroid.trk $o/$i/centroids/
 
     # if centroids are there, create dir
     #if [ -d "$r/$i/Transform_Centroids/" ]
@@ -77,9 +77,8 @@ do
     # if new bundle add
     if [ -d "$b/$i/" ]
     then
-      ln -s $b/$i/Clean_Bundles/*cleaned_45.trk $o/$i/bundles/
-	    ln -s $b/$i/Clean_Bundles/*cleaned_47.trk $o/$i/bundles/
-	    ln -s $b/$i/Clean_Bundles/*cleaned_27.trk $o/$i/bundles/
+	  #  ln -s $b/$i/Compute_Centroid/*centroid.trk $o/$i/centroids/
+	    ln -s $b/$i/Filter_tractogram/*cleaned.trk $o/$i/bundles/
     fi
 done
 echo "Done"
