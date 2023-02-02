@@ -32,7 +32,7 @@ from scipy import stats
 import seaborn as sns
 
 from functions.load_data import load_data_xlsx, diff_metrics, load_data_xlsx_add
-from functions.plots import boxplot_intersubject_per_ses, lineplot_t_test, lineplot_per_point, lineplot_per_point_diff, boxplot_intersubject
+from functions.plots import boxplot_intersubject_per_ses, lineplot_t_test, lineplot_per_point, lineplot_per_point_diff, boxplot_intersubject, heatmap_per_point
 from functions.stat_tests import t_test_longitudinal, t_test_cs, t_test_cs_per_session, t_test_cs_per_session_per_point, t_test_cs_mean
 from functions.pca import fit_pca, apply_pca
 
@@ -92,17 +92,17 @@ def main():
     ### Form main Dataframes df_metrics_con for control subjects and df_metric_clbp for CLBP
     ## CON subjects
     df_metric_con = load_data_xlsx(os.path.join(path_results_con, r'mean_std_per_point_per_subject.xlsx'), group_name='con')
-    df_metric_con = load_data_xlsx_add(os.path.join(path_results_con, r'streamline_count.xlsx'), df_metric_con)
-    df_metric_con = load_data_xlsx_add(os.path.join(path_results_con, r'volumes.xlsx'), df_metric_con)
-    df_metric_con = load_data_xlsx_add(os.path.join(path_results_con, r'length_stats.xlsx'), df_metric_con)
-    df_metric_con = df_metric_con[(df_metric_con["streamline_count"] > 30) & (df_metric_con["mean_length"] > 30)]
+    #df_metric_con = load_data_xlsx_add(os.path.join(path_results_con, r'streamline_count.xlsx'), df_metric_con)
+    #df_metric_con = load_data_xlsx_add(os.path.join(path_results_con, r'volumes.xlsx'), df_metric_con)
+    #df_metric_con = load_data_xlsx_add(os.path.join(path_results_con, r'length_stats.xlsx'), df_metric_con)
+    #df_metric_con = df_metric_con[(df_metric_con["streamline_count"] > 30) & (df_metric_con["mean_length"] > 30)]
 
     ## CLBP subjects
     df_metric_clbp = load_data_xlsx(os.path.join(path_results_clbp, r'mean_std_per_point_per_subject.xlsx'), group_name='clbp')
-    df_metric_clbp = load_data_xlsx_add(os.path.join(path_results_clbp, r'streamline_count.xlsx'), df_metric_clbp)
-    df_metric_clbp = load_data_xlsx_add(os.path.join(path_results_clbp, r'volumes.xlsx'), df_metric_clbp)
-    df_metric_clbp = load_data_xlsx_add(os.path.join(path_results_clbp, r'length_stats.xlsx'), df_metric_clbp)
-    df_metric_clbp = df_metric_clbp[(df_metric_clbp["streamline_count"] > 30) & (df_metric_clbp["mean_length"] > 30)]
+    #df_metric_clbp = load_data_xlsx_add(os.path.join(path_results_clbp, r'streamline_count.xlsx'), df_metric_clbp)
+    #df_metric_clbp = load_data_xlsx_add(os.path.join(path_results_clbp, r'volumes.xlsx'), df_metric_clbp)
+    #df_metric_clbp = load_data_xlsx_add(os.path.join(path_results_clbp, r'length_stats.xlsx'), df_metric_clbp)
+    #df_metric_clbp = df_metric_clbp[(df_metric_clbp["streamline_count"] > 30) & (df_metric_clbp["mean_length"] > 30)]
     ## Concatenate CON and CLBP subjects
     df_metric = pd.concat([df_metric_con, df_metric_clbp])
     ## Difference metrics between CON and CLBP
@@ -111,15 +111,19 @@ def main():
     ### Compute PCA metrics
     ## CON + CLBP subjects
     pca, df_x_norm = fit_pca(df_metric, ['group_name', 'subject', 'session', 'tract', 'point'])
+    df_pca_components = pd.DataFrame(data=np.abs(pca.components_), index=['PCA_1', 'PCA_2'], columns=df_x_norm.columns)
     df_pca = apply_pca(pca, df_x_norm)
     df_metric = df_metric.merge(df_pca, how="left", on=['group_name', 'subject', 'session', 'tract', 'point'])
     ## Difference metrics between CON and CLBP
     pca_diff, df_x_norm_diff = fit_pca(df_diff_metric, ["session", "tract", "point"])
+    df_pca_diff_components = pd.DataFrame(data=np.abs(pca_diff.components_), index=['PCA_diff_1', 'PCA_diff_2'], columns=df_x_norm_diff.columns)
     df_d_pca = apply_pca(pca_diff, df_x_norm_diff, output_metrics=['PCA_1', 'PCA_2'])
     df_diff_pca = apply_pca(pca_diff, df_x_norm, output_metrics=['PCA_1_diff', 'PCA_2_diff'])
     df_metric = df_metric.merge(df_diff_pca, how="left", on=['group_name', 'subject', 'session', 'tract', 'point'])
     df_diff_metric = df_diff_metric.merge(df_d_pca, how="left", on=['session', 'tract', 'point'])
-    print(df_metric.groupby('tract').mean()['mean_length'])
+    #print(df_metric.groupby('tract').mean()['mean_length'])
+    sns.heatmap(pd.concat([df_pca_components, df_pca_diff_components], axis=0).transpose(), annot=True)
+    plt.show()
 
     ### Stats
     ## Stats per point
@@ -134,6 +138,7 @@ def main():
 
 
     ### Figures
+    heatmap_per_point(df_metric, bundle="NAC_mPFC_L_27")
     lineplot_per_point(df_metric, metric='nufo_metric_mean', bundle="NAC_mPFC_L_27")
     # lineplot_per_point_diff(df_diff_metric, metric='nufo_metric_mean', bundle="NAC_mPFC_L_27")
     #boxplot_intersubject(df_metric, metric='noddi_icvf_metric_mean')

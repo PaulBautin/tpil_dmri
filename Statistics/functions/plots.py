@@ -3,6 +3,7 @@
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 
 def boxplot_intersubject_per_ses(df, metric='nufo', bundle="NAC_mPFC_L_27"):
@@ -95,4 +96,16 @@ def lineplot_per_point_diff(df, metric='nufo', bundle="NAC_mPFC_L_27"):
     plt.show()
 
 
-
+def heatmap_per_point(df, bundle="NAC_mPFC_L_27"):
+    df = df.loc[df['tract'] == bundle]
+    df = df[df.columns.drop(list(df.filter(regex='length')))]
+    df = df[df.columns.drop(list(df.filter(regex='count')))]
+    df = df[df.columns.drop(list(df.filter(regex='PCA')))]
+    df_con = df.loc[df['group_name'] == 'con']
+    df_clbp = df.loc[df['group_name'] == 'clbp']
+    print(df_con.groupby(['subject', 'point']).mean())
+    df_z = (df_clbp.groupby('point').mean() - df_con.groupby('point').mean()) / df_con.groupby(['subject', 'point']).mean().groupby('point').std()
+    #ax = sns.heatmap(df_z.transpose(), annot=True)
+    #plt.show()
+    ax = sns.clustermap(df_z.transpose(), col_cluster=False, annot=True, cbar_pos=(0.90, 0.1, 0.02, 0.6))
+    plt.show()

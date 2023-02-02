@@ -30,7 +30,7 @@ module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
 
 git -C /home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/tractoflow checkout tags/2.4.1
 
-my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.4.1.sif' # or .img
+my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.4.2.sif' # or .img
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/tractoflow/main.nf'
 my_input='/home/pabaua/scratch/tpil_dev/data/22-08-19_dMRI_CLBP_BIDS/'
 
