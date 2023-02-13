@@ -26,7 +26,7 @@ echo "new bundle results folder: ${n}"
 echo "Output folder: ${o}"
 
 echo "Building tree for the following folders:"
-cd ${r}
+cd ${t}
 for i in *;
 do
     echo $i

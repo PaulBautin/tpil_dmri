@@ -76,26 +76,45 @@ def main():
     arguments = parser.parse_args()
     path_roi_clbp = os.path.abspath(os.path.expanduser(arguments.clbp))
     path_roi_control = os.path.abspath(os.path.expanduser(arguments.control))
-    files_clbp = glob.glob(str(path_roi_clbp) + "/sub-*/subco_volume.txt")
-    files_control = glob.glob(str(path_roi_control) + "/sub-*/subco_volume.txt")
+    files_subco_clbp = glob.glob(str(path_roi_clbp) + "/sub-*/subco_volume.txt")
+    files_thick_clbp = glob.glob(str(path_roi_clbp) + "/sub-*/lh.thickness.txt")
+    files_vol_clbp = glob.glob(str(path_roi_clbp) + "/sub-*/lh.volume.txt")
+    files_subco_control = glob.glob(str(path_roi_control) + "/sub-*/subco_volume.txt")
+    files_thick_control = glob.glob(str(path_roi_control) + "/sub-*/lh.thickness.txt")
+    files_vol_control = glob.glob(str(path_roi_control) + "/sub-*/lh.volume.txt")
     df_participants = pd.read_csv("/home/pabaua/dev_tpil/data/22-08-19_dMRI_CLBP_BIDS/participants.tsv", sep='\t')
+    df_participants['participant_id'] = df_participants['participant_id'].str.replace('-','-pl')
     path_output = os.path.abspath(arguments.o)
 
     # Get all data files and read json files into a dataframe
-    df_roi_data_clbp = pd.concat(pd.read_csv(files_clbp[i], sep='\t') for i in range(len(files_control))).set_index("Measure:volume")
-    print(df_roi_data_clbp)
-    df_roi_data_clbp['group_name'] = "clbp"
-    df_roi_data_control = pd.concat(pd.read_csv(files_control[i], sep='\t') for i in range(len(files_control)))
-    df_roi_data_control['group_name'] = "control"
-    df_roi_data = pd.concat([df_roi_data_control, df_roi_data_clbp])
-    sns.boxplot(y=df_roi_data['Left-Accumbens-area'], x=df_roi_data['group_name'])
+    df_roi_data_clbp = pd.concat(pd.read_csv(files_subco_clbp[i], sep='\t') for i in range(len(files_subco_clbp)))
+    df_roi_data_clbp[['participant_id', 'session']] = df_roi_data_clbp['Measure:volume'].str.rsplit('_ses-', 1, expand=True)
+    df_roi_clbp = df_roi_data_clbp.merge(df_participants, on="participant_id")
+    df_roi_data_control = pd.concat(pd.read_csv(files_subco_control[i], sep='\t') for i in range(len(files_subco_control)))
+    df_roi_data_control['Measure:volume'] = df_roi_data_control['Measure:volume'].str.rsplit('_T1w', 0).str[0]
+    df_roi_data_control[['participant_id', 'session']] = df_roi_data_control['Measure:volume'].str.rsplit('_ses-', 1, expand=True)
+    df_roi_control = df_roi_data_control.merge(df_participants, on="participant_id")
+    df_zscore = np.abs((df_roi_clbp.mean() - df_roi_control.mean()) / df_roi_control.std())
+    print(df_zscore[df_zscore > 0.4])
+    df_roi_data = pd.concat([df_roi_control, df_roi_clbp])
+    sns.violinplot(y=df_roi_data['Left-Inf-Lat-Vent'], x=df_roi_data['session'], hue=df_roi_data['group'])
     plt.show()
-    # intersubject_data = pd.read_json(intersubject_json_files[0])
-    # print("\n\n########### intersubject results: ###########\n{}".format(intersubject_data.mean()))
-    #
-    # intrasubject_json_files = glob(path_intra_clbp + "/*/27_223_Pairwise_Comparaison.json")
-    # intrasubject_data = pd.concat([pd.read_json(intrasubject_json_files[i]).mean() for i in range(len(intrasubject_json_files))])
-    # print("\n\n########### intrasubject results: ###########\n{}".format(intrasubject_data.groupby(intrasubject_data.index).mean()))
+
+    # Get all data files and read json files into a dataframe
+    df_roi_data_clbp = pd.concat(pd.read_csv(files_vol_clbp[i], sep='\t') for i in range(len(files_vol_clbp)))
+    df_roi_data_clbp[['participant_id', 'session']] = df_roi_data_clbp['lh.BN_Atlas.volume'].str.rsplit('_ses-', 1,
+                                                                                                    expand=True)
+    df_roi_clbp = df_roi_data_clbp.merge(df_participants, on="participant_id")
+    df_roi_data_control = pd.concat(pd.read_csv(files_vol_control[i], sep='\t') for i in range(len(files_vol_control)))
+    df_roi_data_control['lh.BN_Atlas.volume'] = df_roi_data_control['lh.BN_Atlas.volume'].str.rsplit('_T1w', 0).str[0]
+    df_roi_data_control[['participant_id', 'session']] = df_roi_data_control['lh.BN_Atlas.volume'].str.rsplit('_ses-', 1,
+                                                                                                          expand=True)
+    df_roi_control = df_roi_data_control.merge(df_participants, on="participant_id")
+    df_zscore = np.abs((df_roi_clbp.mean() - df_roi_control.mean()) / df_roi_control.std())
+    print(df_zscore[df_zscore > 0.5])
+    df_roi_data = pd.concat([df_roi_control, df_roi_clbp])
+    sns.violinplot(y=df_roi_data['lh_A22r_L_volume'], x=df_roi_data['session'], hue=df_roi_data['group'])
+    plt.show()
 
 if __name__ == "__main__":
     main()
