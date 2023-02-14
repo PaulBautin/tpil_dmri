@@ -106,7 +106,7 @@ def main():
     ## Concatenate CON and CLBP subjects
     df_metric = pd.concat([df_metric_con, df_metric_clbp])
     ## Difference metrics between CON and CLBP
-    df_diff_metric = diff_metrics(df_metric_con, df_metric_clbp)
+    #df_diff_metric = diff_metrics(df_metric_con, df_metric_clbp)
 
     ### Compute PCA metrics
     ## CON + CLBP subjects
@@ -115,20 +115,20 @@ def main():
     df_pca = apply_pca(pca, df_x_norm)
     df_metric = df_metric.merge(df_pca, how="left", on=['group_name', 'subject', 'session', 'tract', 'point'])
     ## Difference metrics between CON and CLBP
-    pca_diff, df_x_norm_diff = fit_pca(df_diff_metric, ["session", "tract", "point"])
-    df_pca_diff_components = pd.DataFrame(data=np.abs(pca_diff.components_), index=['PCA_diff_1', 'PCA_diff_2'], columns=df_x_norm_diff.columns)
-    df_d_pca = apply_pca(pca_diff, df_x_norm_diff, output_metrics=['PCA_1', 'PCA_2'])
-    df_diff_pca = apply_pca(pca_diff, df_x_norm, output_metrics=['PCA_1_diff', 'PCA_2_diff'])
-    df_metric = df_metric.merge(df_diff_pca, how="left", on=['group_name', 'subject', 'session', 'tract', 'point'])
-    df_diff_metric = df_diff_metric.merge(df_d_pca, how="left", on=['session', 'tract', 'point'])
+    # pca_diff, df_x_norm_diff = fit_pca(df_diff_metric, ["session", "tract", "point"])
+    # df_pca_diff_components = pd.DataFrame(data=np.abs(pca_diff.components_), index=['PCA_diff_1', 'PCA_diff_2'], columns=df_x_norm_diff.columns)
+    # df_d_pca = apply_pca(pca_diff, df_x_norm_diff, output_metrics=['PCA_1', 'PCA_2'])
+    # df_diff_pca = apply_pca(pca_diff, df_x_norm, output_metrics=['PCA_1_diff', 'PCA_2_diff'])
+    # df_metric = df_metric.merge(df_diff_pca, how="left", on=['group_name', 'subject', 'session', 'tract', 'point'])
+    # df_diff_metric = df_diff_metric.merge(df_d_pca, how="left", on=['session', 'tract', 'point'])
     #print(df_metric.groupby('tract').mean()['mean_length'])
-    sns.heatmap(pd.concat([df_pca_components, df_pca_diff_components], axis=0).transpose(), annot=True)
-    plt.show()
+    #sns.heatmap(pd.concat([df_pca_components, df_pca_diff_components], axis=0).transpose(), annot=True)
+    #plt.show()
 
     ### Stats
     ## Stats per point
     # t_test between Control and DCL
-    df_t_test_cs = t_test_cs_per_session_per_point(df_metric).reset_index()
+    #df_t_test_cs = t_test_cs_per_session_per_point(df_metric).reset_index()
     #print(df_t_test_cs.groupby(["session", "tract"]).apply(lambda x: x[x < 0.05].count()))
     #print(df_t_test_cs[df_t_test_cs < 0.05].dropna(how='all').dropna(axis=1, how='all'))
 
@@ -138,7 +138,8 @@ def main():
 
 
     ### Figures
-    heatmap_per_point(df_metric, bundle="NAC_mPFC_L_27")
+    print(df_metric.loc[df_metric['group_name'] == 'clbp'])
+    heatmap_per_point(df_metric, bundle="27_223_L")
     lineplot_per_point(df_metric, metric='nufo_metric_mean', bundle="NAC_mPFC_L_27")
     # lineplot_per_point_diff(df_diff_metric, metric='nufo_metric_mean', bundle="NAC_mPFC_L_27")
     #boxplot_intersubject(df_metric, metric='noddi_icvf_metric_mean')

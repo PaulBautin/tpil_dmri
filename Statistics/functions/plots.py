@@ -103,8 +103,7 @@ def heatmap_per_point(df, bundle="NAC_mPFC_L_27"):
     df = df[df.columns.drop(list(df.filter(regex='PCA')))]
     df_con = df.loc[df['group_name'] == 'con']
     df_clbp = df.loc[df['group_name'] == 'clbp']
-    print(df_con.groupby(['subject', 'point']).mean())
-    df_z = (df_clbp.groupby('point').mean() - df_con.groupby('point').mean()) / df_con.groupby(['subject', 'point']).mean().groupby('point').std()
+    df_z = (df_clbp.groupby('point').mean() - df_con.groupby('point').mean()) / df_con.groupby('subject').mean().groupby('point').std()
     #ax = sns.heatmap(df_z.transpose(), annot=True)
     #plt.show()
     ax = sns.clustermap(df_z.transpose(), col_cluster=False, annot=True, cbar_pos=(0.90, 0.1, 0.02, 0.6))
