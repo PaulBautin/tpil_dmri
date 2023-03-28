@@ -14,7 +14,7 @@
                                # https://docs.computecanada.ca/wiki/B%C3%A9luga/en#Node_Characteristics
 #SBATCH --mem=0                # --> 0 means you take all the memory of the node. If you think you will need
                                # all the node, you can keep 0.
-#SBATCH --time=2:00:00
+#SBATCH --time=6:00:00
 
 #SBATCH --mail-user=paul.bautin@polymtl.ca
 #SBATCH --mail-type=BEGIN
@@ -27,11 +27,11 @@
 module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
 
 
-my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.4.2.sif' # or .img
-my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/tpil_dmri/preparation_connectflow/registration/main.nf'
-my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/22-11-14_connectflow_prep_control/'
-my_atlas='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/22-11-14_connectflow_prep_clbp/BNA-maxprob-thr0-1mm.nii.gz'
-my_template='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/22-11-14_connectflow_prep_clbp/FSL_HCP1065_FA_1mm.nii.gz'
+my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.3.0.sif' # or .sif
+my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/tpil_dmri/bundle_segmentation/original/main.nf'
+my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/22-10-26_bundle_segmentation/'
+my_atlas='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas/BNA-maxprob-thr0-1mm.nii.gz'
+my_template='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas/FSL_HCP1065_FA_1mm.nii.gz'
 
 
 nextflow run $my_main_nf --input $my_input --atlas $my_atlas \

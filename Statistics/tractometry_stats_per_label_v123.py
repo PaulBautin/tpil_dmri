@@ -32,7 +32,7 @@ from scipy import stats
 import seaborn as sns
 
 from functions.load_data import load_data_xlsx, diff_metrics, load_data_xlsx_add
-from functions.plots import boxplot_intersubject_per_ses, lineplot_t_test, lineplot_per_point, lineplot_per_point_diff, boxplot_intersubject, heatmap_per_point
+from functions.plots import boxplot_intersubject_per_ses, lineplot_t_test, lineplot_per_point, lineplot_per_point_diff, boxplot_intersubject, heatmap_per_point, lineplot_per_point_intrasubject
 from functions.stat_tests import t_test_longitudinal, t_test_cs, t_test_cs_per_session, t_test_cs_per_session_per_point, t_test_cs_mean
 from functions.pca import fit_pca, apply_pca
 
@@ -138,9 +138,10 @@ def main():
 
 
     ### Figures
-    print(df_metric.loc[df_metric['group_name'] == 'clbp'])
+    #heatmap_per_point(df_metric, bundle="27_223_L")
+    #lineplot_per_point(df_metric, metric='nufo_metric_mean', bundle="27_223_L")
     heatmap_per_point(df_metric, bundle="27_223_L")
-    lineplot_per_point(df_metric, metric='nufo_metric_mean', bundle="NAC_mPFC_L_27")
+    #lineplot_per_point(df_metric, metric='afd_metric_mean', bundle="27_223_L")
     # lineplot_per_point_diff(df_diff_metric, metric='nufo_metric_mean', bundle="NAC_mPFC_L_27")
     #boxplot_intersubject(df_metric, metric='noddi_icvf_metric_mean')
     #boxplot_intersubject_per_ses(df_metric, metric='nufo_metric_mean', bundle="NAC_mPFC_L_27")
