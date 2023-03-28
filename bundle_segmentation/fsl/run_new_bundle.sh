@@ -8,7 +8,7 @@
 
 my_singularity_img='/home/pabaua/dev_scil/containers/containers_scilus_1.4.2.sif' # or .sif
 my_main_nf='/home/pabaua/dev_tpil/tpil_dmri/bundle_segmentation/fsl/main.nf'
-my_input='/home/pabaua/dev_tpil/results/results_tracto'
+my_input='/home/pabaua/scratch/tpil_dev/results/clbp/23-01-24_tractoflow_bundling'
 
 
 
