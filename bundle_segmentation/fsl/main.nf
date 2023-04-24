@@ -63,9 +63,9 @@ process freesurfer_to_subject {
     script:
     """
     tkregister2 --mov $SUBJECTS_DIR/${sid}/mri/brain.mgz --noedit --s ${sid} --regheader --reg register.dat
-    mris_ca_label -l lh.cortex.label ${sid} lh sphere.reg ${fs_atlas} lh.BN_Atlas.annot
+    mris_ca_label -l $SUBJECTS_DIR/${sid}/label/lh.cortex.label ${sid} lh sphere.reg $SUBJECTS_DIR/lh.BN_Atlas.gcs lh.BN_Atlas.annot -t $SUBJECTS_DIR/BN_Atlas_210_LUT.txt
     cp $SUBJECTS_DIR/${sid}/label/lh.BN_Atlas.annot .
-    mris_ca_label -l rh.cortex.label ${sid} rh sphere.reg ${fs_atlas} rh.BN_Atlas.annot
+    mris_ca_label -l $SUBJECTS_DIR/${sid}/label/rh.cortex.label ${sid} rh sphere.reg $SUBJECTS_DIR/rh.BN_Atlas.gcs rh.BN_Atlas.annot -t $SUBJECTS_DIR/BN_Atlas_210_LUT.txt
     cp $SUBJECTS_DIR/${sid}/label/rh.BN_Atlas.annot .
     mri_label2vol --subject ${sid} --hemi lh --annot BN_Atlas --o $SUBJECTS_DIR/${sid}/mri/lh.BN_Atlas.nii.gz --temp $SUBJECTS_DIR/${sid}/mri/brain.mgz --reg register.dat --proj frac -0.5 1 0.01
     cp $SUBJECTS_DIR/${sid}/mri/lh.BN_Atlas.nii.gz .
@@ -79,18 +79,19 @@ process freesurfer_transform {
     cpus=4
 
     input:
-    tuple val(sid), path(fs_seg), file(t1_diff)
+    tuple val(sid), path(fs_seg_lh), path(fs_seg_rh), file(t1_diff)
 
     output:
-    tuple val(sid), file("${sid}__atlas_transformed.nii.gz"), file("out_labels.nii.gz")
+    tuple val(sid), file("${sid}__atlas_transformed.nii.gz"), file("out_labels_2.nii.gz")
 
     script:
     """
-    scil_dilate_labels.py ${fs_seg} BN_Atlas_scil_lh.nii.gz --mask $SUBJECTS_DIR/${sid}/mri/lh.ribbon.mgz
-    scil_dilate_labels.py ${fs_seg} BN_Atlas_scil_rh.nii.gz --mask $SUBJECTS_DIR/${sid}/mri/rh.ribbon.mgz
-    scil_combine_labels.py out_labels.nii.gz --volume_ids BN_Atlas_scil_lh.nii.gz all --volume_ids BN_Atlas_scil_rh.nii.gz all
+    mri_convert $SUBJECTS_DIR/${sid}/mri/brainmask.mgz mask_brain.nii.gz
+    scil_image_math.py lower_threshold mask_brain.nii.gz 1 mask_brain_bin.nii.gz
+    scil_combine_labels.py out_labels.nii.gz --volume_ids ${fs_seg_lh} all --volume_ids ${fs_seg_rh} all
+    scil_dilate_labels.py out_labels.nii.gz out_labels_2.nii.gz --mask mask_brain_bin.nii.gz
     antsRegistrationSyNQuick.sh -d 3 -f ${t1_diff} -m $SUBJECTS_DIR/${sid}/mri/brain.mgz -t s -o ${sid}__output
-    antsApplyTransforms -d 3 -i out_labels.nii.gz -t ${sid}__output1Warp.nii.gz -t ${sid}__output0GenericAffine.mat -r ${t1_diff} -o ${sid}__atlas_transformed.nii.gz -n genericLabel -u int
+    antsApplyTransforms -d 3 -i out_labels_2.nii.gz -t ${sid}__output1Warp.nii.gz -t ${sid}__output0GenericAffine.mat -r ${t1_diff} -o ${sid}__atlas_transformed.nii.gz -n genericLabel -u int
     """
 }
 
@@ -106,19 +107,20 @@ process Create_mask {
     """
     #!/usr/bin/env python3
     import nibabel as nib
-    fsl_atlas_data = nib.load("$fsl_atlas").get_fdata()
+    import numpy as np
+    fsl_atlas_data = nib.load("$fsl_atlas").get_fdata() + 210
     fs_atlas_data = nib.load("$fs_atlas").get_fdata()
 
     # Create masks sources
     for s in $params.source_roi:
-        mask = (fsl_atlas_data == s)
-        mask_img = nib.Nifti1Image(mask.astype(int), nib.load("$fsl_atlas").affine)
+        mask = (fsl_atlas_data == s + 210)
+        mask_img = nib.Nifti1Image(mask.astype(int), nib.load("$fsl_atlas").affine, dtype=np.int16)
         nib.save(mask_img, '${sid}__mask_target_'+str(s)+'.nii.gz')
 
     # Create masks target
     for t in $params.target_roi:
         mask = (fs_atlas_data == t)
-        mask_img = nib.Nifti1Image(mask.astype(int), nib.load("$fs_atlas").affine)
+        mask_img = nib.Nifti1Image(mask.astype(int), nib.load("$fs_atlas").affine, dtype=np.int16)
         nib.save(mask_img, '${sid}__mask_source_'+str(t)+'.nii.gz')
     """
 }
@@ -157,7 +159,6 @@ process Register_Anat {
     cp ${native_anat} ${sid}__native_anat.nii.gz
     """
 }
-
 
 
 process Register_Bundle {
@@ -253,7 +254,8 @@ workflow {
     Create_sub_mask(first_transform)
     freesurfer_label_lh.combine(freesurfer_sphere_lh, by:0).combine(freesurfer_brain, by:0).combine(freesurfer_atlas_lh).combine(t1_images_diff, by:0).set{freesurfer_pr}
     freesurfer_to_subject(freesurfer_pr)
-    freesurfer_to_subject.out.map{[it[0], it[2]]}.combine(t1_images_diff, by:0).set{freesurfer_tr}
+    freesurfer_to_subject.out.map{[it[0], it[2], it[4]]}.combine(t1_images_diff, by:0).set{freesurfer_tr}
+    freesurfer_tr.view()
     freesurfer_transform(freesurfer_tr)
 
     /* Create ROI masks (based on atlas) for filtering tractogram  */
@@ -280,6 +282,5 @@ workflow {
 
     Clean_Bundles.out.cleaned_bundle.combine(t1_images_diff, by:0).set{bundles_for_screenshot}
     bundle_QC_screenshot(bundles_for_screenshot)
-
 }
 
