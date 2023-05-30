@@ -11,8 +11,8 @@ def load_data_xlsx(file, group_name):
     # reads all sheets and stores dataframes in a dictionary
     df_dict = pd.read_excel(file, sheet_name=None, index_col=0)
     df = pd.concat(df_dict, axis=1).stack().rename_axis(['subject', 'tract']).reset_index()
-    df[['tract', 'point']] = df['tract'].str.rsplit('_', 1, expand=True)
-    df[['subject', 'session']] = df['subject'].str.rsplit('_ses-', 1, expand=True)
+    df[['tract', 'point']] = df['tract'].str.rsplit('_', n=1, expand=True)
+    df[['subject', 'session']] = df['subject'].str.rsplit('_ses-', n=1, expand=True)
     df = df.drop(df.filter(regex='std', axis=1).columns, axis=1)
     #df.columns = df.columns.str.removesuffix("_metric_mean")
     df['group_name'] = group_name

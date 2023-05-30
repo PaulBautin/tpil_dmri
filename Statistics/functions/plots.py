@@ -54,21 +54,21 @@ def lineplot_per_point(df, metric='nufo', bundle="NAC_mPFC_L_27"):
     df_v1 = df.loc[df['session'] == 'v1']
     df_v2 = df.loc[df['session'] == 'v2']
     df_v3 = df.loc[df['session'] == 'v3']
-    plt.style.use('dark_background')
+    #plt.style.use('dark_background')
     fig, axs = plt.subplots(nrows=3, sharex=True, sharey=True)
-    sns.lineplot(data=df_v1, x='point', y=metric, hue='group_name', ax=axs[0], palette=['r', 'g'])
+    sns.lineplot(data=df_v1, x='point', y=metric, hue='group_name', ax=axs[0], palette=['r', 'b'])
     axs[0].set_title("0 months", fontsize=14)
-    axs[0].set_ylabel("average NuFO", fontsize=14)
+    axs[0].set_ylabel("average FAt", fontsize=14)
     h, l = axs[0].get_legend_handles_labels()
     axs[0].legend(handles=h, title='group name', labels=['control', 'CLBP'])
-    sns.lineplot(data=df_v2, x='point', y=metric, hue='group_name', ax=axs[1], palette=['r', 'g'])
+    sns.lineplot(data=df_v2, x='point', y=metric, hue='group_name', ax=axs[1], palette=['r', 'b'])
     axs[1].set_title('2 months', fontsize=14)
-    axs[1].set_ylabel("average NuFO", fontsize=14)
+    axs[1].set_ylabel("average FAt", fontsize=14)
     h, l = axs[0].get_legend_handles_labels()
     axs[1].legend(handles=h, title='group name', labels=['control', 'CLBP'])
-    sns.lineplot(data=df_v3, x='point', y=metric, hue='group_name', ax=axs[2], palette=['r', 'g'])
+    sns.lineplot(data=df_v3, x='point', y=metric, hue='group_name', ax=axs[2], palette=['r', 'b'])
     axs[2].set_title('4 months', fontsize=14)
-    axs[2].set_ylabel("average NuFO", fontsize=14)
+    axs[2].set_ylabel("average FAt", fontsize=14)
     axs[2].set_xlabel("position on bundle", fontsize=14)
     h, l = axs[0].get_legend_handles_labels()
     axs[2].legend(handles=h, title='group name', labels=['control', 'CLBP'])
@@ -77,6 +77,10 @@ def lineplot_per_point(df, metric='nufo', bundle="NAC_mPFC_L_27"):
     #axs[3].set_title('total')
     #axs[3].set_xlabel("position on bundle ")
     fig.suptitle(metric + " for dcl and control subjects along the bundle " + bundle, fontsize=12)
+    axs[2].set_ylabel("Freewater corrected FA", fontsize=16)
+    axs[2].set_xlabel("position on bundle", fontsize=16)
+    plt.setp(axs[2].get_legend().get_texts(), fontsize=16)
+    plt.setp(axs[2].get_legend().get_title(), fontsize=16)
     sns.set(font_scale=2)
     plt.show()
 
@@ -146,4 +150,27 @@ def lineplot_per_point_intrasubject(df, metric='nufo', bundle="NAC_mPFC_L_27"):
     # #axs[3].set_xlabel("position on bundle ")
     # fig.suptitle(metric + " for dcl and control subjects along the bundle " + bundle, fontsize=12)
     # sns.set(font_scale=2)
+    plt.show()
+
+def heatmap_per_point_long(df, bundle="NAC_mPFC_L_27", metric='noddi_icvf_metric_mean'):
+    df = df.loc[df['tract'] == bundle]
+    df = df[df.columns.drop(list(df.filter(regex='length')))]
+    df = df[df.columns.drop(list(df.filter(regex='count')))]
+    df = df[df.columns.drop(list(df.filter(regex='PCA')))]
+    df = df[df.columns[df.columns.isin([metric, 'subject', 'tract', 'point', 'session', 'group_name'])]]
+    df_con = df.loc[df['group_name'] == 'con']
+    df_clbp = df.loc[df['group_name'] == 'clbp']
+    print(df_clbp)
+    print(df_clbp.groupby(['session', 'point']).mean() - df_con.groupby(['session','point']).mean())
+    df_z = (df_clbp.groupby(['session','point']).mean() - df_con.groupby(['session','point']).mean()) / df_con.groupby(['session','point']).std()
+    df_z = df_z.reset_index().pivot(columns='point', index='session', values=metric)
+    #ax = sns.heatmap(df_z.transpose(), annot=True)
+    #plt.show()
+    #ax = sns.clustermap(df_z.transpose(), col_cluster=False, annot=True, cbar_pos=(0.90, 0.1, 0.02, 0.6))
+    # plt.style.use('dark_background')
+    plt.figure(figsize=(20,3))
+
+    ax = sns.heatmap(df_z, annot=True, vmin=-1.96, vmax=1.96, cmap="vlag")
+    ax.set_ylabel("session",fontsize=18)
+    ax.tick_params(labelsize=14)
     plt.show()

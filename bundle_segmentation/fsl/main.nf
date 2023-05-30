@@ -67,9 +67,9 @@ process freesurfer_to_subject {
     cp $SUBJECTS_DIR/${sid}/label/lh.BN_Atlas.annot .
     mris_ca_label -l $SUBJECTS_DIR/${sid}/label/rh.cortex.label ${sid} rh sphere.reg $SUBJECTS_DIR/rh.BN_Atlas.gcs rh.BN_Atlas.annot -t $SUBJECTS_DIR/BN_Atlas_210_LUT.txt
     cp $SUBJECTS_DIR/${sid}/label/rh.BN_Atlas.annot .
-    mri_label2vol --subject ${sid} --hemi lh --annot BN_Atlas --o $SUBJECTS_DIR/${sid}/mri/lh.BN_Atlas.nii.gz --temp $SUBJECTS_DIR/${sid}/mri/brain.mgz --reg register.dat --proj frac -0.5 1 0.01
+    mri_label2vol --subject ${sid} --hemi lh --annot BN_Atlas --o $SUBJECTS_DIR/${sid}/mri/lh.BN_Atlas.nii.gz --temp $SUBJECTS_DIR/${sid}/mri/brain.mgz --reg register.dat --proj frac 0 1 0.01
     cp $SUBJECTS_DIR/${sid}/mri/lh.BN_Atlas.nii.gz .
-    mri_label2vol --subject ${sid} --hemi rh --annot BN_Atlas --o $SUBJECTS_DIR/${sid}/mri/rh.BN_Atlas.nii.gz --temp $SUBJECTS_DIR/${sid}/mri/brain.mgz --reg register.dat --proj frac -0.5 1 0.01
+    mri_label2vol --subject ${sid} --hemi rh --annot BN_Atlas --o $SUBJECTS_DIR/${sid}/mri/rh.BN_Atlas.nii.gz --temp $SUBJECTS_DIR/${sid}/mri/brain.mgz --reg register.dat --proj frac 0 1 0.01
     cp $SUBJECTS_DIR/${sid}/mri/rh.BN_Atlas.nii.gz .
     """
 }
@@ -89,7 +89,7 @@ process freesurfer_transform {
     mri_convert $SUBJECTS_DIR/${sid}/mri/brainmask.mgz mask_brain.nii.gz
     scil_image_math.py lower_threshold mask_brain.nii.gz 1 mask_brain_bin.nii.gz
     scil_combine_labels.py out_labels.nii.gz --volume_ids ${fs_seg_lh} all --volume_ids ${fs_seg_rh} all
-    scil_dilate_labels.py out_labels.nii.gz out_labels_2.nii.gz --mask mask_brain_bin.nii.gz
+    scil_dilate_labels.py out_labels.nii.gz out_labels_2.nii.gz --distance 1.5 --mask mask_brain_bin.nii.gz
     antsRegistrationSyNQuick.sh -d 3 -f ${t1_diff} -m $SUBJECTS_DIR/${sid}/mri/brain.mgz -t s -o ${sid}__output
     antsApplyTransforms -d 3 -i out_labels_2.nii.gz -t ${sid}__output1Warp.nii.gz -t ${sid}__output0GenericAffine.mat -r ${t1_diff} -o ${sid}__atlas_transformed.nii.gz -n genericLabel -u int
     """
