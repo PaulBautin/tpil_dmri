@@ -41,7 +41,8 @@ process Create_sub_mask {
     tuple val(sid), path(t1_image), path(affine), path(warp), file(t1_diff)
 
     output:
-    tuple val(sid), file("${sid}__first_atlas_transformed.nii.gz")
+    tuple val(sid), file("${sid}__first_atlas_transformed.nii.gz"), emit: sub_parcels
+    tuple val(sid), file("*.vtk"), file("*.nii.gz"), emit: sub_surfaces
 
     script:
     """
@@ -259,7 +260,7 @@ workflow {
     freesurfer_transform(freesurfer_tr)
 
     /* Create ROI masks (based on atlas) for filtering tractogram  */
-    Create_sub_mask.out.combine(freesurfer_transform.out, by:0).set{data_for_creating_mask}
+    Create_sub_mask.out.sub_parcels.combine(freesurfer_transform.out, by:0).set{data_for_creating_mask}
     Create_mask(data_for_creating_mask)
 
     /* Filter tractogram based on ROI masks  */
