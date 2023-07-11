@@ -10,5 +10,5 @@ template='/home/pabaua/dev_tpil/tpil_network_analysis/connectivity_prep/freesurf
 
 
 NXF_DEFAULT_DSL=1 NXF_VER=21.10.6 nextflow run $my_main_nf --input $my_input --labels_list $label_list --template $template \
-    --apply_t1_labels_transfo false --nbr_subjects_for_avg_connections 2 -with-singularity $my_singularity_img -resume
+    --apply_t1_labels_transfo false --nbr_subjects_for_avg_connections 20 -with-singularity $my_singularity_img -resume
 
