@@ -24,15 +24,11 @@ import os
 import argparse
 import json
 import matplotlib.pyplot as plt
-import seaborn as sns
 from netneurotools.datasets import fetch_conte69
-from toolz import interleave
-
-from brainspace.utils.parcellation import map_to_labels
-from brainspace.plotting import plot_hemispheres, surface_plotting
 import nibabel as nib
-from brainspace import mesh
+from netneurotools.plotting import plot_point_brain
 from netneurotools.utils import get_centroids
+from enigmatoolbox.plotting import plot_subcortical
 
 
 # Parser
@@ -190,6 +186,58 @@ def cortical_thick_analysis(path_roi_clbp, path_roi_control, df_participants):
 
     return df_lh, df_rh
 
+def cortical_volume_analysis_2(path_roi_clbp, path_roi_control, df_participants):
+    files_clbp_lh = glob.glob(str(path_roi_clbp) + "/sub-*/lh.volume.txt")
+    files_clbp_rh = glob.glob(str(path_roi_clbp) + "/sub-*/rh.volume.txt")
+    files_control_lh = glob.glob(str(path_roi_control) + "/sub-*/lh.volume.txt")
+    files_control_rh = glob.glob(str(path_roi_control) + "/sub-*/rh.volume.txt")
+    df_participants['participant_id'] = df_participants['participant_id'].str.replace('-', '-pl')
+
+    ## clbp lh
+    df_clbp_lh = pd.concat(pd.read_csv(files_clbp_lh[i], sep='\t') for i in range(len(files_clbp_lh)))
+    df_clbp_lh[['participant_id', 'session']] = df_clbp_lh['lh.BN_Atlas.volume'].str.rsplit('_ses-', 1, expand=True)
+    df_clbp_lh = df_clbp_lh.merge(df_participants, on="participant_id")
+    df_clbp_lh["group"] = "clbp"
+    df_clbp_lh["hemisphere"] = 'lh'
+    df_clbp_lh = df_clbp_lh.drop(["lh.BN_Atlas.volume"], axis=1)
+
+
+    ## control lh
+    df_control_lh = pd.concat(
+        pd.read_csv(files_control_lh[i], sep='\t') for i in range(len(files_control_lh)))
+    df_control_lh['lh.BN_Atlas.volume'] = df_control_lh['lh.BN_Atlas.volume'].str.rsplit('_T1w', 0).str[0]
+    df_control_lh[['participant_id', 'session']] = df_control_lh['lh.BN_Atlas.volume'].str.rsplit('_ses-', 1,
+                                                                                                          expand=True)
+    df_control_lh = df_control_lh.merge(df_participants, on="participant_id")
+    df_control_lh["group"] = "control"
+    df_control_lh["hemisphere"] = 'lh'
+    df_control_lh = df_control_lh.drop(["lh.BN_Atlas.volume"], axis=1)
+
+    df_lh = pd.concat([df_control_lh, df_clbp_lh])
+
+
+    ## clbp rh
+    df_clbp_rh = pd.concat(pd.read_csv(files_clbp_rh[i], sep='\t') for i in range(len(files_clbp_rh)))
+    df_clbp_rh[['participant_id', 'session']] = df_clbp_rh['rh.BN_Atlas.volume'].str.rsplit('_ses-', 1, expand=True)
+    df_clbp_rh = df_clbp_rh.merge(df_participants, on="participant_id")
+    df_clbp_rh["group"] = "clbp"
+    df_clbp_rh["hemisphere"] = 'rh'
+    df_clbp_rh = df_clbp_rh.drop(["rh.BN_Atlas.volume"], axis=1)
+
+
+    ## control rh
+    df_control_rh = pd.concat(pd.read_csv(files_control_rh[i], sep='\t') for i in range(len(files_control_rh)))
+    df_control_rh['rh.BN_Atlas.volume'] = df_control_rh['rh.BN_Atlas.volume'].str.rsplit('_T1w', 0).str[0]
+    df_control_rh[['participant_id', 'session']] = df_control_rh['rh.BN_Atlas.volume'].str.rsplit('_ses-', 1, expand=True)
+    df_control_rh = df_control_rh.merge(df_participants, on="participant_id")
+    df_control_rh["group"] = "control"
+    df_control_rh["hemisphere"] = 'rh'
+    df_control_rh = df_control_rh.drop(["rh.BN_Atlas.volume"], axis=1)
+
+    df_rh = pd.concat([df_control_rh, df_clbp_rh])
+
+    return df_lh, df_rh
+
 def subcortical_analysis(path_roi_clbp, path_roi_control, df_participants):
     files_subco_clbp = glob.glob(str(path_roi_clbp) + "/sub-*/subco_volume.txt")
     files_subco_control = glob.glob(str(path_roi_control) + "/sub-*/subco_volume.txt")
@@ -218,6 +266,61 @@ def subcortical_analysis(path_roi_clbp, path_roi_control, df_participants):
     return df_sub
 
 
+def zscores(df_thick_lh, df_thick_rh, v_ses='v1'):
+    mean_lh_clbp = df_thick_lh.set_index(['group', 'session']).xs(['clbp', v_ses]).filter(regex='lh(.+)_L(.+)',
+                                                                                         axis=1).mean().values
+    mean_lh_control = df_thick_lh.set_index(['group', 'session']).xs(['control', v_ses]).filter(regex='lh(.+)_L(.+)',
+                                                                                               axis=1).mean().values
+    std_lh_control = df_thick_lh.set_index(['group', 'session']).xs(['control', v_ses]).filter(regex='lh(.+)_L(.+)',
+                                                                                              axis=1).std().values
+    z_score_lh = (mean_lh_clbp - mean_lh_control) / std_lh_control
+    mean_rh_clbp = df_thick_rh.set_index(['group', 'session']).xs(['clbp', v_ses]).filter(regex='rh(.+)_R(.+)',
+                                                                                         axis=1).mean().values
+    mean_rh_control = df_thick_rh.set_index(['group', 'session']).xs(['control', v_ses]).filter(regex='rh(.+)_R(.+)',
+                                                                                               axis=1).mean().values
+    std_rh_control = df_thick_rh.set_index(['group', 'session']).xs(['control', v_ses]).filter(regex='rh(.+)_R(.+)',
+                                                                                              axis=1).std().values
+    z_score_rh = (mean_rh_clbp - mean_rh_control) / std_rh_control
+    zscore_thikness = [val for pair in zip(z_score_lh, z_score_rh) for val in pair]
+    plot_point_brain(zscore_thikness, load_brainnetome_centroids()[:210], views='ax', views_size=(8, 4.8),
+                     cmap='RdYlBu', vmin=-2, vmax=2)
+    plt.show()
+
+def zscores_sub(df_thick_lh, df_thick_rh, df_vol, v_ses='v1'):
+    mean_lh_clbp = df_thick_lh.set_index(['group', 'session']).xs(['clbp', v_ses]).filter(regex='lh(.+)_L(.+)',
+                                                                                          axis=1).mean().values
+    mean_lh_control = df_thick_lh.set_index(['group', 'session']).xs(['control', v_ses]).filter(regex='lh(.+)_L(.+)',
+                                                                                                axis=1).mean().values
+    std_lh_control = df_thick_lh.set_index(['group', 'session']).xs(['control', v_ses]).filter(regex='lh(.+)_L(.+)',
+                                                                                               axis=1).std().values
+    z_score_lh = (mean_lh_clbp - mean_lh_control) / std_lh_control
+    mean_rh_clbp = df_thick_rh.set_index(['group', 'session']).xs(['clbp', v_ses]).filter(regex='rh(.+)_R(.+)',
+                                                                                          axis=1).mean().values
+    mean_rh_control = df_thick_rh.set_index(['group', 'session']).xs(['control', v_ses]).filter(regex='rh(.+)_R(.+)',
+                                                                                                axis=1).mean().values
+    std_rh_control = df_thick_rh.set_index(['group', 'session']).xs(['control', v_ses]).filter(regex='rh(.+)_R(.+)',
+                                                                                               axis=1).std().values
+    z_score_rh = (mean_rh_clbp - mean_rh_control) / std_rh_control
+    zscore_thikness = [val for pair in zip(z_score_lh, z_score_rh) for val in pair]
+    mean_clbp = df_vol.set_index(['group', 'session']).xs(['clbp', v_ses]).filter(regex='(.+)_(.+)',
+                                                                                         axis=1).mean().values
+    mean_control = df_vol.set_index(['group', 'session']).xs(['control', v_ses]).filter(regex='(.+)_(.+)',
+                                                                                               axis=1).mean().values
+    std_control = df_vol.set_index(['group', 'session']).xs(['control', v_ses]).filter(regex='(.+)_(.+)',
+                                                                                              axis=1).std().values
+    z_score = (mean_clbp - mean_control) / std_control
+    plot_point_brain(np.append(zscore_thikness, z_score), load_brainnetome_centroids(), views='ax', views_size=(8, 4.8),
+                     cmap='RdYlBu', vmin=-2, vmax=2)
+    plt.show()
+    print(np.append(zscore_thikness, z_score).shape)
+    print(np.argmax(np.append(zscore_thikness, z_score)))
+
+
+def load_brainnetome_centroids():
+    bn_centroids = get_centroids("/home/pabaua/dev_tpil/data/BN/BN_Atlas_for_FSL/Brainnetome/BNA-maxprob-thr0-1mm.nii.gz")
+    return bn_centroids
+
+
 def main():
     """
     main function, gather stats and call plots
@@ -239,19 +342,23 @@ def main():
     path_output = os.path.abspath(arguments.o)
 
     # analysis
-    df_vol = cortical_volume_analysis(path_roi_clbp, path_roi_control, df_participants)
-    df_vol.columns.name = 'ROI_name'
-    df_vol = df_vol.stack()
-    df_vol = df_vol.to_frame().join(df_atlas.set_index('ROI_name')).reset_index()
-    df_vol = df_vol.groupby(['group', 'participant_id', 'age', 'sex', 'session', 'hemisphere', 'Lobe', 'Gyrus', 'ROI_name', 'Modified cyto-architectonic', 'lh.MNI (X,Y,Z)', 'rh.MNI (X, Y, Z)', 'Label ID.L', 'Label ID.R']).mean()
-    df_vol = df_vol.rename(columns={0:'volume'}).reset_index().set_index(['group', 'participant_id', 'age', 'sex', 'session', 'Lobe', 'Gyrus', 'ROI_name', 'Modified cyto-architectonic', 'lh.MNI (X,Y,Z)', 'rh.MNI (X, Y, Z)', 'Label ID.L', 'Label ID.R']).pivot(columns='hemisphere')
-    df_vol.to_csv("/home/pabaua/dev_tpil/data/Freesurfer/dataframe/BN_cortical_volume.csv")
+    df_vol_lh, df_vol_rh = cortical_volume_analysis_2(path_roi_clbp, path_roi_control, df_participants)
+    zscores(df_vol_lh, df_vol_rh, v_ses='v3')
+    #df_vol = cortical_volume_analysis(path_roi_clbp, path_roi_control, df_participants)
+    # df_vol.columns.name = 'ROI_name'
+    # df_vol = df_vol.stack()
+    # df_vol = df_vol.to_frame().join(df_atlas.set_index('ROI_name')).reset_index()
+    # df_vol = df_vol.groupby(['group', 'participant_id', 'age', 'sex', 'session', 'hemisphere', 'Lobe', 'Gyrus', 'ROI_name', 'Modified cyto-architectonic', 'lh.MNI (X,Y,Z)', 'rh.MNI (X, Y, Z)', 'Label ID.L', 'Label ID.R']).mean()
+    # df_vol = df_vol.rename(columns={0:'volume'}).reset_index().set_index(['group', 'participant_id', 'age', 'sex', 'session', 'Lobe', 'Gyrus', 'ROI_name', 'Modified cyto-architectonic', 'lh.MNI (X,Y,Z)', 'rh.MNI (X, Y, Z)', 'Label ID.L', 'Label ID.R']).pivot(columns='hemisphere')
+    # df_vol.to_csv("/home/pabaua/dev_tpil/data/Freesurfer/dataframe/BN_cortical_volume.csv")
 
     df_thick_lh, df_thick_rh = cortical_thick_analysis(path_roi_clbp, path_roi_control, df_participants)
+    zscores(df_thick_lh, df_thick_rh, v_ses='v3')
     df_thick_lh.to_csv("/home/pabaua/dev_tpil/data/Freesurfer/dataframe/BN_cortical_thickness_lh.csv")
     df_thick_rh.to_csv("/home/pabaua/dev_tpil/data/Freesurfer/dataframe/BN_cortical_thickness_rh.csv")
 
     df_vol_sub = subcortical_analysis(path_roi_clbp, path_roi_control, df_participants)
+    zscores_sub(df_vol_lh, df_vol_rh,df_vol_sub, v_ses='v3')
     df_vol_sub.to_csv("/home/pabaua/dev_tpil/data/Freesurfer/dataframe/BN_subcortical_volume.csv")
 
 
