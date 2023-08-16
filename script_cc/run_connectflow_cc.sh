@@ -31,7 +31,7 @@ module load StdEnv/2020 java/14.0.2 nextflow/21.10.3 apptainer/1.1.8
 
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.5.0.sif' # or .img
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/connectoflow/main.nf'
-my_input='/home/pabaua/scratch/tpil_dev/results/clbp/23-08-15_connectivity_prep/results'
+my_input='/home/pabaua/scratch/tpil_dev/results/control/23-08-15_connectivity_prep/results'
 my_template='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas/mni_masked.nii.gz'
 my_labels_list='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/atlas_brainnetome_first_label_list.txt'
 
