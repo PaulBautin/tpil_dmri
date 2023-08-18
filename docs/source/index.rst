@@ -13,7 +13,7 @@ Analysis
    :maxdepth: 3
    :caption: Analysis - Data
 
-   documents/Analysis-‐-Data.md
+   documents/Analysis-‐-Data
 
 
 Indices and tables
