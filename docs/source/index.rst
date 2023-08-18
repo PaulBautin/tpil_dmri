@@ -10,13 +10,7 @@ Welcome TPIL dMRI documentation!
    :maxdepth: 3
    :caption: Analysis data
 
-   documentation/Analysis-‐-Data.md
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Analysis meta
-
-   documentation/Analysis-‐-Meta‐Analysis.md
+   documentation/Analysis.md
 
 
 Indices and tables
