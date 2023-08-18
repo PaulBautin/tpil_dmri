@@ -4,3 +4,4 @@ sphinx_rtd_theme
 sphinx-copybutton
 furo==2023.08.17
 sphinx==7.2.2
+myst-parser
