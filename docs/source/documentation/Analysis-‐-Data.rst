@@ -3,6 +3,7 @@ Data Analysis
 
 .. tip::
     Statistics should be presented:
+
     * statistic (degrees of freedom) = value;
     * P = value; effect size statistic = value;
     * per cent confidence intervals = values
@@ -12,8 +13,9 @@ Data Analysis
 General linear model
 --------------------
 
-t-tests, correlations, partial correlations, ANOVAs, MANOVAs,… are just
-specific instances of the linear model. Here is a general overview of the use of GLMs in neuroimaging:
+t-tests, correlations, partial correlations, ANOVAs, MANOVAs,… are just specific instances
+of the linear model. Here is a general overview of the use of GLMs in neuroimaging:
+
 1. Modeling Neural Responses: Neuroimaging studies typically involve presenting subjects
 with various stimuli, tasks, or conditions while recording their brain activity.
 GLMs are used to model how these experimental factors influence neural responses.
