@@ -1,3 +1,6 @@
+Local Diffusion Metrics
+================================================
+
 Local diffusion MRI metrics were computed for every subject on DWI
 images using 4 different local reconstruction models: ## Diffusion
 Tensor Imaging (DTI) DTI metrics computations are implemented directly
@@ -10,7 +13,7 @@ b-value shell 1000 mm2/s the model estimates diffusion anisotropy
 metrics using a weighted least squares single-tensor fit.
 
 FreeWater
-=========
+------------------------------------------------
 
 Freewater and freewater corrected DTI metrics are computed in the
 *freewater_flow* pipeline and are based on the separation of the
@@ -22,7 +25,7 @@ using Accelerated Microstructure Imaging via Convex Optimization
 `(AMICO) <https://github.com/daducci/AMICO>`__.
 
 Neurite Orientation Distribution Density Imaging (NODDI)
-========================================================
+----------------------------------------------------------------
 
 NODDI metrics are computed with the *noddi_flow* pipeline and are based
 on the reconstruction of the WM microstructure with a 3 compartment
@@ -34,7 +37,7 @@ Imaging via Convex Optimization
 `(AMICO) <https://github.com/daducci/AMICO>`__.
 
 Fiber Orientation Distribution Function (fODF)
-==============================================
+----------------------------------------------------------------
 
 fODF metrics computations are implemented directly in *TractoFlow* using
 ``dipy.reconst.csdeconv``
