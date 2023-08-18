@@ -5,3 +5,4 @@ sphinx-copybutton
 furo==2023.08.17
 sphinx==6.2.1
 myst-parser
+sphinx-inline-tabs
