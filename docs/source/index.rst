@@ -11,7 +11,6 @@ Welcome TPIL dMRI documentation!
    :caption: Analysis
 
    documents/Analysis-‐-Data.md
-   documents/Analysis-‐-Meta-Analysis.md
 
 
 Indices and tables
