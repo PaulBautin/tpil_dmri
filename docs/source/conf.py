@@ -21,7 +21,8 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.autosummary',
-    'sphinx.ext.mathjax'
+    'sphinx.ext.mathjax',
+    'myst_parser'
 ]
 
 templates_path = ['_templates']
