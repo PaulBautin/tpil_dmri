@@ -45,5 +45,5 @@ master_doc = 'index'
 
 
 html_theme = 'sphinx_book_theme'
-#html_theme = 'furo'
-#html_static_path = ['_static']
+html_static_path = ['_static']
+html_logo = "_static/LOGO_TPIL_COULEUR.webp"
