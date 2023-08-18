@@ -2,8 +2,10 @@ Data Analysis
 ====================
 
 .. tip::
-    Statistics should be presented: statistic (degrees of freedom) = value;
-    P = value; effect size statistic = value; and per cent confidence intervals = values
+    Statistics should be presented:
+    * statistic (degrees of freedom) = value;
+    * P = value; effect size statistic = value;
+    * per cent confidence intervals = values
 
 
 
