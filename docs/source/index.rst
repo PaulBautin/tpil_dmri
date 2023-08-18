@@ -14,7 +14,7 @@ Analysis
 
    documentation/Analysis-‐-Data.rst
    documentation/Analysis-‐-Network.rst
-   documentation/Analysis-‐-Meta-Analysis.rst
+   documentation/Analysis-‐-Meta‐Analysis.rst
 
 .. toctree::
    :caption: MRI
