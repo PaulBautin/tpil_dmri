@@ -1,0 +1,6 @@
+sphinxcontrib.programoutput
+recommonmark
+sphinx_rtd_theme
+sphinx-copybutton
+furo
+sphinx
