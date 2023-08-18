@@ -1,4 +1,4 @@
-Data
+Data Analysis
 ====================
 
 Statistics should be presented: statistic (degrees of freedom) = value;
