@@ -10,7 +10,6 @@ Analysis
 =====================================
 
 .. toctree::
-   :maxdepth: 3
    :caption: Analysis
 
    documentation/Analysis-‐-Data.rst
