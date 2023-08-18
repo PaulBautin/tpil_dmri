@@ -14,6 +14,8 @@ Analysis
    :caption: Analysis
 
    documentation/Analysis-‐-Data.rst
+   documentation/Analysis-‐-Network.rst
+   documentation/Analysis-‐-Meta-Analysis.rst
 
 
 Indices and tables
