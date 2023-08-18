@@ -10,7 +10,7 @@ Analysis
 =====================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Analysis - Data
 
    documents/Analysis-‐-Data.md
