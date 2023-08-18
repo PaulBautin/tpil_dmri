@@ -1,3 +1,4 @@
+# Data
 Statistics should be presented:  statistic (degrees of freedom) = value; P = value; effect size statistic = value; and per cent confidence intervals = values
 ## General linear model
 t-tests, correlations, partial correlations, ANOVAs, MANOVAs,… are just specific instances of the linear model. 
