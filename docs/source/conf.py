@@ -8,15 +8,28 @@
 
 project = 'tpil_dmri'
 copyright = '2023, Paul Bautin'
-author = 'Paul Bautin'
+author = 'The TPIL developers'
 release = 'v1'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.coverage',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+    'sphinx_tabs.tabs',
+    'sphinx.ext.autosectionlabel',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.mathjax'
+]
 
 templates_path = ['_templates']
+
+# The master toctree document.
+master_doc = 'index'
+
 exclude_patterns = []
 
 
@@ -24,5 +37,5 @@ exclude_patterns = []
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
