@@ -10,7 +10,8 @@ Welcome TPIL dMRI documentation!
    :maxdepth: 2
    :caption: Analysis
 
-   documentation/Analysis---Data
+   Analysis-‐-Data.md
+   Analysis-‐-Meta-Analysis.md
 
 
 Indices and tables
