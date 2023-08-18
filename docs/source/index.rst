@@ -20,6 +20,10 @@ Analysis
    :caption: MRI
 
    documentation/MRI---local-metrics.rst
+   documentation/MRI---tractogram-construction.rst
+   documentation/MRI---white-matter-segmentation.rst
+   documentation/MRI-pre-processing.rst
+   documentation/MRI-processing.rst
 
 
 Indices and tables

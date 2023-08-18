@@ -1,3 +1,6 @@
+MRI White-Matter Segmentation
+================================================================
+
 SPM and VBM
 -----------
 
@@ -49,6 +52,8 @@ Solve alignment using alignment-invariant features, a skeleton.
 
 atlas-based approach
 --------------------
+ROI to ROI-based approach
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 tractography and fiber clustering
 ---------------------------------

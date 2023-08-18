@@ -1,4 +1,4 @@
-Local Diffusion Metrics
+MRI Local Diffusion Metrics
 ================================================
 
 Local diffusion MRI metrics were computed for every subject on DWI
@@ -48,3 +48,6 @@ spherical deconvolution `(Raffelt,
 case, using b-value shells 1000 and 2000 mm2/s the model estimates the
 fODFs by applying a constrained spherical deconvolution on ODFs using a
 single by default (manually entered) fiber response function.
+
+CSD
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

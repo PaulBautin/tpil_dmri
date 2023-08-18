@@ -1,15 +1,18 @@
+MRI Tractogram construction
+================================================================
+
 The brain tractograms were computed for every subject based on fODFs
 maps and a probabilistic tractography method. However, 2 different
 algorithms with different parameters were used:
 
 Determinstic
-============
+--------------------------------
 
 Probabilistic
-=============
+------------------------------------------------
 
 Particle filter tracking (PFT)
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PFT is implemented directly in *TractoFlow* using
 ``dipy.tracking.local_tracking.ParticleFilteringTracking``
@@ -20,7 +23,7 @@ computed using interface seeding and 30 seeds/voxel for connectivity and
 streamline density analysis.
 
 Local tracking
---------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Local tracking is implemented directly in *TractoFlow* using
 ``dipy.tracking.local_tracking.LocalTracking``

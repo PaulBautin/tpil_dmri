@@ -1,8 +1,8 @@
 Meta Analysis
-====================
+================================================
 
 Best practices
---------------
+----------------------------------------------------------------
 
 1. Using a sufficient sample of included studies (n ≥ 17) in
    meta-analyses on neuroimaging is necessary to have the power to
@@ -25,7 +25,7 @@ Best practices
    family-wise error (cFWE) correction as the gold standard.
 
 Neurosynth
-----------
+----------------------------------------------------------------
 
 -  **uniformity test map**: z-scores from a one-way ANOVA testing
    whether the proportion of studies that report activation at a given
@@ -66,4 +66,7 @@ Neurosynth
    process, and isn't involved in just about every task.
 
 Nimare
-------
+----------------------------------------------------------------
+
+Coordinate based meta-analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

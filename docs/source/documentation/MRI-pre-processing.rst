@@ -1,3 +1,6 @@
+MRI preprocessing
+================================================================
+
 MRI preprocessing was applied on DWI and T1-w images using TractoFlow.
 Overall, DWI pre-processing serves the preparation of images to the
 application of local reconstruction models. It is mainly composed of :
@@ -8,22 +11,25 @@ parcellation. Its main steps consist in: denoising, brain extraction, N4
 Bias Correction, cropping and resampling.
 
 denoising
-=========
+--------------------------------
 
 eddy/topup
-==========
+--------------------------------
+
+eddy currents
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 brain extraction
-================
+--------------------------------
 
 N4 Bias Correction
-==================
+--------------------------------
 
 cropping
-========
+--------------------------------
 
 normalization
-=============
+--------------------------------
 
 resampling.
-===========
+--------------------------------

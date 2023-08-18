@@ -37,14 +37,14 @@ optimization (AMICO). Instructions can be found
 `here <https://github.com/daducci/AMICO/wiki>`__
 
 Robustness and reproducibility
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 leveraging Nextflow and Singularity for robustness and reproducibility.
 takes raw Diffusion-weighted and T1-weighted images as input and outputs
 diffusion metrics and a whole brain tractogram.
 
 To pay attention
-================
+--------------------------------
 
 -  The singularity.conf file is not necessary for newer versions of
    singularity: ``nextflow -c singularity.conf run <COMMAND>``
@@ -53,7 +53,7 @@ To pay attention
    of ``--root <DATASET_ROOT_FOLDER>``
 
 ROI segmentation
-================
+--------------------------------
 
 Establishing correspondences across brains for the purposes of
 comparison and group analysis is almost universally done by registering
@@ -64,7 +64,7 @@ images to one another either directly or via a template.
    direct pairwise registration.
 
 RecobundleX
-===========
+---------------------
 
 Automatic bundle segmentation was done using rbx_flow, which is a fully
 automated and reproducible pipeline based on the dipy tool Recobundle.
@@ -78,7 +78,7 @@ distribution – Ubuntu 20.04 Focal Fossa) \*
 ``scil_recognize_multi_bundles.py`` use –outdir and not –output
 
 Nextflow
---------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 RecobundleX can be run using a nextflow pipeline called ``rbx_flow``
 that can be found `here <https://github.com/scilus/rbx_flow>`__. It is
@@ -87,7 +87,7 @@ important to note that it must be run with singularity DSL1 because
 To use DSL1 run command ``export NXF_DEFAULT_DSL=1``
 
 Our pipeline (bundle_segmentation original)
-===========================================
+--------------------------------
 
 Nextflow pipeline: 1. Register Atlas to reference image: brainnetome
 atlas is sent to subject space. To compute transformation from atlas
