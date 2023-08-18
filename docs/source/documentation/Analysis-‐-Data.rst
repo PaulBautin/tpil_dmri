@@ -4,9 +4,10 @@ Data Analysis
 .. tip::
     Statistics should be presented:
 
-    * statistic (degrees of freedom) = value;
-    * P = value; effect size statistic = value;
-    * per cent confidence intervals = values
+    * Statistic (degrees of freedom) = value;
+    * p = value;
+    * Effect size statistic = value;
+    * % confidence intervals = values
 
 
 
@@ -21,10 +22,12 @@ with various stimuli, tasks, or conditions while recording their brain activity.
 GLMs are used to model how these experimental factors influence neural responses.
 The goal is to identify regions of the brain that show significant changes in activity
 due to the experimental manipulation.
+
 2. Hemodynamic Response Function (HRF): The hemodynamic response function characterizes
 how neural activity is translated into the observed blood-oxygen-level-dependent
 (BOLD) signal in fMRI. GLMs incorporate the HRF as a convolution with the predictor
 variables to account for the delayed and sustained nature of the BOLD response.
+
 3. Estimation and Inference: Once the design matrix is constructed, GLMs are
 used to estimate the regression coefficients that relate each predictor to the
 observed brain activity at each voxel or sensor. These coefficients indicate the
