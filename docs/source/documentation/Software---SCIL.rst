@@ -1,5 +1,8 @@
-Scilpy
-~~~~~~
+SCILUS software
+================================================================
+
+scilpy
+----------------------------------------------------------------
 
 Scilpy is the main library supporting research and development at the
 Sherbrooke Connectivity Imaging Lab.
@@ -13,7 +16,7 @@ Sherbrooke Connectivity Imaging Lab.
 (Installation of scipy requires ``sudo apt-get install gfortran``)
 
 Tractfoflow
-~~~~~~~~~~~
+----------------------------------------------------------------
 
 ``git clone https://github.com/scilus/tractoflow.git`` in directory scil
 
@@ -24,7 +27,7 @@ directory scil
 in new directory containers
 
 MI-Brain
-~~~~~~~~
+----------------------------------------------------------------
 
 Download MI-Brain tarball from `Github repository
 releases <https://github.com/imeka/mi-brain/releases/tag/2020.04.09>`__
@@ -38,7 +41,7 @@ To accelerate opening add mibrain alias to .bashrc:
 ``alias mibrain="bash ~/MI_Brain/MI-Brain.sh"``
 
 dMRI QC
-~~~~~~~
+--------------------
 
 Quality control can be run with dmriqc_flow `github
 repository <https://github.com/scilus/dmriqc_flow>`__
@@ -51,7 +54,7 @@ To build singularity image run command:
 in scil_dev/containers
 
 Combine flows
-~~~~~~~~~~~~~
+----------------------------------------------------------------
 
 First clone the combine_flows `Github
 repository <https://github.com/scilus/combine_flows>`__

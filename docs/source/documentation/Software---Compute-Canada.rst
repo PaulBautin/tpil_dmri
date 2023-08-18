@@ -1,3 +1,6 @@
+Compute Canada
+================================================================
+
 First you must connect to compute canada with command
 ``ssh userID@graham.computecanada.ca``. To not type full command each
 time you can define a bash alias in $HOME/.bashrc :

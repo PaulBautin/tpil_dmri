@@ -25,6 +25,14 @@ Analysis
    documentation/MRI-pre-processing.rst
    documentation/MRI-processing.rst
 
+.. toctree::
+   :caption: Software
+
+   documentation/Software_ubuntu.rst
+   documentation/Software_neuroimaging.rst
+   documentation/Software---SCIL.rst
+   documentation/Software---Compute-Canada.rst
+
 
 Indices and tables
 ==================
