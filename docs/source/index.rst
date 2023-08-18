@@ -11,9 +11,9 @@ Analysis
 
 .. toctree::
    :maxdepth: 4
-   :caption: Analysis - Data
+   :caption: Data
 
-   documentation/Analysis-‐-Data
+   documentation/Analysis-‐-Data.md
 
 
 Indices and tables
