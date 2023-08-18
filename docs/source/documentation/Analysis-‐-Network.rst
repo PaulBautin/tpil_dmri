@@ -35,6 +35,21 @@ predict <https://www.sciencedirect.com/science/article/pii/S1053811921008983>`__
 Network control theory
 ----------------------
 
+Classically, many neuroimaging studies have been interested in how the brain
+can be guided toward specific, diverse patterns of neural activity. Network
+control theory (NCT) is a powerful tool from physical and engineering sciences
+that can provide insight into these questions. NCT provides a specific, dynamical
+equation that defines how the activity of the brain will spread along white matter
+connections in response to some input. Important to these tools is the definition
+of the system (here, the brain) as a network, with nodes (brain regions) connected
+by edges. This network is stored in the adjacency matrix, . In neuroimaging, much
+of the application of NCT is divided into two categories: controllability statistics
+and control energies. Controllability statistics are properties of a structural brain
+network, or node in the network, that summarise information about control to many,
+nonspecific activity states. Control energies, on the other hand, provide
+quantification of how easily the network can transition between two specific
+activity states.
+
 Graph theory metrics
 --------------------
 
