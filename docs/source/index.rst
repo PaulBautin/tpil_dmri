@@ -10,7 +10,7 @@ Welcome TPIL dMRI documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   source/documentation/Analysis-‐-Data.md
+   documentation/Analysis-‐-Data.md
 
 
 Indices and tables
