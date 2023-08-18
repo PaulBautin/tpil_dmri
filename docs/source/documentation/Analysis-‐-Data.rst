@@ -1,9 +1,11 @@
 Data Analysis
 ====================
 
-Statistics should be presented: statistic (degrees of freedom) = value;
-P = value; effect size statistic = value; and per cent confidence
-intervals = values
+.. tip::
+    Statistics should be presented: statistic (degrees of freedom) = value;
+    P = value; effect size statistic = value; and per cent confidence intervals = values
+
+
 
 General linear model
 --------------------
