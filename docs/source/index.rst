@@ -16,6 +16,11 @@ Analysis
    documentation/Analysis-‐-Network.rst
    documentation/Analysis-‐-Meta-Analysis.rst
 
+.. toctree::
+   :caption: MRI
+
+   documentation/MRI---local-metrics.rst
+
 
 Indices and tables
 ==================

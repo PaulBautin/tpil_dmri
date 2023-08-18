@@ -59,13 +59,6 @@ of the LVs.
 A cross-validated framework can optionally be used to examine how
 accurate the decomposition is when employed in a predictive framework.
 
-Meta analysis techniques
-------------------------
-
-Neurosynth and BrainMap
-~~~~~~~~~~~~~~~~~~~~~~~
-
-Fixed vs random effects
 
 Multi-modal approaches
 ----------------------
