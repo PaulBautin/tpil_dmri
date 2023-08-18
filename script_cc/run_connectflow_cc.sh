@@ -39,3 +39,5 @@ my_labels_list='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/atlas_brain
 NXF_DEFAULT_DSL=1 nextflow run $my_main_nf --input $my_input --labels_list $my_labels_list --template $my_template \
     --apply_t1_labels_transfo false -with-singularity $my_singularity_img -resume
 
+
+
