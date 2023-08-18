@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'tpil_dmri'
-copyright = '2023, Paul Bautin'
+copyright = '2023, tpil_dmri'
 author = 'The TPIL developers'
 release = 'v1'
 
