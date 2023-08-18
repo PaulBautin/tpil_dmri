@@ -8,7 +8,7 @@ Welcome TPIL dMRI documentation!
 
 .. toctree::
    :maxdepth: 4
-   :caption: Analysis data
+   :caption: Analysis
 
    documentation/Analysis.md
 
