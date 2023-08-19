@@ -22,7 +22,7 @@ import pandas as pd
 import numpy as np
 import os
 import argparse
-from functions.load_data import load_data_xlsx, diff_metrics, load_data_xlsx_add
+from functions.tpil_load_data import load_data_xlsx, diff_metrics, load_data_xlsx_add
 from sklearn.cross_decomposition import PLSRegression, PLSSVD
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler

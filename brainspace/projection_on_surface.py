@@ -4,7 +4,7 @@ import nibabel as nib
 import pandas as pd
 import glob
 import numpy as np
-from functions.load_data import load_matrices, load_surface
+from functions.tpil_load_data import load_matrices, load_surface
 from brainspace.plotting import plot_hemispheres
 from brainspace.utils.parcellation import map_to_labels
 

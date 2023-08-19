@@ -31,10 +31,10 @@ from math import ceil
 from scipy import stats
 import seaborn as sns
 
-from functions.load_data import load_data_xlsx, diff_metrics, load_data_xlsx_add
-from functions.plots import boxplot_intersubject_per_ses, lineplot_t_test, lineplot_per_point, lineplot_per_point_diff, boxplot_intersubject, heatmap_per_point, lineplot_per_point_intrasubject, heatmap_per_point_long
-from functions.stat_tests import t_test_longitudinal, t_test_cs, t_test_cs_per_session, t_test_cs_per_session_per_point, t_test_cs_mean
-from functions.pca import fit_pca, apply_pca
+from functions.tpil_load_data import load_data_xlsx, diff_metrics, load_data_xlsx_add
+from functions.tpil_plots_statistics import boxplot_intersubject_per_ses, lineplot_t_test, lineplot_per_point, lineplot_per_point_diff, boxplot_intersubject, heatmap_per_point, lineplot_per_point_intrasubject, heatmap_per_point_long
+from functions.tpil_stats_tests import t_test_longitudinal, t_test_cs, t_test_cs_per_session, t_test_cs_per_session_per_point, t_test_cs_mean
+from functions.tpil_stats_pca import fit_pca, apply_pca
 
 
 

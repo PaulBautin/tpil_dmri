@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 from matplotlib import cm
 import glob
-from functions.load_data import load_matrices
+from functions.tpil_load_data import load_matrices
 import pandas as pd
 from bct.utils.visualization import adjacency_plot_und
 import seaborn as sns
