@@ -95,6 +95,3 @@ def cortical_measures(path_roi, atlas='BN_Atlas.volume'):
     df_rh_avg = df_clbp_rh.drop(['rh.'+ atlas, "participant_id"], axis=1).groupby(['session']).mean()
     return diff, z_score
 
-
-if __name__ == "__main__":
-    main()
