@@ -64,34 +64,6 @@ def _build_arg_parser():
     return p
 
 
-def load_matrix_in_any_format(filepath):
-    # Francois's code https://github.com/dipy/dipy/discussions/2165
-    _, ext = os.path.splitext(filepath)
-    if ext == '.txt':
-        data = np.loadtxt(filepath)
-    elif ext == '.npy':
-        data = np.load(filepath)
-    elif ext == '.mat':
-        # .mat are actually dictionnary. This function support .mat from
-        # antsRegistration that encode a 4x4 transformation matrix.
-        transfo_dict = loadmat(filepath)
-        lps2ras = np.diag([-1, -1, 1])
-
-        rot = transfo_dict['AffineTransform_double_3_3'][0:9].reshape((3, 3))
-        trans = transfo_dict['AffineTransform_double_3_3'][9:12]
-        print(trans)
-        offset = transfo_dict['fixed']
-        r_trans = (np.dot(rot, offset) - offset - trans).T * [1, 1, -1]
-
-        data = np.eye(4)
-        data[0:3, 3] = trans.squeeze()
-        data[:3, :3] = rot
-    else:
-        raise ValueError('Extension {} is not supported'.format(ext))
-
-    return data
-
-
 def main():
     parser = _build_arg_parser()
     args = parser.parse_args()
@@ -116,6 +88,7 @@ def main():
     # Affine transformation same as scil_surface_transform.py
     if args.ants_affine:
         # Load affine
+        print("apply affine")
         affine = np.loadtxt(args.ants_affine)
         inv_affine = np.linalg.inv(affine)
 
@@ -126,8 +99,10 @@ def main():
         if mesh.is_transformation_flip(inv_affine):
             mesh.set_triangles(mesh.triangles_face_flip())
 
+
     if args.ants_warp:
         # Load warp
+        print("apply warp")
         warp_img = nib.load(args.ants_warp)
         warp = np.squeeze(warp_img.get_fdata(dtype=np.float32))
 
@@ -139,10 +114,6 @@ def main():
 
         # Apply vertices translation in world coordinates
         mesh.set_vertices(mesh.get_vertices() + np.array([tx, ty, tz]).T)
-
-    # Save mesh
-    mesh.save(args.out_surface)
-
 
     # Save mesh
     mesh.save(args.out_surface)
