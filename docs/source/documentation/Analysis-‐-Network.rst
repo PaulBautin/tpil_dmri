@@ -55,3 +55,6 @@ Graph theory metrics
 
 Network based atrophy spreading
 -------------------------------
+
+Brain gradients
+-------------------------------

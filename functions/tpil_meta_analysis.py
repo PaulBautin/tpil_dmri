@@ -39,10 +39,31 @@ import pandas as pd
 from nilearn import plotting, datasets
 import glob
 from os.path import dirname as up
+from nctpy.utils import (
+    matrix_normalization,
+    convert_states_str2int,
+    normalize_state,
+    normalize_weights,
+    get_null_p,
+    get_fdr_p,
+)
 
 
 
 def fetch_neurosynth_data(out_dir):
+    """
+    Download and convert the Neurosynth databases for analysis with NiMARE
+
+    Parameters
+    ----------
+    out_dir : str
+        Path to directory were Neurosynth data will be saved
+
+    Returns
+    -------
+    neurosynth_dset : NiMARE Dataset
+        NiMARE Dataset containing Neurosynth data
+    """
     ## import and save dataset from neurosynth
     if os.path.isfile(os.path.join(out_dir, "neurosynth_dataset.pkl.gz")):
         neurosynth_dset = Dataset.load(os.path.join(out_dir, "neurosynth_dataset.pkl.gz"), compressed=True)
@@ -55,7 +76,6 @@ def fetch_neurosynth_data(out_dir):
             vocab="terms",
         )
         # Note that the files are saved to a new folder within "out_dir" named "neurosynth".
-        # pprint(files)
         neurosynth_db = files[0]
         neurosynth_dset = convert_neurosynth_to_dataset(
             coordinates_file=neurosynth_db["coordinates"],
@@ -63,10 +83,25 @@ def fetch_neurosynth_data(out_dir):
             annotations_files=neurosynth_db["features"],
         )
         neurosynth_dset.save(os.path.join(out_dir, "neurosynth_dataset.pkl.gz"))
-        print(neurosynth_dset)
     return neurosynth_dset
 
+
 def get_studies_by_terms(neurosynth_dset, term_list):
+    """
+    Filter by terms the Neurosynth NiMARE databases for further analysis
+
+    Parameters
+    ----------
+    neurosynth_dset : NiMARE Dataset
+        NiMARE Dataset containing Neurosynth data
+    term_list : list
+        List of terms to filter the Neurosynth data by
+
+    Returns
+    -------
+    term_dict : dict
+        Dictionary that contains terms of interest as keys and NiMARE Datasets for each term as values
+    """
     def get_study_by_term(term):
         ids = neurosynth_dset.get_studies_by_label(labels=["terms_abstract_tfidf__"+term], label_threshold=0.001)
         dset = neurosynth_dset.slice(ids)
@@ -74,7 +109,23 @@ def get_studies_by_terms(neurosynth_dset, term_list):
     term_dict = {term: get_study_by_term(term) for term in term_list}
     return term_dict
 
+
 def apply_meta_analysis(neurosynth_dset_by_term, out_dir):
+    """
+    Apply coordinate-based meta-analysis algorithm to the dictionnary of Neurosynth NiMARE databases
+
+    Parameters
+    ----------
+    neurosynth_dset : dict
+        Dictionary that contains terms of interest as keys and NiMARE Datasets for each term as values
+    out_dir : str
+        Path to directory were meta-analysis results will be stored
+
+    Returns
+    -------
+    term_dict : dict
+        Dictionary that contains terms of interest as keys and NiMARE results.MetaResults for each term as values
+    """
     if os.path.isfile(os.path.join(out_dir, "meta_cres.npy")):
         cres = np.load(os.path.join(out_dir, "meta_cres.npy"), allow_pickle='TRUE').item()
     else:
@@ -85,16 +136,33 @@ def apply_meta_analysis(neurosynth_dset_by_term, out_dir):
         np.save(os.path.join(out_dir, "meta_cres.npy"), cres)
     return cres
 
-def apply_atlas(cres_dict):
-    brainnetome_atlas = nib.load(
-        "/home/pabaua/dev_tpil/results/results_connectivity_prep/test_container/results/sub-pl007_ses-v1/labels_in_mni.nii.gz")
+
+def apply_atlas_meta(meta_dict, atlas):
+    """
+    Apply Nilearn NiftiLabelsMasker to the dictionnary of NiMARE results.MetaResults
+
+    Parameters
+    ----------
+    meta_dict : dict
+        Dictionary that contains terms of interest as keys and NiMARE results.MetaResults for each term as values
+    atlas : nibabel.nifti1.Nifti1Image
+        label atlas to use for the NiftiLabelsMasker
+
+    Returns
+    -------
+    state_dict : dict
+        Where keys are terms of interest and values are the corresponding normalized states numpy array (N_atlas_regions,)
+    """
     # strategy is the name of a valid function to reduce the region with
-    roi = maskers.NiftiLabelsMasker(brainnetome_atlas, strategy='mean')
-    cres_atlas = {k: roi.fit_transform(v.get_map("z_level-voxel_corr-FWE_method-montecarlo")) for k, v in cres_dict.items()}
-    return cres_atlas
+    roi = maskers.NiftiLabelsMasker(atlas, strategy='mean')
+    state_dict = {k: normalize_state(roi.fit_transform(v.get_map("z_level-voxel_corr-FWE_method-montecarlo"))).T[...,0] for k, v in meta_dict.items()}
+    img_signal = {k: roi.inverse_transform(v) for k, v in state_dict.items()}
+    plotting.plot_stat_map(img_signal['pain'], title='pain', display_mode='ortho', colorbar=True)
+    plt.show()
+    return state_dict
 
 
-def get_parcellation():
+def get_yeo_parcellation(atlas_img):
     def label_extractor(img_yeo, data_yeo, i):
         data_yeo_copy = data_yeo.copy()
         data_yeo_copy[data_yeo_copy != i] = 0
@@ -102,10 +170,9 @@ def get_parcellation():
         img_yeo_1 = nib.Nifti1Image(data_yeo_copy, img_yeo.affine, img_yeo.header)
         return img_yeo_1
 
-    brainnetome_atlas = nib.load(
-        "/home/pabaua/dev_tpil/results/results_connectivity_prep/test_container/results/sub-pl007_ses-v1/labels_in_mni.nii.gz")
+   
     # strategy is the name of a valid function to reduce the region with
-    roi = maskers.NiftiLabelsMasker(brainnetome_atlas, strategy='mean')
+    roi = maskers.NiftiLabelsMasker(atlas_img, strategy='mean')
     networks = {1:'visual', 2:'somatomotor', 3:'dorsal attention', 4:'ventral attention', 5:'limbic', 6:'frontoparietal', 7:'default'}
     yeo = datasets.fetch_atlas_yeo_2011()
     img_yeo = nib.load(yeo.thick_7)

@@ -72,26 +72,65 @@ def cortical_volumes_2(path_roi_clbp, path_roi_con):
     return diff, z_score
 
 
-def cortical_measures(path_roi, atlas='BN_Atlas.volume'):
+def cortical_measures(path_roi, atlas='BN_Atlas.volume', ext=None):
     """
     Calculate the cortical volumes for each subject and session
     :param path_roi: path to freesurfer ROI volumes. Ex: '/home/pabaua/dev_tpil/data/Freesurfer/22-09-21_t1_clbp_freesurfer_output'
     """
 
     # Get the freesurfer files
-    files_lh = glob.glob(str(path_roi) + "/sub-*/lh.volume.txt")
-    files_rh = glob.glob(str(path_roi) + "/sub-*/rh.volume.txt")
-    print(files_lh)
+    files_lh = glob.glob(str(path_roi) + "/sub-*/lh.volume_schaefer.txt")
+    files_rh = glob.glob(str(path_roi) + "/sub-*/rh.volume_schaefer.txt")
 
     ## Create dataframe for lh
-    df_lh = pd.concat(pd.read_csv(files_clbp_lh[i], sep='\t') for i in range(len(files_clbp_lh)))
-    df_lh[['participant_id', 'session']] = df_clbp_lh['lh.'+ atlas].str.rsplit('_ses-', n=1, expand=True)
-    df_lh_avg = df_clbp_lh.drop(['lh.'+ atlas, "participant_id"], axis=1).groupby(['session']).mean()
-    print(df_lh_avg)
+    df_lh = pd.concat(pd.read_csv(files_lh[i], sep='\t') for i in range(len(files_lh)))
+    if ext is not None:
+        df_lh['lh.'+ atlas] = df_lh['lh.'+ atlas].str.rsplit('_T1w', n=0).str[0]
+    df_lh[['participant_id', 'session']] = df_lh['lh.'+ atlas].str.rsplit('_ses-', n=1, expand=True)
+    df_lh = df_lh.drop(['BrainSegVolNotVent', 'eTIV'], axis=1).set_index(['participant_id', 'session'])
+    df_lh = df_lh.drop('lh.'+ atlas, axis=1)
+    df_lh.columns = df_lh.columns.str.split('lh_').str[1].str.split('_volume').str[0]
+    df_lh = df_lh.reset_index()
+    
 
     ## Create dataframe for rh
-    df_rh = pd.concat(pd.read_csv(files_clbp_rh[i], sep='\t') for i in range(len(files_clbp_rh)))
-    df_rh[['participant_id', 'session']] = df_clbp_rh['rh.'+ atlas].str.rsplit('_ses-', n=1, expand=True)
-    df_rh_avg = df_clbp_rh.drop(['rh.'+ atlas, "participant_id"], axis=1).groupby(['session']).mean()
-    return diff, z_score
+    df_rh = pd.concat(pd.read_csv(files_rh[i], sep='\t') for i in range(len(files_rh)))
+    if ext is not None:
+        df_rh['rh.'+ atlas] = df_rh['rh.'+ atlas].str.rsplit('_T1w', n=0).str[0]
+    df_rh[['participant_id', 'session']] = df_rh['rh.'+ atlas].str.rsplit('_ses-', n=1, expand=True)
+    df_rh = df_rh.drop(['BrainSegVolNotVent', 'eTIV'], axis=1).set_index(['participant_id', 'session'])
+    df_rh = df_rh.drop('rh.'+ atlas, axis=1)
+    df_rh.columns = df_rh.columns.str.split('rh_').str[1].str.split('_volume').str[0]
+    df_rh = df_rh.reset_index()
+    return {'lh':df_lh, 'rh':df_rh}
+
+
+def cortical_measures_diff(df_clbp, df_con):
+    """
+    Calculate the cortical volumes for each subject and session
+    :param path_roi: path to freesurfer ROI volumes. Ex: '/home/pabaua/dev_tpil/data/Freesurfer/22-09-21_t1_clbp_freesurfer_output'
+    """
+    df_con_avg = df_con.drop(["participant_id"], axis=1).groupby('session').mean()
+    df_clbp = df_clbp.set_index(['participant_id', 'session'])
+    df_con = df_con.set_index(['participant_id', 'session'])
+    
+
+    # diff
+    df_diff_clbp = (df_clbp - df_con_avg) / df_con_avg
+    df_diff_con = (df_con - df_con_avg) / df_con_avg
+    return df_diff_clbp.reset_index(), df_diff_con.reset_index()
+
+
+def cortical_measures_z_score(df_clbp, df_con):
+    """
+    Calculate the cortical volumes for each subject and session
+    :param path_roi: path to freesurfer ROI volumes. Ex: '/home/pabaua/dev_tpil/data/Freesurfer/22-09-21_t1_clbp_freesurfer_output'
+    """
+    df_clbp_avg = df_clbp.drop(["participant_id"], axis=1).groupby(['session']).mean()
+    df_con_avg = df_con.drop(["participant_id"], axis=1).groupby(['session']).mean()
+    df_con_std = df_con.drop(["participant_id"], axis=1).groupby(['session']).std()
+
+    # z_score
+    df_z_score = (df_clbp_avg - df_con_avg) / df_con_std
+    return df_z_score
 

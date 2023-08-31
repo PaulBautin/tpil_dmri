@@ -27,7 +27,7 @@ from nctpy.utils import matrix_normalization
 from nctpy.energies import sim_state_eq
 import matplotlib.pyplot as plt
 import seaborn as sns
-from nctpy.energies import get_control_inputs, integrate_u
+from nctpy.energies import get_control_inputs, integrate_u 
 from nctpy.metrics import ave_control
 from nilearn import plotting
 import pandas as pd
