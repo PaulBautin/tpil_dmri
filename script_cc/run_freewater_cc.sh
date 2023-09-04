@@ -31,7 +31,7 @@ module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
 
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.5.0.sif' # or .img
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/freewater_flow/main.nf'
-my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/23-09-04_microstructure/'
+my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/23-09-04_microstructure_con/'
 
 
 nextflow run $my_main_nf --input $my_input \
