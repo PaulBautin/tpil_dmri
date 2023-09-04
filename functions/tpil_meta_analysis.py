@@ -157,7 +157,7 @@ def apply_atlas_meta(meta_dict, atlas):
     roi = maskers.NiftiLabelsMasker(atlas, strategy='mean')
     state_dict = {k: normalize_state(roi.fit_transform(v.get_map("z_level-voxel_corr-FWE_method-montecarlo"))).T[...,0] for k, v in meta_dict.items()}
     img_signal = {k: roi.inverse_transform(v) for k, v in state_dict.items()}
-    plotting.plot_stat_map(img_signal['pain'], title='pain', display_mode='ortho', colorbar=True)
+    plotting.plot_glass_brain(img_signal['pain'], title='pain', display_mode='ortho', colorbar=True)
     plt.show()
     return state_dict
 

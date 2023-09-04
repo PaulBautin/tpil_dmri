@@ -8,7 +8,7 @@ This script is using ANTs transform (affine.txt, warp.nii.gz).
 Best usage with ANTs from T1 to b0:
 > ConvertTransformFile 3 output0GenericAffine.mat vtk_transfo.txt --hm
 > scil_transform_surface.py L_Accu.vtk L_Accu_diff.vtk\\
-    --ants_warp vtk_transfo.txt --ants_warp warp.nii.gz
+    --ants_affine vtk_transfo.txt --ants_warp warp.nii.gz
 
 The input surface needs to be in *T1 world LPS* coordinates
 (aligned over the T1 in MI-Brain).

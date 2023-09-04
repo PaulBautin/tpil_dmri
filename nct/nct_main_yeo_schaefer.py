@@ -349,6 +349,8 @@ def main():
     common_name = 'commit2_weights.csv'
     labels_list = pd.read_csv('/home/pabaua/dev_tpil/tpil_connectivity_prep/freesurfer_data/atlas_schaefer_200_first_label_list.txt', header=None, dtype=np.int32)[0].to_numpy()
     df_A = find_files_with_common_name(directory_schaefer, common_name, labels_list)
+    sns.heatmap(df_A.set_index(['session', 'subject']).loc['v1', 'sub-pl002'].values, vmin=0, vmax=10)
+    plt.show()
     df_A_norm = normalize_connectomes(df_A).set_index(['session', 'subject'])
     df_A_norm['B'] = df_B_con
     df_A_norm = df_A_norm.reset_index()
