@@ -28,7 +28,7 @@ module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 apptainer/1.1
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.5.0.sif' # or .img
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/rbx_flow/main.nf'
 my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/23-09-08_rbx_con'
-my_atlas_dir='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas_v3/atlas_v3'
+my_atlas_dir='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas_v3'
 
 
 NXF_DEFAULT_DSL=1 nextflow run $my_main_nf --input $my_input \
