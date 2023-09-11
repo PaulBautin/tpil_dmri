@@ -22,20 +22,15 @@
 #SBATCH --mail-type=ALL
 
 
-module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 singularity/3.8
+module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 apptainer/1.1
 
 
-my_singularity_img='/home/pabaua/scratch/scil_dev/containers/scilus_1.3.0.sif' # or .img
-my_main_nf='/home/pabaua/scratch/scil_dev/rbx_flow/main.nf'
-my_input='/home/pabaua/scratch/tpil_dev/data/Data_dMRI_lowercase_CON_rbx'
-my_atlas_config='/home/pabaua/scratch/scil_dev/atlas/config.json'
-my_atlas_anat='/home/pabaua/scratch/scil_dev/atlas/mni_masked.nii.gz'
-my_atlas_dir='/home/pabaua/scratch/scil_dev/atlas/atlas'
-my_atlas_centroids='/home/pabaua/scratch/scil_dev/atlas/centroids'
-
+my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.5.0.sif' # or .img
+my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/rbx_flow/main.nf'
+my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/23-09-08_rbx'
+my_atlas_dir='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas_v3/atlas_v3'
 
 
 NXF_DEFAULT_DSL=1 nextflow run $my_main_nf --input $my_input \
     -with-singularity $my_singularity_img -resume -with-report report.html \
-    --atlas_config $my_atlas_config --atlas_anat $my_atlas_anat \
-    --atlas_directory $my_atlas_dir --atlas_centroids $my_atlas_centroids
+    --atlas_directory $my_atlas_dir
