@@ -28,7 +28,7 @@ git -C /home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/rbx_flow checkout 1.
 
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.5.0.sif' # or .img
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/rbx_flow/main.nf'
-my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/23-09-08_rbx_con'
+my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/23-09-08_rbx'
 my_atlas_config='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas_v22/config/config_ind.json'
 my_atlas_anat='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas_v22/atlas/mni_masked.nii.gz'
 my_atlas_dir='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas_v22/atlas/atlas'
