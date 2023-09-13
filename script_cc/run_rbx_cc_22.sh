@@ -36,5 +36,5 @@ my_atlas_centroids='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas_v
 
 
 NXF_DEFAULT_DSL=1 nextflow run $my_main_nf --input $my_input \
-    -with-singularity $my_singularity_img -resume -with-report report.html \
+    -with-singularity $my_singularity_img -resume \
     --atlas_config $my_atlas_config --atlas_anat $my_atlas_anat --atlas_directory $my_atlas_dir --atlas_centroids $my_atlas_centroids -profile large_dataset
