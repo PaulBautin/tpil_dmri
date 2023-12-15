@@ -41,6 +41,7 @@ def plot_degree(network_1, size):
     plt.show()
     plot_fslr(data=degree_1, lhlabel=lhlabels, rhlabel=rhlabels)
     mlab.show()
+    
 def get_centroids_l(lhsurface, rhsurface, lhlabels, rhlabels):
     lhsurf = nib.load(lhsurface).agg_data()[0]
     rhsurf = nib.load(rhsurface).agg_data()[0]

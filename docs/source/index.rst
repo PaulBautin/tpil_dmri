@@ -33,6 +33,16 @@ Analysis
    documentation/Software---SCIL.rst
    documentation/Software---Compute-Canada.rst
 
+.. toctree::
+   :caption: Pipelines
+
+   documentation/Pipelines---fMRIprep.rst
+
+.. toctree::
+   :caption: Articles
+
+   documentation/Review---figures.rst
+
 
 Indices and tables
 ==================
