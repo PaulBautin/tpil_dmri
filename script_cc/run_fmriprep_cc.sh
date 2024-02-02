@@ -26,6 +26,8 @@
 #SBATCH --mail-type=ALL
 
 
+module load StdEnv/2020 java/14.0.2 nextflow/22.10.8 apptainer/1.1.8
+
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/fmriprep-23.2.0.simg' # or .sif
 my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/BIDS_dataset_longitudinale/dataset'
 my_output='/home/pabaua/scratch/tpil_dev/results/all/2024-02-02_fmriprep_v1/'
