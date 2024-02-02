@@ -36,7 +36,7 @@ fs_dir='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/freesurfer_v1'
 bids_filter='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/tpil_dmri/script_local/fmriprep_bids_filter.json'
 
 my_licence_fs='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/license.txt'
-export SINGULARITYENV_FS_LICENSE=$my_licence_fs
+export APPTAINERENV_FS_LICENSE=$my_licence_fs
 #singularity exec --cleanenv fmriprep.simg env | grep FS_LICENSE
 
-singularity run $my_singularity_img $my_input $my_output participant -w $my_work --output-spaces T1w --participant-label 007 --cifti-output 91k --bids-filter-file $bids_filter --fs-subjects-dir $fs_dir
+apptainer run $my_singularity_img $my_input $my_output participant -w $my_work --output-spaces T1w --participant-label 007 --cifti-output 91k --bids-filter-file $bids_filter --fs-subjects-dir $fs_dir
