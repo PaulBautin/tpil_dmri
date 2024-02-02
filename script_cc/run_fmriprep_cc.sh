@@ -39,4 +39,4 @@ my_licence_fs='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/l
 export APPTAINERENV_FS_LICENSE=$my_licence_fs
 singularity exec --cleanenv $my_singularity_img env | grep FS_LICENSE
 
-apptainer run --cleanenv $my_singularity_img $my_input $my_output participant -w $my_work --output-spaces T1w --participant-label 007 --cifti-output 91k --bids-filter-file $bids_filter --fs-subjects-dir $fs_dir
+apptainer run --home $HOME --cleanenv $my_singularity_img $my_input $my_output participant -w $my_work --output-spaces T1w --participant-label 007 --cifti-output 91k --bids-filter-file $bids_filter --fs-subjects-dir $fs_dir
