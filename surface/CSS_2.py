@@ -24,7 +24,6 @@ import matplotlib.pyplot as plt
 from Connectome_Spatial_Smoothing import CSS as css
 from scilpy.io.utils import add_overwrite_arg, assert_inputs_exist
 from surfplot import Plot
-from neuromaps.datasets import fetch_fslr
 
 from scilpy.io.streamlines import (reconstruct_streamlines,
                                    reconstruct_streamlines_from_hdf5)
@@ -33,10 +32,11 @@ from dipy.io.stateful_tractogram import (Origin, Space,
 from dipy.io.streamline import save_tractogram, load_tractogram
 from scilpy.io.streamlines import load_tractogram_with_reference
 
-from neuromaps import nulls
-from neuromaps import stats as stats_neuromaps
-from scipy import stats
-from neuromaps.images import dlabel_to_gifti
+#from neuromaps import nulls
+#from neuromaps import stats as stats_neuromaps
+#from scipy import stats
+#from neuromaps.images import dlabel_to_gifti
+#from neuromaps.datasets import fetch_fslr
 
 
 def _build_arg_parser():
@@ -196,59 +196,59 @@ def main():
     args = parser.parse_args()
     assert_inputs_exist(parser, [args.in_tractogram, args.surf_lh, args.surf_rh, args.surf_rh, args.cifti_file])
 
-    # # Load the input files.
-    # print("Loading file {}".format(args.in_tractogram))
-    # sft = load_tractogram_with_reference(parser, args, args.in_tractogram)
+    # Load the input files.
+    print("Loading file {}".format(args.in_tractogram))
+    sft = load_tractogram_with_reference(parser, args, args.in_tractogram)
 
-    # if args.dps_name:
-    #     args.weights = load_streamline_dps(sft, args.dps_name)
-    # else:
-    #     args.weights = None
+    if args.dps_name:
+        args.weights = load_streamline_dps(sft, args.dps_name)
+    else:
+        args.weights = None
 
-    # # Map high-resolution structural connectivity
-    # #output_sft = '/home/pabaua/dev_hiball/css_test/sft.trk'
-    # #sft_map = streamlines_from_hdf5('/home/pabaua/Desktop/sub-pl007_ses-v1__decompose.h5', output_sft)
-    # #args.in_tractogram = output_sft
-    # connectome = css.map_high_resolution_structural_connectivity(args.in_tractogram, args.surf_lh, args.surf_rh, threshold=2, cifti_file=args.cifti_file, subcortex=True, weights=args.weights)
-    # #connectome = abs(connectome)
+    # Map high-resolution structural connectivity
+    #output_sft = '/home/pabaua/dev_hiball/css_test/sft.trk'
+    #sft_map = streamlines_from_hdf5('/home/pabaua/Desktop/sub-pl007_ses-v1__decompose.h5', output_sft)
+    #args.in_tractogram = output_sft
+    connectome = css.map_high_resolution_structural_connectivity(args.in_tractogram, args.surf_lh, args.surf_rh, threshold=2, cifti_file=args.cifti_file, subcortex=True, weights=args.weights)
+    #connectome = abs(connectome)
 
-    # # Compute and apply the smoothing kernel to the connectome
-    # smoothing_kernel = css.compute_smoothing_kernel(
-    #     args.surf_lh, args.surf_rh, fwhm=2, epsilon=0.1, cifti_file=args.cifti_file, subcortex=True)
-    # connectome = css.smooth_high_resolution_connectome(connectome, smoothing_kernel)
+    # Compute and apply the smoothing kernel to the connectome
+    smoothing_kernel = css.compute_smoothing_kernel(
+        args.surf_lh, args.surf_rh, fwhm=2, epsilon=0.1, cifti_file=args.cifti_file, subcortex=True)
+    connectome = css.smooth_high_resolution_connectome(connectome, smoothing_kernel)
 
-    # # Save and load smoothed connectome to disk
+    # Save and load smoothed connectome to disk
     # sparse.save_npz('/home/pabaua/dev_hiball/css_test/smoothed_high_resolution_connectome.npz', connectome)
     # print("Loading connectome")
-    connectome = sparse.load_npz('/home/pabaua/dev_hiball/css_test/smoothed_high_resolution_connectome.npz')
-    print("Loaded connectome")
+    # connectome = sparse.load_npz('/home/pabaua/dev_hiball/css_test/smoothed_high_resolution_connectome.npz')
+    # print("Loaded connectome")
 
     # Filter the connectome based on a specific structure
     connectome = filter_connectome(connectome, args.cifti_file, structure='CIFTI_STRUCTURE_ACCUMBENS_LEFT')
-    #connectome.data[np.isnan(connectome.data)] = 0.0
-    #connectome.data[connectome.data < 0.01] = 0.0
+    # connectome.data[np.isnan(connectome.data)] = 0.0
+    # connectome.data[connectome.data < 0.01] = 0.0
 
 
     # Compute streamline incidence, normalize and save to a new CIFTI file
-    #streamline_incidence = np.log1p(np.array(connectome.sum(axis=1))[..., 0]) / np.max(np.log1p(np.array(connectome.sum(axis=1))[..., 0]))
+    # streamline_incidence = np.log1p(np.array(connectome.sum(axis=1))[..., 0]) / np.max(np.log1p(np.array(connectome.sum(axis=1))[..., 0]))
     streamline_incidence = np.log1p(np.array(connectome.sum(axis=1))[..., 0])#[:64984]
     print(streamline_incidence.shape)
     cifti_si = save_cifti_file(streamline_incidence, args.cifti_file, args.out_file)
-    cifti_si = nib.load(args.out_file)
+    # cifti_si = nib.load(args.out_file)
     # Plot surface using the new CIFTI data
-    plot_surface(cifti_file=cifti_si)
+    # plot_surface(cifti_file=cifti_si)
     
 
-    curvature = nib.load('/home/pabaua/dev_tpil/results/results_new_bundle/23-10-19_accumbofrontal/results/sub-pl007_ses-v1/Fs_ciftify/sub-pl007_ses-v1/MNINonLinear/fsaverage_LR32k/sub-pl007_ses-v1.curvature.32k_fs_LR_resampled.dscalar.nii').get_fdata()
-    print(np.min(np.abs(curvature)))
-    print(np.max(np.abs(curvature)))
-    sulc = nib.load('/home/pabaua/dev_tpil/results/results_new_bundle/23-10-19_accumbofrontal/results/sub-pl007_ses-v1/Fs_ciftify/sub-pl007_ses-v1/MNINonLinear/fsaverage_LR32k/sub-pl007_ses-v1.curvature.32k_fs_LR_resampled_abs.gii')
-    cifti_si = nib.load('/home/pabaua/dev_tpil/results/results_map_projection/test_css.dscalar.gii')
-    print(np.min(cifti_si.agg_data()))
-    print(np.max(cifti_si.agg_data()))
-    nulls_t = nulls.alexander_bloch(cifti_si, atlas='fsLR', density='32k', n_perm=500, seed=1234)
-    corr, p = stats_neuromaps.compare_images(cifti_si, sulc, nulls=nulls_t)
-    print(corr)
-    print(p)
+    # curvature = nib.load('/home/pabaua/dev_tpil/results/results_new_bundle/23-10-19_accumbofrontal/results/sub-pl007_ses-v1/Fs_ciftify/sub-pl007_ses-v1/MNINonLinear/fsaverage_LR32k/sub-pl007_ses-v1.curvature.32k_fs_LR_resampled.dscalar.nii').get_fdata()
+    # print(np.min(np.abs(curvature)))
+    # print(np.max(np.abs(curvature)))
+    # sulc = nib.load('/home/pabaua/dev_tpil/results/results_new_bundle/23-10-19_accumbofrontal/results/sub-pl007_ses-v1/Fs_ciftify/sub-pl007_ses-v1/MNINonLinear/fsaverage_LR32k/sub-pl007_ses-v1.curvature.32k_fs_LR_resampled_abs.gii')
+    # cifti_si = nib.load('/home/pabaua/dev_tpil/results/results_map_projection/test_css.dscalar.gii')
+    # print(np.min(cifti_si.agg_data()))
+    # print(np.max(cifti_si.agg_data()))
+    # nulls_t = nulls.alexander_bloch(cifti_si, atlas='fsLR', density='32k', n_perm=500, seed=1234)
+    # corr, p = stats_neuromaps.compare_images(cifti_si, sulc, nulls=nulls_t)
+    # print(corr)
+    # print(p)
 if __name__ == "__main__":
     main()

@@ -7,7 +7,7 @@
 
 my_singularity_img='/home/pabaua/dev_scil/containers/containers_scilus_1.6.0.sif' # or .sif
 my_main_nf='/home/pabaua/dev_scil/tractoflow/main.nf'
-my_input='/home/pabaua/dev_tpil/data/BIDS_dataset/dataset'
+my_input='/home/pabaua/dev_tpil/data/BIDS_dataset/dataset_2'
 
 
 NXF_VER=21.10.6 nextflow run $my_main_nf --bids $my_input \

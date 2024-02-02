@@ -100,7 +100,7 @@ def compute_correlations(dtseries_data, seed_time_series):
     :param seed_time_series: Time series of the seed region (nucleus accumbens).
     :return: Correlation map.
     """
-    path_func_original = '/home/pabaua/dev_tpil/results/results_fmriprep/23-11-26_fmriprep/sub-007/ses-v1/func/sub-007_ses-v1_task-rest_space-T1w_desc-preproc_bold.nii.gz'
+    path_func_original = '/home/pabaua/dev_tpil/results/results_fmriprep/24-01-16_fmriprep/sub-007/ses-v1/func/sub-007_ses-v1_task-rest_space-T1w_desc-preproc_bold.nii.gz'
     confounds_simple, sample_mask = load_confounds_strategy(path_func_original, denoise_strategy='scrubbing')
     print(confounds_simple)
     cleaned_data = signal.clean(dtseries_data, detrend=True, standardize=True, low_pass=0.15, high_pass=0.01, t_r=1.075, confounds=confounds_simple, ensure_finite=True)
@@ -121,13 +121,13 @@ def main():
     Main function to execute the pipeline for connectivity mapping and visualization.
     """
     # Example usage
-    dtseries_file_path = '/home/pabaua/dev_tpil/results/results_fmriprep/23-11-26_fmriprep/sub-002/ses-v1/func/sub-002_ses-v1_task-rest_space-fsLR_den-91k_bold.dtseries.nii'
-    bold_img = nib.load('/home/pabaua/dev_tpil/data/fmriprep_derivatives/sub-007/sub-007_ses-v1_task-rest_space-T1w__desc-lfofilterCleaned_bold.nii.gz')
-    lh_surf_white = '/home/pabaua/dev_tpil/results/results_new_bundle/23-10-19_accumbofrontal/results/sub-pl007_ses-v1/Fs_ciftify/sub-pl007_ses-v1/T1w/fsaverage_LR32k/sub-pl007_ses-v1.L.white.32k_fs_LR.surf.gii'
-    rh_surf_white = '/home/pabaua/dev_tpil/results/results_new_bundle/23-10-19_accumbofrontal/results/sub-pl007_ses-v1/Fs_ciftify/sub-pl007_ses-v1/T1w/fsaverage_LR32k/sub-pl007_ses-v1.R.white.32k_fs_LR.surf.gii'
-    lh_surf_pial = '/home/pabaua/dev_tpil/results/results_new_bundle/23-10-19_accumbofrontal/results/sub-pl007_ses-v1/Fs_ciftify/sub-pl007_ses-v1/T1w/fsaverage_LR32k/sub-pl007_ses-v1.L.pial.32k_fs_LR.surf.gii'
-    rh_surf_pial = '/home/pabaua/dev_tpil/results/results_new_bundle/23-10-19_accumbofrontal/results/sub-pl007_ses-v1/Fs_ciftify/sub-pl007_ses-v1/T1w/fsaverage_LR32k/sub-pl007_ses-v1.R.pial.32k_fs_LR.surf.gii'
-    mask_img = nib.load('/home/pabaua/dev_tpil/data/fmriprep_derivatives/sub-007/sub-007_ses-v1_task-rest_space-T1w__desc-processed_mask.nii.gz')
+    #dtseries_file_path = '/home/pabaua/dev_tpil/results/results_fmriprep/24-01-17_fmriprep_multiecho/sub-001/func/sub-001_task-rest_space-fsLR_den-91k_bold.dtseries.nii'
+    bold_img = nib.load('/home/pabaua/dev_tpil/results/results_fmriprep/24-01-16_fmriprep/sub-007/ses-v1/func/sub-007_ses-v1_task-rest_space-T1w_desc-preproc_bold.nii.gz')
+    lh_surf_white = '/home/pabaua/dev_tpil/results/results_article/results/sub-007/ses-v1/Fs_ciftify/sub-007_ses-v1_white_resampled_lh.surf.gii'
+    rh_surf_white = '/home/pabaua/dev_tpil/results/results_article/results/sub-007/ses-v1/Fs_ciftify/sub-007_ses-v1_white_resampled_rh.surf.gii'
+    lh_surf_pial = '/home/pabaua/dev_tpil/results/results_article/results/sub-007/ses-v1/Fs_ciftify/sub-007_ses-v1_pial_resampled_lh.surf.gii'
+    rh_surf_pial = '/home/pabaua/dev_tpil/results/results_article/results/sub-007/ses-v1/Fs_ciftify/sub-007_ses-v1_pial_resampled_rh.surf.gii'
+    mask_img = nib.load('/home/pabaua/dev_tpil/results/results_fmriprep/24-01-16_fmriprep/sub-007/ses-v1/func/sub-007_ses-v1_task-rest_space-T1w_desc-brain_mask.nii.gz')
 
     # Load dtseries file
     #dtseries_img, dtseries_data = load_dtseries_file(dtseries_file_path)
@@ -142,7 +142,7 @@ def main():
     #nucleus_accumbens_mask = identify_nucleus_accumbens(dtseries_img, 'CIFTI_STRUCTURE_ACCUMBENS_LEFT')
     #seed_time_series = np.mean(dtseries_data[:, nucleus_accumbens_mask], axis=1)
     # load segmentations
-    seg_img = nib.load('/home/pabaua/dev_tpil/results/results_fslfirst/clbp/sub-pl007_ses-v1/Subcortex_segmentation/sub-pl007_ses-v1_all_fast_firstseg.nii.gz')
+    seg_img = nib.load('/home/pabaua/dev_tpil/results/results_article/results/sub-007/ses-v1/Subcortex_segmentation/sub-007_ses-v1_all_fast_firstseg.nii.gz')
     mask_img = nib.Nifti1Image((seg_img.get_fdata() == 26).astype(int), seg_img.affine, dtype=np.int32)
     seed_time_series = NiftiLabelsMasker(mask_img).fit_transform(bold_img)
     #seed_time_series[np.isnan(seed_time_series)] = 0.0

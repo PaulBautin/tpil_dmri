@@ -26,9 +26,9 @@ from trimeshpy.io import load_mesh_from_file
 import importlib
 import trimeshpy.vtk_util as vtk_u
 from trimeshpy.trimesh_class import TriMesh
-from scilpy.io.utils import (add_overwrite_arg,
-                             assert_inputs_exist,
-                             assert_outputs_exist)
+#from scilpy.io.utils import (add_overwrite_arg,
+#                             assert_inputs_exist,
+#                             assert_outputs_exist)
 from scipy.io import loadmat
 
 
@@ -60,7 +60,7 @@ def _build_arg_parser():
     p.add_argument('--ref_img',
                    help='Reference image (NIfTI format).')
 
-    add_overwrite_arg(p)
+    #add_overwrite_arg(p)
     return p
 
 
@@ -68,9 +68,9 @@ def main():
     parser = _build_arg_parser()
     args = parser.parse_args()
 
-    assert_inputs_exist(parser, args.in_surface,
-                        [args.ants_affine, args.ants_warp])
-    assert_outputs_exist(parser, args, args.out_surface)
+    # assert_inputs_exist(parser, args.in_surface,
+    #                     [args.ants_affine, args.ants_warp])
+    # assert_outputs_exist(parser, args, args.out_surface)
 
     # Load mesh
     mesh = load_mesh_from_file(args.in_surface)
