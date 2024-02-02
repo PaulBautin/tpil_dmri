@@ -16,7 +16,7 @@
                                # https://docs.computecanada.ca/wiki/B%C3%A9luga/en#Node_Characteristics
 #SBATCH --mem=0                # --> 0 means you take all the memory of the node. If you think you will need
                                # all the node, you can keep 0.
-#SBATCH --time=6:00:00
+#SBATCH --time=72:00:00
 
 #SBATCH --mail-user=paul.bautin@polymtl.ca
 #SBATCH --mail-type=BEGIN
@@ -39,4 +39,5 @@ my_licence_fs='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/l
 export APPTAINERENV_FS_LICENSE=$my_licence_fs
 apptainer exec --cleanenv $my_singularity_img env | grep FS_LICENSE
 
-unset PYTHONPATH; apptainer run --cleanenv -B /project:/project -B /scratch:/scratch $my_singularity_img $my_input $my_output participant -w $my_work --output-spaces T1w --participant-label 007 --cifti-output 91k --bids-filter-file $bids_filter --fs-subjects-dir $fs_dir
+for subject in ${my_input}/sub-*; do
+unset PYTHONPATH; apptainer run --cleanenv -B /project:/project -B /scratch:/scratch $my_singularity_img $my_input $my_output participant -w $my_work --output-spaces T1w --participant-label ${subject#sub-*} --cifti-output 91k --bids-filter-file $bids_filter --fs-subjects-dir $fs_dir; done
