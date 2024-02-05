@@ -1,0 +1,9 @@
+{
+    "fmap": {"datatype": "fmap", "session": "v2"},
+    "bold": {"datatype": "func", "suffix": "bold", "session": "v2"},
+    "sbref": {"datatype": "func", "suffix": "sbref", "session": "v2"},
+    "flair": {"datatype": "anat", "suffix": "FLAIR", "session": "v2"},
+    "t2w": {"datatype": "anat", "suffix": "T2w", "session": "v2"},
+    "t1w": {"datatype": "anat", "suffix": "T1w", "session": "v2"},
+    "roi": {"datatype": "anat", "suffix": "roi", "session": "v2"}
+  }
