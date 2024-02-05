@@ -38,5 +38,5 @@ my_licence_fs='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/l
 for subject in ${my_input}/sub-*; do
 export APPTAINERENV_FS_LICENSE=$my_licence_fs
 apptainer exec --cleanenv -B /project:/project -B /scratch:/scratch $my_singularity_img env | grep FS_LICENSE
-apptainer run --cleanenv -B /project:/project -B /scratch:/scratch $my_singularity_img $my_input $my_output participant -w $my_work --output-spaces T1w --participant-label ${subject#sub-*} --cifti-output 91k --bids-filter-file $bids_filter --fs-subjects-dir $fs_dir; 
+apptainer run --cleanenv -B /project:/project -B /scratch:/scratch $my_singularity_img $my_input $my_output participant -w $my_work --output-spaces T1w --participant-label ${subject##*sub-} --cifti-output 91k --bids-filter-file $bids_filter --fs-subjects-dir $fs_dir; 
 done
