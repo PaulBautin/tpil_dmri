@@ -13,7 +13,7 @@
                                # https://docs.computecanada.ca/wiki/B%C3%A9luga/en#Node_Characteristics
 #SBATCH --mem=0                # --> 0 means you take all the memory of the node. If you think you will need
                                # all the node, you can keep 0.
-#SBATCH --time=6:00:00
+#SBATCH --time=120:00:00
 
 #SBATCH --mail-user=paul.bautin@polymtl.ca
 #SBATCH --mail-type=BEGIN
@@ -29,8 +29,8 @@ my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/contain
 my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/BIDS_dataset_longitudinale/dataset'
 my_output='/home/pabaua/scratch/tpil_dev/results/all/2024-02-02_fmriprep_v1/'
 my_work='/home/pabaua/scratch/tpil_dev/results/all/2024-02-02_fmriprep_v1/work/'
-fs_dir='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/freesurfer_v2'
-bids_filter='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/tpil_dmri/script_local/fmriprep_bids_filter_v2.json'
+fs_dir='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/freesurfer_v1'
+bids_filter='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/tpil_dmri/script_local/fmriprep_bids_filter_v1.json'
 
 my_licence_fs='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/license.txt'
 
