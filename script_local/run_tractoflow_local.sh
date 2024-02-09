@@ -13,5 +13,5 @@ my_input='/home/pabaua/dev_tpil/data/BIDS_dataset_longitudinale/dataset/'
 NXF_VER=21.10.6 nextflow run $my_main_nf --bids $my_input \
     -with-singularity $my_singularity_img -resume -with-report report.html \
     --dti_shells "0 1000" --fodf_shells "0 1000 2000" -profile bundling \
-#    --bidsignore '/home/pabaua/dev_tpil/data/BIDS_dataset_longitudinale/dataset/.bidsignore'
+    --bidsignore '/home/pabaua/dev_tpil/data/BIDS_dataset_longitudinale/dataset/.bidsignore'
 
