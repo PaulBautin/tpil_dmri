@@ -11,7 +11,7 @@
 #SBATCH --nodes=1
 #SBATCH --gpus-per-node=v100:1
 #SBATCH --cpus-per-task=32
-#SBATCH --mem=0
+#SBATCH --mem=183000
 #SBATCH --time=48:00:00
 
 #SBATCH --mail-user=paul.bautin@polymtl.ca
