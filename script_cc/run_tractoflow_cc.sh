@@ -7,15 +7,10 @@
 #   - Dti_shells 0 and 1000 (usually <1200), Fodf_shells 0 1000 and 2000 (usually >700, multishell CSD-ms).
 #   - profile: bundling, bundling profile will set the seeding strategy to WM as opposed to interface seeding that is usually used for connectomics
 
+#SBATCH --nodes=1
 #SBATCH --gpus-per-node=v100:1
-#SBATCH --nodes=1              # --> Generally depends on your nb of subjects.
-                               # See the comment for the cpus-per-task. One general rule could be
-                               # that if you have more subjects than cores/cpus (ex, if you process 38
-                               # subjects on 32 cpus-per-task), you could ask for one more node.
-#SBATCH --cpus-per-task=32     # --> You can see here the choices. For beluga, you can choose 32, 40 or 64.
-                               # https://docs.computecanada.ca/wiki/B%C3%A9luga/en#Node_Characteristics
-#SBATCH --mem=0                # --> 0 means you take all the memory of the node. If you think you will need
-                               # all the node, you can keep 0.
+#SBATCH --cpus-per-task=32
+#SBATCH --mem=0
 #SBATCH --time=48:00:00
 
 #SBATCH --mail-user=paul.bautin@polymtl.ca
