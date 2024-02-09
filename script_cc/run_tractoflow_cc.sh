@@ -8,9 +8,9 @@
 #   - profile: bundling, bundling profile will set the seeding strategy to WM as opposed to interface seeding that is usually used for connectomics
 
 #SBATCH --nodes=1
-#SBATCH --gpus-per-node=v100:1
-#SBATCH --cpus-per-task=32
-#SBATCH --mem=0
+#SBATCH --gpus-per-node=p100:2
+#SBATCH --ntasks-per-node=32
+#SBATCH --mem=127000M
 #SBATCH --time=48:00:00
 
 #SBATCH --mail-user=paul.bautin@polymtl.ca
