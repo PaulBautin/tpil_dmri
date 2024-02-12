@@ -9,9 +9,9 @@
 
 
 #SBATCH --nodes=1
-#SBATCH --gpus-per-node=p100:2
+#SBATCH --gpus-per-node=v100:1
 #SBATCH --ntasks-per-node=32
-#SBATCH --mem=127000M
+#SBATCH --mem=183000M
 #SBATCH --time=48:00:00
 
 #SBATCH --mail-user=paul.bautin@polymtl.ca
