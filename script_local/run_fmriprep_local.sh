@@ -14,9 +14,9 @@ my_licence_fs='/home/pabaua/dev_tpil/data/Freesurfer/license.txt'
 export SINGULARITYENV_FS_LICENSE=$my_licence_fs
 #singularity exec --cleanenv fmriprep.simg env | grep FS_LICENSE
 
-my_participants="004 007 010"
+my_participants='007 010'
 
-singularity run $my_singularity_img $my_input $my_output participant -w $my_work --output-spaces T1w --cifti-output 91k --bids-filter-file /home/pabaua/dev_tpil/tpil_dmri/script_local/fmriprep_bids_filter_v1.json --fs-subjects-dir /home/pabaua/dev_tpil/data/Freesurfer/freesurfer_v1
+singularity run $my_singularity_img $my_input $my_output participant -w $my_work --participant-label $my_participants --output-spaces T1w --cifti-output 91k --bids-filter-file /home/pabaua/dev_tpil/tpil_dmri/script_local/fmriprep_bids_filter_v1.json --fs-subjects-dir /home/pabaua/dev_tpil/data/Freesurfer/freesurfer_v1
 
 #singularity run $my_singularity_img $my_input $my_output participant -w $my_work --output-spaces T1w --participant-label 012 --cifti-output 91k
 
