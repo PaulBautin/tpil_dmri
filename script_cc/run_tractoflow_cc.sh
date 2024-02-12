@@ -25,8 +25,6 @@
 
 module load StdEnv/2020 java/14.0.2 nextflow/22.10.8 apptainer/1.1.8
 
-git -C /home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/tractoflow checkout tags/2.4.3
-
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.6.0.sif' # or .img
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/tractoflow/main.nf'
 my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/BIDS_dataset_longitudinale/dataset/'
@@ -37,6 +35,6 @@ export NXF_CLUSTER_SEED=$(shuf -i 0-16777216 -n 1)
 
 nextflow run $my_main_nf --bids $my_input \
     -with-singularity $my_singularity_img -resume -with-report report.html \
-    --dti_shells "0 1000" --fodf_shells "0 1000 2000" -profile bundling --run_gibbs_correction true \
-    --bidsignore $my_bidsignore  -profile use_gpu
+    --dti_shells "0 1000" --fodf_shells "0 1000 2000" -profile use_gpu,bundling --run_gibbs_correction true \
+    --bidsignore $my_bidsignore
 
