@@ -29,11 +29,8 @@ my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/tractoflow/main
 my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/BIDS_dataset_longitudinale/dataset/'
 my_bidsignore='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/BIDS_dataset_longitudinale/dataset/.bidsignore'
 
-
-export NXF_CLUSTER_SEED=$(shuf -i 0-16777216 -n 1)
-
-srun nextflow run $my_main_nf --bids $my_input \
+nextflow run $my_main_nf --bids $my_input \
     -with-singularity $my_singularity_img -resume -with-report report.html \
     --dti_shells "0 1000" --fodf_shells "0 1000 2000" -profile bundling --run_gibbs_correction true \
-    --bidsignore $my_bidsignore -with-mpi
+    --bidsignore $my_bidsignore
 
