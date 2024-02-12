@@ -8,10 +8,9 @@
 #   - profile: bundling, bundling profile will set the seeding strategy to WM as opposed to interface seeding that is usually used for connectomics
 
 
-#SBATCH --nodes=1
-#SBATCH --gpus-per-node=v100:1
+#SBATCH --nodes=5
 #SBATCH --cpus-per-task=32
-#SBATCH --mem=127000M
+#SBATCH --mem=0
 #SBATCH --time=48:00:00
 
 #SBATCH --mail-user=paul.bautin@polymtl.ca
@@ -33,8 +32,8 @@ my_bidsignore='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/BIDS_da
 
 export NXF_CLUSTER_SEED=$(shuf -i 0-16777216 -n 1)
 
-nextflow run $my_main_nf --bids $my_input \
+srun nextflow run $my_main_nf --bids $my_input \
     -with-singularity $my_singularity_img -resume -with-report report.html \
-    --dti_shells "0 1000" --fodf_shells "0 1000 2000" -profile use_gpu,bundling --run_gibbs_correction true \
-    --bidsignore $my_bidsignore
+    --dti_shells "0 1000" --fodf_shells "0 1000 2000" -profile bundling --run_gibbs_correction true \
+    --bidsignore $my_bidsignore -with-mpi
 
