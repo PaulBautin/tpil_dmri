@@ -40,5 +40,5 @@ my_participants='002 006 007 008 010 012 013 014 015 016 017 019 021 022 023 024
 #for subject in ${my_input}/sub-*; do
 export APPTAINERENV_FS_LICENSE=$my_licence_fs
 apptainer exec --cleanenv -B /project:/project -B /scratch:/scratch $my_singularity_img env | grep FS_LICENSE
-apptainer run --cleanenv -B /project:/project -B /scratch:/scratch $my_singularity_img $my_input $my_output participant -w $my_work --output-spaces T1w --cifti-output 91k --bids-filter-file $bids_filter --fs-subjects-dir $fs_dir --skip_bids_validation
+apptainer run --cleanenv -B /project:/project -B /scratch:/scratch $my_singularity_img $my_input $my_output participant --participant-label $my_participants -w $my_work --output-spaces T1w --cifti-output 91k --bids-filter-file $bids_filter --fs-subjects-dir $fs_dir --skip_bids_validation
 #done
