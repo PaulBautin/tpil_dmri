@@ -27,8 +27,8 @@ module load StdEnv/2020 apptainer/1.1.8
 
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/fmriprep-23.2.0.simg' # or .sif
 my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/BIDS_dataset_longitudinale/dataset'
-my_output='/home/pabaua/scratch/tpil_dev/results/all/2024-02-02_fmriprep_v1/'
-my_work='/home/pabaua/scratch/tpil_dev/results/all/2024-02-02_fmriprep_v1/work/'
+my_output='/home/pabaua/scratch/tpil_dev/results/all/24-02-12_fmriprep/'
+my_work='/home/pabaua/scratch/tpil_dev/results/all/24-02-12_fmriprep/work/'
 fs_dir='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/freesurfer_v1'
 bids_filter='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/tpil_dmri/script_local/fmriprep_bids_filter_v1.json'
 
