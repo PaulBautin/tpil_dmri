@@ -5,7 +5,7 @@
 #   - with-singularity: container image fMRIprep 23.2.0
 
 
-#SBATCH --nodes=2             # --> Generally depends on your nb of subjects.
+#SBATCH --nodes=3             # --> Generally depends on your nb of subjects.
                                # See the comment for the cpus-per-task. One general rule could be
                                # that if you have more subjects than cores/cpus (ex, if you process 38
                                # subjects on 32 cpus-per-task), you could ask for one more node.
