@@ -71,131 +71,132 @@ def main():
     """
     slices = 200
 
-    # Load images into dataframe
-    directory = '/media/pabaua/Transcend/fmriprep/23-10-19/V1/'
-    common_name = '*/*/anat/*_hemi-L_pial.surf.gii'
-    df_surf_lh_img = find_files_with_common_name(directory, common_name, id='surf_lh')
-    common_name = '*/*/anat/*_hemi-R_pial.surf.gii'
-    df_surf_rh_img = find_files_with_common_name(directory, common_name, id='surf_rh')
-    common_name = '*/*/anat/*_hemi-L_smoothwm.surf.gii'
-    df_inner_lh_img = find_files_with_common_name(directory, common_name, id='inner_lh')
-    common_name = '*/*/anat/*_hemi-R_smoothwm.surf.gii'
-    df_inner_rh_img = find_files_with_common_name(directory, common_name, id='inner_rh')
-    directory_rapidtide = '/home/pabaua/dev_tpil/data/fmriprep_derivatives/rapidtide/'
-    directory_conn = '/home/pabaua/dev_tpil/results/results_connectflow/23-08-21_connectflow/all_schaefer/'
-    common_name = '*/*_task-rest_space-MNI152NLin6Asym_desc-lfofilterCleaned_bold.nii.gz'
-    df_func_img = find_files_with_common_name_rapidtide(directory_rapidtide, common_name, id='func')
-    common_name = '*/*/func/*_task-rest_space-MNI152NLin6Asym_desc-aparcaseg_dseg.nii.gz'
-    df_seg_img = find_files_with_common_name(directory, common_name, id='seg')
-    common_name = '*/*/func/*_task-rest_space-MNI152NLin6Asym_desc-brain_mask.nii.gz'
-    df_mask_img = find_files_with_common_name(directory, common_name, id='mask')
-    df_dem = pd.read_excel('/home/pabaua/dev_tpil/data/Données_Paul_v2.xlsx', sheet_name=1)
-    df_img = pd.merge(df_func_img, df_seg_img, on='subject')
-    df_img = pd.merge(df_img, df_mask_img, on='subject')
-    df_img = pd.merge(df_img, df_dem, on='subject')
-    df_img = pd.merge(df_img, df_surf_lh_img, on='subject')
-    df_img = pd.merge(df_img, df_surf_rh_img, on='subject')
-    df_img = pd.merge(df_img, df_inner_lh_img, on='subject')
-    df_img = pd.merge(df_img, df_inner_rh_img, on='subject')
-    df_img['surf_L_comm'] = "/home/pabaua/neuromaps-data/atlases/fsLR/tpl-fsLR_den-32k_hemi-L_midthickness.surf.gii"
-    df_img['surf_R_comm'] = "/home/pabaua/neuromaps-data/atlases/fsLR/tpl-fsLR_den-32k_hemi-R_midthickness.surf.gii"
-    df_img = df_img[df_img.subject.isin(['sub-07'])]
-    print(df_img)
+    # # Load images into dataframe
+    # directory = '/media/pabaua/Transcend/fmriprep/23-10-19/V1/'
+    # common_name = '*/*/anat/*_hemi-L_pial.surf.gii'
+    # df_surf_lh_img = find_files_with_common_name(directory, common_name, id='surf_lh')
+    # common_name = '*/*/anat/*_hemi-R_pial.surf.gii'
+    # df_surf_rh_img = find_files_with_common_name(directory, common_name, id='surf_rh')
+    # common_name = '*/*/anat/*_hemi-L_smoothwm.surf.gii'
+    # df_inner_lh_img = find_files_with_common_name(directory, common_name, id='inner_lh')
+    # common_name = '*/*/anat/*_hemi-R_smoothwm.surf.gii'
+    # df_inner_rh_img = find_files_with_common_name(directory, common_name, id='inner_rh')
+    # directory_rapidtide = '/home/pabaua/dev_tpil/data/fmriprep_derivatives/rapidtide/'
+    # directory_conn = '/home/pabaua/dev_tpil/results/results_connectflow/23-08-21_connectflow/all_schaefer/'
+    # common_name = '*/*_task-rest_space-MNI152NLin6Asym_desc-lfofilterCleaned_bold.nii.gz'
+    # df_func_img = find_files_with_common_name_rapidtide(directory_rapidtide, common_name, id='func')
+    # common_name = '*/*/func/*_task-rest_space-MNI152NLin6Asym_desc-aparcaseg_dseg.nii.gz'
+    # df_seg_img = find_files_with_common_name(directory, common_name, id='seg')
+    # common_name = '*/*/func/*_task-rest_space-MNI152NLin6Asym_desc-brain_mask.nii.gz'
+    # df_mask_img = find_files_with_common_name(directory, common_name, id='mask')
+    # df_dem = pd.read_excel('/home/pabaua/dev_tpil/data/Données_Paul_v2.xlsx', sheet_name=1)
+    # df_img = pd.merge(df_func_img, df_seg_img, on='subject')
+    # df_img = pd.merge(df_img, df_mask_img, on='subject')
+    # df_img = pd.merge(df_img, df_dem, on='subject')
+    # df_img = pd.merge(df_img, df_surf_lh_img, on='subject')
+    # df_img = pd.merge(df_img, df_surf_rh_img, on='subject')
+    # df_img = pd.merge(df_img, df_inner_lh_img, on='subject')
+    # df_img = pd.merge(df_img, df_inner_rh_img, on='subject')
+    # df_img['surf_L_comm'] = "/home/pabaua/neuromaps-data/atlases/fsLR/tpl-fsLR_den-32k_hemi-L_midthickness.surf.gii"
+    # df_img['surf_R_comm'] = "/home/pabaua/neuromaps-data/atlases/fsLR/tpl-fsLR_den-32k_hemi-R_midthickness.surf.gii"
+    # df_img = df_img[df_img.subject.isin(['sub-07'])]
+    # print(df_img)
 
-    # load segmentations
-    seg_img = nib.load('/home/pabaua/dev_tpil/data/sub-07-2570132/sub-07-2570132/sub-07/anat/fsl_first/sub-07_all_fast_firstseg.nii.gz')
-    mask_img = nib.Nifti1Image((seg_img.get_fdata() == 26).astype(int), seg_img.affine, dtype=np.int32)
+    # # load segmentations
+    # seg_img = nib.load('/home/pabaua/dev_tpil/data/sub-07-2570132/sub-07-2570132/sub-07/anat/fsl_first/sub-07_all_fast_firstseg.nii.gz')
+    # mask_img = nib.Nifti1Image((seg_img.get_fdata() == 26).astype(int), seg_img.affine, dtype=np.int32)
 
-    atlas = datasets.fetch_atlas_schaefer_2018(n_rois=200)
-    df_img['proj_lh'] = df_img.apply(lambda x : surface.vol_to_surf(x.img_func.slicer[:,:,:,:slices], x.surf_L_comm, mask_img=x.img_mask, kind='ball', n_samples=120).T, axis=1)                         
-    df_img['proj_rh'] = df_img.apply(lambda x : surface.vol_to_surf(x.img_func.slicer[:,:,:,:slices], x.surf_R_comm, mask_img=x.img_mask, kind='ball', n_samples=120).T, axis=1)
-    print(df_img['proj_lh'].mean().shape)
-    df_img['ext'] =  df_img.apply(lambda x : np.hstack((x.proj_lh, x.proj_rh)), axis=1)
-    df_img['ext_sub'] =  df_img.apply(lambda x : NiftiLabelsMasker(mask_img).fit_transform(x.img_func.slicer[:,:,:,:slices]), axis=1)
-    df_img['clean']=  df_img.apply(lambda x : signal.clean(x.ext, detrend=True, standardize='zscore', low_pass=0.15, high_pass=0.01, t_r=1.075, ensure_finite=True), axis=1)
-        # Plot surfaces with functional data
-    surfaces = fetch_fslr()
-    lh, rh = surfaces['inflated']
-    plt.style.use('dark_background')
-    p = Plot(lh, rh, views=['lateral','medial', 'ventral'])
-    p.add_layer(df_img['clean'].mean()[5,:], cbar=True, cmap='jet_r')
-    fig = p.build()
-    plt.show()
-    df_img['clean_sub']=  df_img.apply(lambda x : signal.clean(x.ext_sub, detrend=True, standardize='zscore', low_pass=0.15, high_pass=0.01, t_r=1.075), axis=1)
-    #df_img['clean_tot'] =  df_img.apply(lambda x : np.vstack((x.clean, x.clean_sub)), axis=1)
-    print(df_img['clean'].mean().shape)
-    print(df_img['clean_sub'].mean().shape)
-    df_img['adj'] =  df_img.apply(lambda x : np.arctanh([(stats.pearsonr(x.clean[:,i], x.clean_sub)[0]) for i in range(x.clean.shape[1])]), axis=1)
-    print(df_img['adj'])
-    #df_img = df_img[df_img.adj.apply(lambda x: x.shape  == (107,107))]
-    # sns.heatmap(df_img.adj.mean()[:30], yticklabels=atlas.labels[:30],vmax=0.8,vmin=-0.8)
+    # atlas = datasets.fetch_atlas_schaefer_2018(n_rois=200)
+    # df_img['proj_lh'] = df_img.apply(lambda x : surface.vol_to_surf(x.img_func.slicer[:,:,:,:slices], x.surf_L_comm, mask_img=x.img_mask, kind='ball', n_samples=120).T, axis=1)                         
+    # df_img['proj_rh'] = df_img.apply(lambda x : surface.vol_to_surf(x.img_func.slicer[:,:,:,:slices], x.surf_R_comm, mask_img=x.img_mask, kind='ball', n_samples=120).T, axis=1)
+    # print(df_img['proj_lh'].mean().shape)
+    # df_img['ext'] =  df_img.apply(lambda x : np.hstack((x.proj_lh, x.proj_rh)), axis=1)
+    # df_img['ext_sub'] =  df_img.apply(lambda x : NiftiLabelsMasker(mask_img).fit_transform(x.img_func.slicer[:,:,:,:slices]), axis=1)
+    # df_img['clean']=  df_img.apply(lambda x : signal.clean(x.ext, detrend=True, standardize='zscore', low_pass=0.15, high_pass=0.01, t_r=1.075, ensure_finite=True), axis=1)
+    #     # Plot surfaces with functional data
+    # surfaces = fetch_fslr()
+    # lh, rh = surfaces['inflated']
+    # plt.style.use('dark_background')
+    # p = Plot(lh, rh, views=['lateral','medial', 'ventral'])
+    # p.add_layer(df_img['clean'].mean()[5,:], cbar=True, cmap='jet_r')
+    # fig = p.build()
+    # plt.show()
+    # df_img['clean_sub']=  df_img.apply(lambda x : signal.clean(x.ext_sub, detrend=True, standardize='zscore', low_pass=0.15, high_pass=0.01, t_r=1.075), axis=1)
+    # #df_img['clean_tot'] =  df_img.apply(lambda x : np.vstack((x.clean, x.clean_sub)), axis=1)
+    # print(df_img['clean'].mean().shape)
+    # print(df_img['clean_sub'].mean().shape)
+    # df_img['adj'] =  df_img.apply(lambda x : np.arctanh([(stats.pearsonr(x.clean[:,i], x.clean_sub)[0]) for i in range(x.clean.shape[1])]), axis=1)
+    # print(df_img['adj'])
+    # #df_img = df_img[df_img.adj.apply(lambda x: x.shape  == (107,107))]
+    # # sns.heatmap(df_img.adj.mean()[:30], yticklabels=atlas.labels[:30],vmax=0.8,vmin=-0.8)
+    # # plt.show()
+
+    # labelling_schaefer = brainspace.datasets.load_parcellation('schaefer', scale=200, join=True)
+    # mask = (labelling_schaefer != 0)
+    # df_img['surf_data_func'] = df_img.apply(lambda x: utils.parcellation.map_to_labels(x.adj[-1, :-1], labelling_schaefer, mask=mask, fill=np.nan), axis=1)
+    # df_img['rotated'] = df_img.apply(lambda x: nulls.alexander_bloch(x.surf_data_func, atlas='fsLR', density='32k', n_perm=100, seed=1234), axis=1)
+    # # Plot surfaces with functional data
+    # surfaces = fetch_fslr()
+    # lh, rh = surfaces['inflated']
+    # p = Plot(lh, rh, views=['lateral','medial'])
+    # p.add_layer(df_img['surf_data_func'].mean(), cbar=True, cmap='inferno')
+    # fig = p.build()
     # plt.show()
 
-    labelling_schaefer = brainspace.datasets.load_parcellation('schaefer', scale=200, join=True)
-    mask = (labelling_schaefer != 0)
-    df_img['surf_data_func'] = df_img.apply(lambda x: utils.parcellation.map_to_labels(x.adj[-1, :-1], labelling_schaefer, mask=mask, fill=np.nan), axis=1)
-    df_img['rotated'] = df_img.apply(lambda x: nulls.alexander_bloch(x.surf_data_func, atlas='fsLR', density='32k', n_perm=100, seed=1234), axis=1)
-    # Plot surfaces with functional data
-    surfaces = fetch_fslr()
-    lh, rh = surfaces['inflated']
-    p = Plot(lh, rh, views=['lateral','medial'])
-    p.add_layer(df_img['surf_data_func'].mean(), cbar=True, cmap='inferno')
-    fig = p.build()
-    plt.show()
+    # id='sc'
+    # common_name = '*/Compute_Connectivity/sc_vol_normalized.csv'
+    # df_conn_img = find_files_with_common_name_structural(directory_conn, common_name, id=id)
+    # df_img = pd.merge(df_img, df_conn_img, on='subject')
 
-    id='sc'
-    common_name = '*/Compute_Connectivity/sc_vol_normalized.csv'
-    df_conn_img = find_files_with_common_name_structural(directory_conn, common_name, id=id)
-    df_img = pd.merge(df_img, df_conn_img, on='subject')
+    # id='commit2'
+    # common_name = '*/Compute_Connectivity/commit2_weights.csv'
+    # df_conn_img = find_files_with_common_name_structural(directory_conn, common_name, id=id)
+    # df_img = pd.merge(df_img, df_conn_img, on='subject')
 
-    id='commit2'
-    common_name = '*/Compute_Connectivity/commit2_weights.csv'
-    df_conn_img = find_files_with_common_name_structural(directory_conn, common_name, id=id)
-    df_img = pd.merge(df_img, df_conn_img, on='subject')
+    # id='afd'
+    # common_name = '*/Compute_Connectivity/afd_fixel.csv'
+    # df_conn_img = find_files_with_common_name_structural(directory_conn, common_name, id=id)
+    # df_img = pd.merge(df_img, df_conn_img, on='subject')
 
-    id='afd'
-    common_name = '*/Compute_Connectivity/afd_fixel.csv'
-    df_conn_img = find_files_with_common_name_structural(directory_conn, common_name, id=id)
-    df_img = pd.merge(df_img, df_conn_img, on='subject')
+    # id='len'
+    # common_name = '*/Compute_Connectivity/len.csv'
+    # df_conn_img = find_files_with_common_name_structural(directory_conn, common_name, id=id)
+    # df_img = pd.merge(df_img, df_conn_img, on='subject')
+    # print(df_img)
 
-    id='len'
-    common_name = '*/Compute_Connectivity/len.csv'
-    df_conn_img = find_files_with_common_name_structural(directory_conn, common_name, id=id)
-    df_img = pd.merge(df_img, df_conn_img, on='subject')
+    # list_metrics = []
+    # for id in ['sc', 'commit2', 'len']:
+    #     # shortest path
+    #     metric = '_sp'
+    #     df_img[id + metric] = df_img.apply(lambda x: bct.invert(bct_alg.distance_wei(bct.invert(x['img_' + id]))[0]), axis=1)
+    #     df_img[id + metric] = df_img.apply(lambda x: utils.parcellation.map_to_labels(x[id + metric][7,15:], labelling_schaefer, mask=mask, fill=np.nan), axis=1)
+    #     # Plot surfaces with functional data
+    #     surfaces = fetch_fslr()
+    #     lh, rh = surfaces['inflated']
+    #     p = Plot(lh, rh, views=['lateral','medial'])
+    #     p.add_layer(df_img[id + metric].mean(), cbar=True, cmap='inferno')
+    #     fig = p.build()
+    #     plt.show()
+    #     df_img[id + metric] = df_img.apply(lambda x: stats_neuromaps.compare_images(x.surf_data_func, x[id + metric], nulls=x.rotated)[0], axis=1)
+    #     list_metrics += [id + metric]
+
+    #     # mean first passage time
+    #     metric = '_mfpt'
+    #     df_img[id + metric] = df_img.apply(lambda x: bct.invert(bct_alg.mean_first_passage_time(x['img_' + id])), axis=1)
+    #     df_img[id + metric] = df_img.apply(lambda x: utils.parcellation.map_to_labels(x[id + metric][7,15:], labelling_schaefer, mask=mask, fill=np.nan), axis=1)
+    #     df_img[id + metric] = df_img.apply(lambda x: stats_neuromaps.compare_images(x.surf_data_func, x[id + metric], nulls=x.rotated)[0], axis=1)
+    #     list_metrics += [id + metric]
+
+    #     # mean first passage time
+    #     metric = '_si'
+    #     df_img[id + metric] = df_img.apply(lambda x: bct_alg.search_information(x['img_' + id]), axis=1)
+    #     df_img[id + metric] = df_img.apply(lambda x: utils.parcellation.map_to_labels(x[id + metric][7,15:], labelling_schaefer, mask=mask, fill=np.nan), axis=1)
+    #     df_img[id + metric] = df_img.apply(lambda x: stats_neuromaps.compare_images(x.surf_data_func, x[id + metric], nulls=x.rotated)[0], axis=1)
+    #     list_metrics += [id + metric]
+
+    # #df_img.to_pickle('/home/pabaua/dev_tpil/data/correlations_ohbm_compcorr.pkl')
+    df_img = pd.read_pickle('/home/pabaua/dev_tpil/data/correlations_ohbm_compcorr.pkl')
     print(df_img)
-
-    list_metrics = []
-    for id in ['sc', 'commit2', 'len']:
-        # shortest path
-        metric = '_sp'
-        df_img[id + metric] = df_img.apply(lambda x: bct.invert(bct_alg.distance_wei(bct.invert(x['img_' + id]))[0]), axis=1)
-        df_img[id + metric] = df_img.apply(lambda x: utils.parcellation.map_to_labels(x[id + metric][7,15:], labelling_schaefer, mask=mask, fill=np.nan), axis=1)
-        # Plot surfaces with functional data
-        surfaces = fetch_fslr()
-        lh, rh = surfaces['inflated']
-        p = Plot(lh, rh, views=['lateral','medial'])
-        p.add_layer(df_img[id + metric].mean(), cbar=True, cmap='inferno')
-        fig = p.build()
-        plt.show()
-        df_img[id + metric] = df_img.apply(lambda x: stats_neuromaps.compare_images(x.surf_data_func, x[id + metric], nulls=x.rotated)[0], axis=1)
-        list_metrics += [id + metric]
-
-        # mean first passage time
-        metric = '_mfpt'
-        df_img[id + metric] = df_img.apply(lambda x: bct.invert(bct_alg.mean_first_passage_time(x['img_' + id])), axis=1)
-        df_img[id + metric] = df_img.apply(lambda x: utils.parcellation.map_to_labels(x[id + metric][7,15:], labelling_schaefer, mask=mask, fill=np.nan), axis=1)
-        df_img[id + metric] = df_img.apply(lambda x: stats_neuromaps.compare_images(x.surf_data_func, x[id + metric], nulls=x.rotated)[0], axis=1)
-        list_metrics += [id + metric]
-
-        # mean first passage time
-        metric = '_si'
-        df_img[id + metric] = df_img.apply(lambda x: bct_alg.search_information(x['img_' + id]), axis=1)
-        df_img[id + metric] = df_img.apply(lambda x: utils.parcellation.map_to_labels(x[id + metric][7,15:], labelling_schaefer, mask=mask, fill=np.nan), axis=1)
-        df_img[id + metric] = df_img.apply(lambda x: stats_neuromaps.compare_images(x.surf_data_func, x[id + metric], nulls=x.rotated)[0], axis=1)
-        list_metrics += [id + metric]
-
-    df_img.to_pickle('/home/pabaua/dev_tpil/data/correlations_ohbm_spearman.pkl')
-    df_img = pd.read_pickle('/home/pabaua/dev_tpil/data/correlations_ohbm_spearman.pkl')
     #df_img = df_img.melt(var_name='Category', value_name="Pearson's r")
     # Select only numeric columns for the y-axis and a categorical column for the hue
     numeric_columns = df_img.select_dtypes(include='float').columns

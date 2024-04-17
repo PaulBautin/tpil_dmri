@@ -1,9 +1,5 @@
 {
-    "fmap": {"datatype": "fmap", "session": "v1"},
-    "bold": {"datatype": "func", "suffix": "bold", "session": "v1"},
-    "sbref": {"datatype": "func", "suffix": "sbref", "session": "v1"},
-    "flair": {"datatype": "anat", "suffix": "FLAIR", "session": "v1"},
-    "t2w": {"datatype": "anat", "suffix": "T2w", "session": "v1"},
-    "t1w": {"datatype": "anat", "suffix": "T1w", "session": "v1"},
-    "roi": {"datatype": "anat", "suffix": "roi", "session": "v1"}
-  }
+    "fmap": {"datatype": "fmap", "session": "v1", "acquisition": "rest", "direction": "AP", "suffix": "epi"},
+    "bold": {"datatype": "func", "session": "v1", "task": "rest", "suffix": "bold"},
+    "t1w": {"datatype": "anat", "session": "v1", "suffix": "T1w"}
+}

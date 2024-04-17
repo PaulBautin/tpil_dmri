@@ -33,7 +33,7 @@ mask = fetch_mask(template="fslr32k")
 surf_lh, surf_rh = load_surface()
 label_lh = nib.load("/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.L.BN_Atlas.32k_fs_LR.label.gii")
 label_rh = nib.load("/home/pabaua/dev_tpil/data/BN/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.R.BN_Atlas.32k_fs_LR.label.gii")
-atlas = np.concatenate((label_lh.agg_data(), label_rh.agg_data())).astype("float")
+atlas = np.concatenate((label_lhc, label_rh.agg_data())).astype("float")
 atlas[atlas == -1] = np.nan
 atlas[atlas == 0] = np.nan
 
