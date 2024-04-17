@@ -27,10 +27,10 @@ module load StdEnv/2020 java/14.0.2 nextflow/22.10.8 apptainer/1.1.8
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.6.0.sif' # or .img
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/tractoflow/main.nf'
 my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/BIDS_dataset_longitudinale/dataset_v2/'
-#my_bidsignore='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/BIDS_dataset_longitudinale/dataset/.bidsignore'
+my_bidsignore='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/BIDS_dataset_longitudinale/.bidsignore_tractoflow'
 
 nextflow run $my_main_nf --bids $my_input \
     -with-singularity $my_singularity_img -resume -with-report report.html \
     --dti_shells "0 1000" --fodf_shells "0 1000 2000" -profile bundling --run_gibbs_correction true \
-    #--bidsignore $my_bidsignore
+    --bidsignore $my_bidsignore
 
