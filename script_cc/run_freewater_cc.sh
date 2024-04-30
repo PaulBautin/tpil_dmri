@@ -26,14 +26,20 @@
 #SBATCH --mail-type=ALL
 
 
-module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 apptainer/1.1
+module load StdEnv/2020 java/14.0.2 nextflow/22.10.8 apptainer/1.1.8
 
-
-my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.5.0.sif' # or .img
+my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.6.0.sif' # or .img
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/freewater_flow/main.nf'
-my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/23-09-04_microstructure_con/'
+my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/24-04-30_fw_noddi/'
 
 
 nextflow run $my_main_nf --input $my_input \
+    -with-singularity $my_singularity_img -resume -with-report report.html
+
+
+my_main_nf_noddi='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/noddi_flow/main.nf'
+
+
+nextflow run $my_main_nf_noddi --input $my_input \
     -with-singularity $my_singularity_img -resume -with-report report.html
 
