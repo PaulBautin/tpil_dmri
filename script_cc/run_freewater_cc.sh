@@ -37,9 +37,3 @@ nextflow run $my_main_nf --input $my_input \
     -with-singularity $my_singularity_img -resume -with-report report.html
 
 
-my_main_nf_noddi='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/noddi_flow/main.nf'
-
-
-nextflow run $my_main_nf_noddi --input $my_input \
-    -with-singularity $my_singularity_img -resume -with-report report.html
-
