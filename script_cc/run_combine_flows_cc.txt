@@ -47,3 +47,7 @@ scil_visualize_bundles_mosaic.py \
 bash /home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/combine_flows/tree_for_fw_flow.sh \
 -t /home/pabaua/scratch/tpil_dev/results/all/2024-04-17_tractoflow_bundling/results \
 -o /home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/24-04-30_fw_noddi
+
+bash /home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/combine_flows/tree_for_rbx_flow.sh \
+-t /home/pabaua/scratch/tpil_dev/results/all/2024-04-17_tractoflow_bundling/results \
+-o /home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/24-04-30_rbx

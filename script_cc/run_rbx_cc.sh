@@ -12,7 +12,7 @@
                                # https://docs.computecanada.ca/wiki/B%C3%A9luga/en#Node_Characteristics
 #SBATCH --mem=0                # --> 0 means you take all the memory of the node. If you think you will need
                                # all the node, you can keep 0.
-#SBATCH --time=24:00:00
+#SBATCH --time=48:00:00
 
 #SBATCH --mail-user=paul.bautin@polymtl.ca
 #SBATCH --mail-type=BEGIN
@@ -22,13 +22,12 @@
 #SBATCH --mail-type=ALL
 
 
-module load StdEnv/2020 java/14.0.2 nextflow/22.04.3 apptainer/1.1
+module load StdEnv/2020 java/14.0.2 nextflow/22.10.8 apptainer/1.1.8
 
-
-my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.5.0.sif' # or .img
+my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.6.0.sif' # or .img
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/rbx_flow/main.nf'
-my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/23-09-08_rbx_con'
-my_atlas_dir='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas_v3'
+my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/24-04-30_rbx'
+my_atlas_dir='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/atlas_v31'
 
 
 NXF_DEFAULT_DSL=1 nextflow run $my_main_nf --input $my_input \
