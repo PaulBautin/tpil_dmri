@@ -12,9 +12,9 @@
                                # See the comment for the cpus-per-task. One general rule could be
                                # that if you have more subjects than cores/cpus (ex, if you process 38
                                # subjects on 32 cpus-per-task), you could ask for one more node.
-#SBATCH --cpus-per-task=25     # --> You can see here the choices. For beluga, you can choose 32, 40 or 64.
+#SBATCH --cpus-per-task=32     # --> You can see here the choices. For beluga, you can choose 32, 40 or 64.
                                # https://docs.computecanada.ca/wiki/B%C3%A9luga/en#Node_Characteristics
-#SBATCH --mem=0                # --> 0 means you take all the memory of the node. If you think you will need
+#SBATCH --mem=250G                # --> 0 means you take all the memory of the node. If you think you will need
                                # all the node, you can keep 0.
 #SBATCH --time=48:00:00
 
