@@ -10,7 +10,7 @@
 
 my_singularity_img='/home/pabaua/dev_scil/containers/containers_scilus_1.6.0.sif' # or .img
 my_main_nf='/home/pabaua/dev_scil/freewater_flow/main.nf'
-my_input='/home/pabaua/dev_tpil/data/freewater_test/'
+my_input='/home/pabaua/dev_tpil/data/freewater_data/'
 
 
 NXF_VER=21.10.6 nextflow run $my_main_nf --input $my_input \
