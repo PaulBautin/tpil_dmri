@@ -34,8 +34,8 @@ bids_filter='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/tpil_dmri/scri
 
 my_licence_fs='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/license.txt'
 
-# v1 only remove 004
-my_participants='002 006 007 008 010 012 013 014 015 016 017 019 021 022 023 024 025 027 029 030 031 032 034 035 036 037 038 039 040 041 042 046 047 048 049 050 051 052 053 054 055 056 057 058 059 060 061 062 063 064 065'
+# v1  remove 004 and 035
+my_participants='002 006 007 008 010 012 013 014 015 016 017 019 021 022 023 024 025 027 029 030 031 032 034 036 037 038 039 040 041 042 046 047 048 049 050 051 052 053 054 055 056 057 058 059 060 061 062 063 064 065'
 
 # https://neurostars.org/t/fmriprep-in-compute-canada/28474/6
 export APPTAINERENV_TEMPLATEFLOW_HOME=/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/templateflow
