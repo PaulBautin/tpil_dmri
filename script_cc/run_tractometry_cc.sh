@@ -22,13 +22,13 @@
 
 
 
-module load StdEnv/2020 java/14.0.2 nextflow/21.10.6 apptainer/1.1.8
+module load StdEnv/2020 java/14.0.2 nextflow/21.10.3 apptainer/1.1.8
 
 my_singularity_img='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/containers/scilus_1.6.0.sif' # or .img
 my_main_nf='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_scil/tractometry_flow/main.nf'
 my_input='/home/pabaua/projects/def-pascalt-ab/pabaua/dev_tpil/data/24-05-08_tractometry/'
 
 
-NXF_VER=21.10.6 nextflow run $my_main_nf --input $my_input \
+NXF_VER=21.10.3 nextflow run $my_main_nf --input $my_input \
     -with-singularity $my_singularity_img -resume --skip_projection_endpoints_metrics --use_provided_centroids
 
